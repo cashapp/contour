@@ -24,13 +24,6 @@ open class ContourLayout(context: Context) : ViewGroup(context) {
         fun centerY(): YInt = heightConfig(heightProvider) / 2
     }
 
-    fun <T : View> T.layoutBy(config: ContourLayoutParams.() -> Unit): T {
-        layoutParams = ContourLayoutParams(ViewDimensions(this)).also {
-            it.parent = geometryProvider
-            it.config()
-        }
-        return this
-    }
 
     internal inline fun <T> View.withRecurseParams(block: ContourLayoutParams.() -> T): T {
         val params = layoutParams as ContourLayoutParams

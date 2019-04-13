@@ -16,6 +16,7 @@ object Contour {
     var initialized: Boolean = false
         private set
 
+    @JvmStatic
     fun initialize(context: Context) {
         density = context.resources.displayMetrics.density
         initialized = true
