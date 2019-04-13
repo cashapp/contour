@@ -22,31 +22,31 @@ interface HasParentGeometry {
 }
 
 interface FromHorizontalCenterContext : XProvider {
-    infix fun widthOf(config: XConfig) : XProvider
+    fun widthOf(config: XConfig) : XProvider
 }
 
 interface FromLeftContext : XProvider {
-    infix fun rightTo(config: XConfig) : XProvider
-    infix fun widthOf(config: XConfig) : XProvider
+    fun rightTo(config: XConfig) : XProvider
+    fun widthOf(config: XConfig) : XProvider
 }
 
 interface FromRightContext : XProvider {
-    infix fun leftTo(config: XConfig) : XProvider
-    infix fun widthOf(config: XConfig) : XProvider
+    fun leftTo(config: XConfig) : XProvider
+    fun widthOf(config: XConfig) : XProvider
 }
 
 interface FromYPositionedContext : YProvider {
-    infix fun heightOf(config: YConfig) : YProvider
+    fun heightOf(config: YConfig) : YProvider
 }
 
 interface FromTopContext : YProvider {
-    infix fun bottomTo(config: YConfig) : YProvider
-    infix fun heightOf(config: YConfig) : YProvider
+    fun bottomTo(config: YConfig) : YProvider
+    fun heightOf(config: YConfig) : YProvider
 }
 
 interface FromBottomContext : YProvider {
-    infix fun topTo(config: YConfig) : YProvider
-    infix fun heightOf(config: YConfig) : YProvider
+    fun topTo(config: YConfig) : YProvider
+    fun heightOf(config: YConfig) : YProvider
 }
 
 class XProviders : XProvider, FromLeftContext,

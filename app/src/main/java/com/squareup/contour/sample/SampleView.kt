@@ -30,7 +30,7 @@ class SampleView(context: Context) : ContourLayout(context) {
             layoutOf(
                 rightTo {
                     parent.right() - 10.dip
-                } widthOf {
+                }.widthOf {
                     parent.width(animatedWidth)
                 },
                 topTo {
@@ -61,12 +61,12 @@ class SampleView(context: Context) : ContourLayout(context) {
             layoutOf(
                 horizontallyCenterTo {
                     description.left() / 2
-                } widthOf {
+                }.widthOf {
                     header.width()
                 },
                 addToGroup {
                     stack
-                } heightOf {
+                }.heightOf {
                     header.width().toY()
                 }
             )
