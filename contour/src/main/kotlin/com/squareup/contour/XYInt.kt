@@ -8,8 +8,6 @@ interface XYInt {
 }
 
 internal inline fun Int.isSet(): Boolean = this != XYInt.NOT_SET
-internal typealias XIntLambda = () -> XInt
-internal typealias YIntLambda = () -> YInt
 
 inline class XInt(val value: Int) : XYInt {
     operator fun minus(other: Int): XInt = XInt(value - other)

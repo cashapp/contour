@@ -20,88 +20,41 @@ class ViewDimensions(private val view: View): HasDimensions {
 }
 
 
-class ContourLayoutParams(private val dimen: HasDimensions) : ViewGroup.LayoutParams(0, 0), HasParentGeometry {
+class ContourLayoutParams(
+    private val dimen: HasDimensions,
+    internal val x: ScalarProvider,
+    internal val y: ScalarProvider
+) : ViewGroup.LayoutParams(0, 0), HasParentGeometry {
+
+    init {
+        x.onAttach(this)
+        y.onAttach(this)
+    }
 
     override lateinit var parent: ContourLayout.ParentGeometryProvider
 
-    internal var yGroup: YGroup? = null
-
-    internal val l = Constraint(this)
-    internal val r = Constraint(this)
-    internal val t = Constraint(this)
-    internal val b = Constraint(this)
-
-    internal val w = Constraint(this)
-    internal val h = Constraint(this)
-
-    internal val cX = Constraint(this)
-    internal val cY = Constraint(this)
-
-    fun left(): XInt = resolveX(l)
-    fun right(): XInt = resolveX(r)
-    fun top(): YInt = resolveY(t)
-    fun bottom(): YInt = resolveY(b)
-
-    fun centerX(): XInt = resolveX(cX)
-    fun centerY(): YInt = resolveY(cY)
-
-    fun width(): XInt = resolveRange(w).toXInt()
-    fun height(): YInt = resolveRange(h).toYInt()
+    fun left(): XInt = x.min().toXInt()
+    fun right(): XInt = x.max().toXInt()
+    fun centerX(): XInt = x.mid().toXInt()
+    fun top(): YInt = y.min().toYInt()
+    fun bottom(): YInt = y.max().toYInt()
+    fun centerY(): YInt = y.mid().toYInt()
+    fun width(): XInt = x.range().toXInt()
+    fun height(): YInt = y.range().toYInt()
 
     fun preferredHeight(): YInt {
-        dimen.measure(widthSpec(), 0)
+        dimen.measure(x.measureSpec(), 0)
         return dimen.height.toYInt()
     }
 
-    private fun resolveX(constraint: Constraint): XInt {
-        if (!constraint.resolve()) {
-            resolveAxis(l, cX, r, w)
-        }
-        return constraint.value.toXInt()
-    }
-
-    private fun resolveY(constraint: Constraint): YInt {
-        val yGroup = yGroup
-        if (yGroup != null) {
-            yGroup.resolve()
-        } else if (!constraint.resolve()) {
-            resolveAxis(t, cY, b, h)
-        }
-        return constraint.value.toYInt()
-    }
-
-    private fun resolveRange(range: Constraint): Int {
-        if (!range.resolve()) {
-            dimen.measure(widthSpec(), heightSpec())
-            w.value = dimen.width
-            h.value = dimen.height
-        }
-        return range.value
-    }
-
-    private fun resolveAxis(min: Constraint, center: Constraint, max: Constraint, range: Constraint) {
-        resolveRange(range)
-
-        val hR = range.value / 2
-        if (max.resolve()) {
-            min.value = max.value - range.value
-            center.value = max.value - hR
-        } else if (min.resolve()) {
-            max.value = min.value + range.value
-            center.value = min.value + hR
-        } else if (center.resolve()) {
-            min.value = center.value - hR
-            max.value = center.value + hR
-        }
+    internal fun measureSelf() {
+        dimen.measure(x.measureSpec(), y.measureSpec())
+        x.onRangeResolved(dimen.width)
+        y.onRangeResolved(dimen.height)
     }
 
     internal fun clear() {
-        yGroup?.clear()
-        l.clear(); t.clear(); r.clear(); b.clear()
-        w.clear(); h.clear()
-        cX.clear(); cY.clear()
+        x.clear()
+        y.clear()
     }
-
-    internal fun widthSpec(): Int = measureSpecFor(l, r, w)
-    internal fun heightSpec(): Int = measureSpecFor(t, b, h)
 }

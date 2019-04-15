@@ -1,7 +1,11 @@
 package com.squareup.contour
 
+class Constraint {
 
-class Constraint(private val parent: HasParentGeometry) {
+    internal lateinit var parent: HasParentGeometry
+
+    var edge: Point = Point.Min
+    var isRange: Boolean = false
 
     var configuration: ((HasParentGeometry) -> XYInt)? = null
     var value: Int = XYInt.NOT_SET

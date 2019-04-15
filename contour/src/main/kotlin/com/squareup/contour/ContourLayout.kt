@@ -9,7 +9,6 @@ import android.view.ViewGroup
 class WidthProvider(var availableWidth: XInt = XInt.NOT_SET)
 class HeightProvider(var availableHeight: YInt = YInt.NOT_SET)
 
-
 open class ContourLayout(context: Context) : ViewGroup(context) {
     inner class ParentGeometryProvider {
         fun left(): XInt = XInt.ZERO
@@ -27,9 +26,9 @@ open class ContourLayout(context: Context) : ViewGroup(context) {
 
     internal inline fun <T> View.withRecurseParams(block: ContourLayoutParams.() -> T): T {
         val params = layoutParams as ContourLayoutParams
-//    if(parent !== this@ContourLayout) {
-//            throw IllegalArgumentException("Referencing view outside of ViewGroup.")
-//    }
+        if(parent !== this@ContourLayout) {
+                throw IllegalArgumentException("Referencing view outside of ViewGroup.")
+        }
         return params.block()
     }
 
@@ -57,10 +56,6 @@ open class ContourLayout(context: Context) : ViewGroup(context) {
         heightConfig = config
     }
 
-    fun verticalStack(provider: FromYPositionedContext) = VerticalStack(this, provider)
-    fun verticalStack(provider: FromBottomContext) = VerticalStack(this, provider)
-    fun verticalStack(provider: FromTopContext) = VerticalStack(this, provider)
-
     override fun addView(child: View?, index: Int, params: LayoutParams?) {
         val recurseParams = child?.layoutParams as? ContourLayoutParams
         recurseParams?.parent = geometryProvider
@@ -85,7 +80,7 @@ open class ContourLayout(context: Context) : ViewGroup(context) {
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             val params = child.layoutParams as ContourLayoutParams
-            child.measure(params.widthSpec(), params.heightSpec())
+            child.measure(params.x.measureSpec(), params.y.measureSpec())
             child.layout(params.left().value, params.top().value, params.right().value, params.bottom().value)
         }
     }
