@@ -16,30 +16,33 @@ interface HasParentGeometry {
     val parent: GeometryProvider
 }
 
-interface FromHorizontalCenterContext : XResolver {
+interface XPositionWithoutSize
+interface YPositionWithoutSize
+
+interface FromHorizontalCenterContext : XResolver, XPositionWithoutSize {
     fun widthOf(provider: XProvider): XResolver
 }
 
-interface FromLeftContext : XResolver {
+interface FromLeftContext : XResolver, XPositionWithoutSize {
     fun rightTo(provider: XProvider): XResolver
     fun widthOf(provider: XProvider): XResolver
 }
 
-interface FromRightContext : XResolver {
+interface FromRightContext : XResolver, XPositionWithoutSize {
     fun leftTo(provider: XProvider): XResolver
     fun widthOf(provider: XProvider): XResolver
 }
 
-interface FromYPositionedContext : YResolver {
+interface FromYPositionedContext : YResolver, YPositionWithoutSize {
     fun heightOf(provider: YProvider): YResolver
 }
 
-interface FromTopContext : YResolver {
+interface FromTopContext : YResolver, YPositionWithoutSize {
     fun bottomTo(provider: YProvider): YResolver
     fun heightOf(provider: YProvider): YResolver
 }
 
-interface FromBottomContext : YResolver {
+interface FromBottomContext : YResolver, YPositionWithoutSize {
     fun topTo(provider: YProvider): YResolver
     fun heightOf(provider: YProvider): YResolver
 }
@@ -91,6 +94,15 @@ fun horizontallyCenterTo(provider: XProvider): FromHorizontalCenterContext =
             lambda = unwrapXProvider(provider)
         )
     )
+
+fun maxOf(
+    p0: YPositionWithoutSize,
+    p1: YPositionWithoutSize
+) : YResolver {
+    p0 as ScalarResolver
+    p1 as ScalarResolver
+    return MaxOfResolver(p0, p1)
+}
 
 fun View.layoutOf(
     x: XResolver,

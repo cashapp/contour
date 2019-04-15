@@ -11,6 +11,7 @@ open class ContourLayout(context: Context) : ViewGroup(context) {
     private val widthConfig = SizeConfig()
     private val heightConfig = SizeConfig()
     private val geometryProvider = ParentGeometryProvider(widthConfig, heightConfig)
+    private var initialized: Boolean = true
 
     private inline fun <T> View.withParams(block: ContourLayoutParams.() -> T): T {
         val params = layoutParams as ContourLayoutParams
@@ -45,6 +46,10 @@ open class ContourLayout(context: Context) : ViewGroup(context) {
     }
 
     override fun requestLayout() {
+        if (!initialized) return
+
+        widthConfig.clear()
+        heightConfig.clear()
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             (child.layoutParams as? ContourLayoutParams)?.clear()
