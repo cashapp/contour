@@ -90,3 +90,25 @@ What does the end result of this look like?
 <p align="center">
   <img width="460" src="screenshots/simple_demo.gif">
 </p>
+
+## Features
+### Functional API
+Similar to `ConstraintLayout`, Contour works by creating relationships between views position and size. The differnce is instead of providing opaque XML attributes, you instead provide functions which are directly called during the layout phase.
+This offers a couple advantages:
+- Axis to Kotlin math operators (`parent.right() - 15.dip` is completely valid)
+- Ability to make runtime layout decisions. 
+```
+leftTo { 
+  if (user.name.isEmpty) parent.left()
+  else nameView.right()
+}
+```
+- Clean minimal sytax
+- Additional type safety
+
+
+### Axis Type Saftey
+Contour makes heavy use of inline classes to provide axis type saftey in layouts. What this means is `toLeftOf { view.top() }` will not compile. `toLeftOf {}` requires a `XInt`, and `top()` returns a `YInt`. In cases where this needs to be forced, casting functions are made available to `toY()` & `toX()`. 
+
+Inline classes are a lightweight compile time addition that allow this feature with minimal to no performance costs. 
+https://kotlinlang.org/docs/reference/inline-classes.html
