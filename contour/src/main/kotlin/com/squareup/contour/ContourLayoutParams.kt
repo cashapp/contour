@@ -22,16 +22,16 @@ class ViewDimensions(private val view: View): HasDimensions {
 
 class ContourLayoutParams(
     private val dimen: HasDimensions,
-    internal val x: ScalarProvider,
-    internal val y: ScalarProvider
-) : ViewGroup.LayoutParams(0, 0), HasParentGeometry {
+    internal val x: ScalarResolver,
+    internal val y: ScalarResolver
+) : ViewGroup.LayoutParams(0, 0), LayoutContext {
+
+    override lateinit var parent: GeometryProvider
 
     init {
         x.onAttach(this)
         y.onAttach(this)
     }
-
-    override lateinit var parent: ContourLayout.ParentGeometryProvider
 
     fun left(): XInt = x.min().toXInt()
     fun right(): XInt = x.max().toXInt()

@@ -1,36 +1,37 @@
 package com.squareup.contour
 
-class Constraint {
 
-    internal lateinit var parent: HasParentGeometry
+open class Constraint {
+    private var layoutContext: LayoutContext? = null
+    private var value: Int = Int.MIN_VALUE
+    var lambda: (IntProvider)? = null
 
-    var edge: Point = Point.Min
-    var isRange: Boolean = false
+    fun onAttachContext(layoutContext: LayoutContext) {
+        this.layoutContext = layoutContext
+    }
 
-    var configuration: ((HasParentGeometry) -> XYInt)? = null
-    var value: Int = XYInt.NOT_SET
+    val isSet: Boolean get() = lambda != null
 
-    fun isConfigured(): Boolean = configuration != null
-
-    fun resolveAndGet(): Int =
-        if(resolve()) value
-        else throw IllegalStateException("Could not resolve $this")
-
-    fun resolve(): Boolean {
-        if (value.isSet()) {
-            return true
+    fun resolve(): Int {
+        if (value == Int.MIN_VALUE) {
+            val context = checkNotNull(layoutContext) { "Constraint called before LayoutContext attached" }
+            val lambda = checkNotNull(lambda) { "Constraint not set" }
+            value = lambda(context)
         }
-
-        val config = configuration
-        if (config == null) {
-            return false
-        } else {
-            value = config(parent).toInt()
-            return true
-        }
+        return value
     }
 
     fun clear() {
-        value = XYInt.NOT_SET
+        value = Int.MIN_VALUE
     }
 }
+
+class PositionConstraint : Constraint() {
+    var point: Point = Point.Min
+}
+
+fun positionConstraint(point: Point, lambda: IntProvider): PositionConstraint =
+    PositionConstraint().apply {
+        this.point = point
+        this.lambda = lambda
+    }
