@@ -3,94 +3,107 @@ package com.squareup.contour.sample
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
-import android.view.animation.OvershootInterpolator
+import android.util.TypedValue
 import android.widget.ImageView
 import android.widget.TextView
 import com.squareup.contour.*
+import com.squareup.picasso.Picasso
 import kotlin.contracts.ExperimentalContracts
-
 
 @SuppressLint("SetTextI18n")
 @ExperimentalContracts
 class SampleView(context: Context) : ContourLayout(context) {
 
-    private var animatedWidth = 0.5f
+    private val siskoWisdom: String =
+        "The Bajorans who have lived with us on this station, who have worked with us for months, who helped us move " +
+                "this station to protect the wormhole, who joined us to explore the Gamma Quadrant, who have begun " +
+                "to build the future of Bajor with us. These people know that we are neither the enemy nor the " +
+                "devil. We don't always agree. We have some damn good fights, in fact. But we always come away from " +
+                "them with a little better understanding and appreciation of the other."
+
+    private fun siskoWisdom(amount: Float): String =
+        siskoWisdom.substring(0, (siskoWisdom.length * amount.coerceIn(0f, 1f)).toInt())
+
+    private val avatar =
+        AvatarImageView(context).apply {
+            scaleType = ImageView.ScaleType.CENTER_CROP
+            Picasso.get()
+                .load("https://upload.wikimedia.org/wikipedia/en/9/92/BenSisko.jpg")
+                .into(this)
+            layoutOf(
+                leftTo {
+                    parent.left() + 15.dip
+                }.widthOf {
+                    name.width()
+                },
+                topTo {
+                    parent.top() + 15.dip
+                }.heightOf {
+                    name.width().toY()
+                }
+            )
+        }
+
+
+    private val name: TextView =
+        TextView(context).apply {
+            text = "Ben Sisko"
+            setTextColor(White)
+            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
+            layoutOf(
+                leftTo { avatar.left() },
+                topTo { avatar.bottom() + 5.dip }
+
+            )
+        }
 
     private val description =
         TextView(context).apply {
-            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas porttitor nisi lorem, " +
-                    "in ultricies justo condimentum a. Aliquam in pellentesque nisl. Phasellus tristique " +
-                    "justo ligula, vel sollicitudin orci tempus nec. Quisque quis hendrerit turpis. Mauris " +
-                    "vitae lectus eu odio blandit iaculis. Ut massa erat, gravida id magna a, auctor blandit " +
-                    "lorem. Maecenas tempor justo quis dolor blandit, non dictum eros pharetra. Maecenas " +
-                    "enim elit, molestie et odio quis, tincidunt pulvinar massa. Nulla dapibus porta " +
-                    "posuere. Etiam fringilla vulputate erat nec pharetra. Etiam vel vehicula est."
-            setBackgroundColor(White)
-            setTextColor(Black)
+            text = siskoWisdom(0.25f)
+            setTextColor(White)
+            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
             layoutOf(
-                rightTo {
-                    parent.right() - 10.dip
-                }.widthOf {
-                    parent.width(animatedWidth)
+                leftTo {
+                    name.right() + 15.dip
+                }.rightTo {
+                    parent.right() - 15.dip
                 },
                 topTo {
-                    parent.top() + 10.dip
+                    parent.top() + 15.dip
                 }
             )
-        }.alsoAddTo(this)
+        }
 
-    private val stack = verticalStack(verticallyCenterTo { parent.centerY() })
-
-    private val header =
-        TextView(context).apply {
-            text = "MY HEADER!"
-            setTextColor(White)
-            setBackgroundColor(Red)
-            layoutOf(
-                horizontallyCenterTo { description.left() / 2 },
-                addToGroup { stack }
+    private val starDate = TextView(context).apply {
+        text = "Stardate: 23634.1"
+        setTextColor(White)
+        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
+        layoutOf(
+            rightTo { parent.right() - 15.dip },
+            maxOf(
+                topTo { description.bottom() + 5.dip },
+                bottomTo { name.bottom() }
             )
-        }.alsoAddTo(this)
-
-
-    private val icon =
-        ImageView(context).apply {
-            setImageResource(R.drawable.android_logo)
-            setBackgroundColor(Yellow)
-            setColorFilter(White)
-            layoutOf(
-                horizontallyCenterTo {
-                    description.left() / 2
-                }.widthOf {
-                    header.width()
-                },
-                addToGroup {
-                    stack
-                }.heightOf {
-                    header.width().toY()
-                }
-            )
-        }.alsoAddTo(this)
+        )
+    }
 
     init {
-        heightOf { description.bottom() + 10.dip }
+        heightOf { starDate.bottom() + 15.dip }
+
+        addView(name)
+        addView(avatar)
+        addView(description)
+        addView(starDate)
 
         setBackgroundColor(Blue)
         setOnClickListener {
-            runAnimation(0.5f, 0.7f) {
-                animatedWidth = it
-                requestLayout()
-            }
+            ValueAnimator.ofFloat(0.25f, 1f).apply {
+                duration = 1000
+                addUpdateListener {
+                    description.text = siskoWisdom(it.animatedValue as Float)
+                    description.requestLayout()
+                }
+            }.start()
         }
-    }
-
-    private fun runAnimation(from: Float, to: Float, update: (Float) -> Unit) {
-        ValueAnimator.ofFloat(from, to).apply {
-            interpolator = OvershootInterpolator()
-            duration = 1000
-            addUpdateListener {
-                update(it.animatedValue as Float)
-            }
-        }.start()
     }
 }
