@@ -150,3 +150,15 @@ will not compile. `toLeftOf {}` requires a `XInt`, and `top()` returns a `YInt`.
 
 Inline classes are a lightweight compile time addition that allow this feature with minimal to no performance costs. 
 https://kotlinlang.org/docs/reference/inline-classes.html
+
+### Circular Reference Debugging
+Circular references are pretty easy to unintentionally introduce in any layout. To accidentally declare
+- `name.right` aligns to `note.left`
+- and `note.left` aligns to `name.right`
+
+Contour fails fast and loud when these errors are detected, and provides as much context as possible in doing so. The screenshot below is an example of the trace provided when a circular reference is detected.
+
+<p align="center">
+  <img src="screenshots/crd.png">
+</p>
+
