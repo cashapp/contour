@@ -18,7 +18,17 @@ open class ContourLayout(context: Context) : ViewGroup(context) {
         if(parent !== this@ContourLayout) {
                 throw IllegalArgumentException("Referencing view outside of ViewGroup.")
         }
-        return params.block()
+        return try {
+            params.block()
+        } catch (e: CircularReferenceDetected) {
+            // Want first stacktrace element to be following line.
+            // Thread.currentThread().stackTrace does not do this.
+            val trace = Throwable().stackTrace
+            val current = trace.getOrNull(0)
+            val calledBy = trace.getOrNull(1)
+            e.add(CircularReferenceDetected.TraceElement(this, current, calledBy))
+            throw e
+        }
     }
 
     fun View.left(): XInt = withParams { left() }

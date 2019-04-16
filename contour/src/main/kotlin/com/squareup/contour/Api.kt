@@ -11,8 +11,7 @@ typealias YProvider = LayoutContext.() -> YInt
 inline fun unwrapXProvider(crossinline lambda: XProvider): IntProvider = { lambda().value }
 inline fun unwrapYProvider(crossinline lambda: YProvider): IntProvider = { lambda().value }
 
-interface LayoutContext : HasParentGeometry
-interface HasParentGeometry {
+interface LayoutContext {
     val parent: GeometryProvider
 }
 
