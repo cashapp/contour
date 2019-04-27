@@ -1,7 +1,6 @@
 package com.squareup.contour
 
 import android.view.View
-import java.lang.Exception
 
 class CircularReferenceDetected : Exception() {
 
