@@ -2,7 +2,7 @@ package com.squareup.contour
 
 import android.view.View
 
-class MaxOfResolver(
+internal class MaxOfResolver(
   private val p0: ScalarResolver,
   private val p1: ScalarResolver
 ) : ScalarResolver, YResolver {

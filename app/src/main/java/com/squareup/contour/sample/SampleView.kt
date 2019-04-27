@@ -7,12 +7,6 @@ import android.util.TypedValue
 import android.widget.ImageView
 import android.widget.TextView
 import com.squareup.contour.ContourLayout
-import com.squareup.contour.bottomTo
-import com.squareup.contour.layoutOf
-import com.squareup.contour.leftTo
-import com.squareup.contour.maxOf
-import com.squareup.contour.rightTo
-import com.squareup.contour.topTo
 import com.squareup.picasso.Picasso
 import kotlin.contracts.ExperimentalContracts
 

@@ -1,6 +1,6 @@
 package com.squareup.contour
 
-class SizeConfig {
+internal class SizeConfig {
   var available: Int = Int.MIN_VALUE
   var result: Int = Int.MIN_VALUE
   var lambda: (Int) -> Int = { it }

@@ -6,7 +6,7 @@ import kotlin.math.abs
 interface YResolver
 interface XResolver
 
-interface ScalarResolver {
+internal interface ScalarResolver {
   fun min(): Int
   fun mid(): Int
   fun max(): Int
@@ -19,7 +19,7 @@ interface ScalarResolver {
   fun clear()
 }
 
-class SimpleScalarResolver(private val p0: PositionConstraint) : ScalarResolver,
+internal class SimpleScalarResolver(private val p0: PositionConstraint) : ScalarResolver,
     XResolver, FromLeftContext, FromRightContext, FromHorizontalCenterContext,
     YResolver, FromTopContext, FromBottomContext, FromYPositionedContext {
 

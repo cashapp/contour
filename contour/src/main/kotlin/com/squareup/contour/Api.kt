@@ -2,8 +2,6 @@
 
 package com.squareup.contour
 
-import android.view.View
-
 internal typealias IntProvider = LayoutContext.() -> Int
 
 interface LayoutContext {
@@ -39,70 +37,4 @@ interface FromTopContext : YResolver, YPositionWithoutSize {
 interface FromBottomContext : YResolver, YPositionWithoutSize {
   fun topTo(provider: YProvider): YResolver
   fun heightOf(provider: YProvider): YResolver
-}
-
-fun topTo(provider: YProvider): FromTopContext =
-  SimpleScalarResolver(
-      positionConstraint(
-          point = Point.Min,
-          lambda = unwrapYProvider(provider)
-      )
-  )
-
-fun bottomTo(provider: YProvider): FromBottomContext =
-  SimpleScalarResolver(
-      positionConstraint(
-          point = Point.Max,
-          lambda = unwrapYProvider(provider)
-      )
-  )
-
-fun verticallyCenterTo(provider: YProvider): FromYPositionedContext =
-  SimpleScalarResolver(
-      positionConstraint(
-          point = Point.Mid,
-          lambda = unwrapYProvider(provider)
-      )
-  )
-
-fun leftTo(provider: XProvider): FromLeftContext =
-  SimpleScalarResolver(
-      positionConstraint(
-          point = Point.Min,
-          lambda = unwrapXProvider(provider)
-      )
-  )
-
-fun rightTo(provider: XProvider): FromRightContext =
-  SimpleScalarResolver(
-      positionConstraint(
-          point = Point.Max,
-          lambda = unwrapXProvider(provider)
-      )
-  )
-
-fun horizontallyCenterTo(provider: XProvider): FromHorizontalCenterContext =
-  SimpleScalarResolver(
-      positionConstraint(
-          point = Point.Mid,
-          lambda = unwrapXProvider(provider)
-      )
-  )
-
-fun maxOf(
-  p0: YPositionWithoutSize,
-  p1: YPositionWithoutSize
-): YResolver {
-  p0 as ScalarResolver
-  p1 as ScalarResolver
-  return MaxOfResolver(p0, p1)
-}
-
-fun View.layoutOf(
-  x: XResolver,
-  y: YResolver
-) {
-  x as ScalarResolver
-  y as ScalarResolver
-  layoutParams = ContourLayoutParams(ViewDimensions(this), x, y)
 }

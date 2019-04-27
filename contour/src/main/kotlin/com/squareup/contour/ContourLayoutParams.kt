@@ -29,7 +29,7 @@ class ViewDimensions(private val view: View) : HasDimensions {
 
 private const val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
 
-class ContourLayoutParams(
+class ContourLayoutParams internal constructor(
   private val dimen: HasDimensions,
   internal val x: ScalarResolver,
   internal val y: ScalarResolver

@@ -16,7 +16,7 @@ interface GeometryProvider {
   fun centerY(): YInt
 }
 
-class ParentGeometryProvider(
+internal class ParentGeometryProvider(
   private val widthConfig: SizeConfig,
   private val heightConfig: SizeConfig
 ) : GeometryProvider {
