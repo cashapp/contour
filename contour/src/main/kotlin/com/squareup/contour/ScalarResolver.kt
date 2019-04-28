@@ -39,6 +39,7 @@ internal class SimpleScalarResolver(private val p0: PositionConstraint) : Scalar
         min = p0.resolve()
       } else {
         parent.measureSelf()
+        resolveAxis()
       }
     }
     return min
@@ -50,6 +51,7 @@ internal class SimpleScalarResolver(private val p0: PositionConstraint) : Scalar
         mid = p0.resolve()
       } else {
         parent.measureSelf()
+        resolveAxis()
       }
     }
     return mid
@@ -61,6 +63,7 @@ internal class SimpleScalarResolver(private val p0: PositionConstraint) : Scalar
         max = p0.resolve()
       } else {
         parent.measureSelf()
+        resolveAxis()
       }
     }
     return max
@@ -73,21 +76,15 @@ internal class SimpleScalarResolver(private val p0: PositionConstraint) : Scalar
     return range
   }
 
-  override fun onAttach(parent: ContourLayoutParams) {
-    this.parent = parent
-    p0.onAttachContext(parent)
-    p1.onAttachContext(parent)
-    size.onAttachContext(parent)
-  }
+  private fun resolveAxis() {
+    check(range != Int.MIN_VALUE)
 
-  override fun onRangeResolved(value: Int) {
-    range = value
-    val hV = value / 2
+    val hV = range / 2
     when (p0.point) {
       Point.Min -> {
         min = p0.resolve()
         mid = min + hV
-        max = min + value
+        max = min + range
       }
       Point.Mid -> {
         mid = p0.resolve()
@@ -97,9 +94,20 @@ internal class SimpleScalarResolver(private val p0: PositionConstraint) : Scalar
       Point.Max -> {
         max = p0.resolve()
         mid = max - hV
-        min = max - value
+        min = max - range
       }
     }
+  }
+
+  override fun onAttach(parent: ContourLayoutParams) {
+    this.parent = parent
+    p0.onAttachContext(parent)
+    p1.onAttachContext(parent)
+    size.onAttachContext(parent)
+  }
+
+  override fun onRangeResolved(value: Int) {
+    range = value
   }
 
   override fun measureSpec(): Int {
