@@ -1,9 +1,12 @@
 package com.squareup.contour
 
+import com.squareup.contour.SizeMode.Exact
+
 open class Constraint {
   private var isResolving: Boolean = false
   private var layoutContext: LayoutContext? = null
   private var value: Int = Int.MIN_VALUE
+  var mode: SizeMode = Exact
   var lambda: (IntProvider)? = null
 
   val isSet: Boolean get() = lambda != null

@@ -2,7 +2,6 @@ package com.squareup.contour.sample
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.content.Context
 import android.util.TypedValue
 import android.widget.ImageView
 import android.widget.TextView
@@ -10,9 +9,9 @@ import com.squareup.contour.ContourLayout
 import com.squareup.picasso.Picasso
 import kotlin.contracts.ExperimentalContracts
 
-@SuppressLint("SetTextI18n")
+@SuppressLint("SetTextI18n", "ViewConstructor")
 @ExperimentalContracts
-class SampleView(context: Context) : ContourLayout(context) {
+class SampleView1(context: SampleActivity) : ContourLayout(context) {
 
   private val siskoWisdom: String =
     "The Bajorans who have lived with us on this station, who have worked with us for months, " +
@@ -98,16 +97,22 @@ class SampleView(context: Context) : ContourLayout(context) {
     addView(starDate)
 
     setBackgroundColor(Blue)
+    var animated = false
     setOnClickListener {
-      ValueAnimator.ofFloat(0.25f, 1f)
-          .apply {
-            duration = 1000
-            addUpdateListener {
-              description.text = siskoWisdom(it.animatedValue as Float)
-              description.requestLayout()
+      if (animated) {
+        context.showNext()
+      } else {
+        animated = true
+        ValueAnimator.ofFloat(0.25f, 1f)
+            .apply {
+              duration = 1000
+              addUpdateListener {
+                description.text = siskoWisdom(it.animatedValue as Float)
+                description.requestLayout()
+              }
             }
-          }
-          .start()
+            .start()
+      }
     }
   }
 }

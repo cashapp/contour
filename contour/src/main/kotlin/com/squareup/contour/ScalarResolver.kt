@@ -112,9 +112,9 @@ internal class SimpleScalarResolver(private val p0: PositionConstraint) : Scalar
 
   override fun measureSpec(): Int {
     return if (p1.isSet) {
-      View.MeasureSpec.makeMeasureSpec(abs(p0.resolve() - p1.resolve()), View.MeasureSpec.EXACTLY)
+      View.MeasureSpec.makeMeasureSpec(abs(p0.resolve() - p1.resolve()), p1.mode.mask)
     } else if (size.isSet) {
-      View.MeasureSpec.makeMeasureSpec(size.resolve(), View.MeasureSpec.EXACTLY)
+      View.MeasureSpec.makeMeasureSpec(size.resolve(), size.mode.mask)
     } else {
       0
     }
@@ -130,36 +130,42 @@ internal class SimpleScalarResolver(private val p0: PositionConstraint) : Scalar
     size.clear()
   }
 
-  override fun topTo(provider: YProvider): YResolver {
+  override fun topTo(mode: SizeMode, provider: YProvider): YResolver {
     p1.point = Point.Min
+    p1.mode = mode
     p1.lambda = unwrapYProvider(provider)
     return this
   }
 
-  override fun bottomTo(provider: YProvider): YResolver {
+  override fun bottomTo(mode: SizeMode, provider: YProvider): YResolver {
     p1.point = Point.Mid
+    p1.mode = mode
     p1.lambda = unwrapYProvider(provider)
     return this
   }
 
-  override fun heightOf(provider: YProvider): YResolver {
+  override fun heightOf(mode: SizeMode, provider: YProvider): YResolver {
+    size.mode = mode
     size.lambda = unwrapYProvider(provider)
     return this
   }
 
-  override fun leftTo(provider: XProvider): XResolver {
+  override fun leftTo(mode: SizeMode, provider: XProvider): XResolver {
     p1.point = Point.Min
+    p1.mode = mode
     p1.lambda = unwrapXProvider(provider)
     return this
   }
 
-  override fun rightTo(provider: XProvider): XResolver {
+  override fun rightTo(mode: SizeMode, provider: XProvider): XResolver {
     p1.point = Point.Max
+    p1.mode = mode
     p1.lambda = unwrapXProvider(provider)
     return this
   }
 
-  override fun widthOf(provider: XProvider): XResolver {
+  override fun widthOf(mode: SizeMode, provider: XProvider): XResolver {
+    size.mode = mode
     size.lambda = unwrapXProvider(provider)
     return this
   }

@@ -2,6 +2,8 @@
 
 package com.squareup.contour
 
+import com.squareup.contour.SizeMode.Exact
+
 internal typealias IntProvider = LayoutContext.() -> Int
 
 interface LayoutContext {
@@ -11,30 +13,47 @@ interface LayoutContext {
 interface XPositionWithoutSize
 interface YPositionWithoutSize
 
-interface FromHorizontalCenterContext : XResolver, XPositionWithoutSize {
-  fun widthOf(provider: XProvider): XResolver
+interface FromHorizontalCenterContext : XResolver, XPositionWithoutSize, WidthOfAllowedContext
+interface FromYPositionedContext : YResolver, HeightOfAllowedContext
+
+interface WidthOfAllowedContext {
+  fun widthOf(
+    mode: SizeMode = Exact,
+    provider: XProvider
+  ): XResolver
 }
 
-interface FromLeftContext : XResolver, XPositionWithoutSize {
-  fun rightTo(provider: XProvider): XResolver
-  fun widthOf(provider: XProvider): XResolver
+interface HeightOfAllowedContext {
+  fun heightOf(
+    mode: SizeMode = Exact,
+    provider: YProvider
+  ): YResolver
 }
 
-interface FromRightContext : XResolver, XPositionWithoutSize {
-  fun leftTo(provider: XProvider): XResolver
-  fun widthOf(provider: XProvider): XResolver
+interface FromLeftContext : XResolver, XPositionWithoutSize, WidthOfAllowedContext {
+  fun rightTo(
+    mode: SizeMode = Exact,
+    provider: XProvider
+  ): XResolver
 }
 
-interface FromYPositionedContext : YResolver, YPositionWithoutSize {
-  fun heightOf(provider: YProvider): YResolver
+interface FromRightContext : XResolver, XPositionWithoutSize, WidthOfAllowedContext {
+  fun leftTo(
+    mode: SizeMode = Exact,
+    provider: XProvider
+  ): XResolver
 }
 
-interface FromTopContext : YResolver, YPositionWithoutSize {
-  fun bottomTo(provider: YProvider): YResolver
-  fun heightOf(provider: YProvider): YResolver
+interface FromTopContext : YResolver, YPositionWithoutSize, HeightOfAllowedContext {
+  fun bottomTo(
+    mode: SizeMode = Exact,
+    provider: YProvider
+  ): YResolver
 }
 
-interface FromBottomContext : YResolver, YPositionWithoutSize {
-  fun topTo(provider: YProvider): YResolver
-  fun heightOf(provider: YProvider): YResolver
+interface FromBottomContext : YResolver, YPositionWithoutSize, HeightOfAllowedContext {
+  fun topTo(
+    mode: SizeMode = Exact,
+    provider: YProvider
+  ): YResolver
 }
