@@ -6,6 +6,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import com.squareup.contour.ComparisonResolver.CompareBy.MaxOf
+import com.squareup.contour.ComparisonResolver.CompareBy.MinOf
 
 open class ContourLayout(
   context: Context,
@@ -106,13 +108,40 @@ open class ContourLayout(
         )
     )
 
+  fun minOf(
+    p0: YPositionWithoutSize,
+    p1: YPositionWithoutSize
+  ): YResolver {
+    p0 as ScalarResolver
+    p1 as ScalarResolver
+    return ComparisonResolver(p0, p1, MinOf)
+  }
+
   fun maxOf(
     p0: YPositionWithoutSize,
     p1: YPositionWithoutSize
   ): YResolver {
     p0 as ScalarResolver
     p1 as ScalarResolver
-    return MaxOfResolver(p0, p1)
+    return ComparisonResolver(p0, p1, MaxOf)
+  }
+
+  fun minOf(
+    p0: XPositionWithoutSize,
+    p1: XPositionWithoutSize
+  ): XResolver {
+    p0 as ScalarResolver
+    p1 as ScalarResolver
+    return ComparisonResolver(p0, p1, MinOf)
+  }
+
+  fun maxOf(
+    p0: XPositionWithoutSize,
+    p1: XPositionWithoutSize
+  ): XResolver {
+    p0 as ScalarResolver
+    p1 as ScalarResolver
+    return ComparisonResolver(p0, p1, MaxOf)
   }
 
   fun View.layoutOf(

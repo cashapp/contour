@@ -1,30 +1,48 @@
 package com.squareup.contour
 
 import android.view.View
+import com.squareup.contour.ComparisonResolver.CompareBy.MaxOf
+import com.squareup.contour.ComparisonResolver.CompareBy.MinOf
 
-internal class MaxOfResolver(
+internal class ComparisonResolver(
   private val p0: ScalarResolver,
-  private val p1: ScalarResolver
-) : ScalarResolver, YResolver {
+  private val p1: ScalarResolver,
+  private val compareBy: CompareBy
+) : ScalarResolver, XResolver, YResolver {
+
+  internal enum class CompareBy {
+    MaxOf,
+    MinOf
+  }
 
   private val size = Constraint()
   private var found: ScalarResolver? = null
   private lateinit var parent: ContourLayoutParams
   private var range: Int = Int.MIN_VALUE
 
-  private fun findMax(): ScalarResolver {
+  private fun findWinner(): ScalarResolver {
     val found = found
     if (found != null) return found
     else {
-      val max = if (p0.min() > p1.min()) p0 else p1
-      this.found = max
-      return max
+      when (compareBy) {
+        MaxOf -> {
+          val max = if (p0.min() >= p1.min()) p0 else p1
+          this.found = max
+          return max
+        }
+        MinOf -> {
+          val min = if (p0.min() <= p1.min()) p0 else p1
+          this.found = min
+          return min
+        }
+      }
+
     }
   }
 
-  override fun min(): Int = findMax().min()
-  override fun mid(): Int = findMax().mid()
-  override fun max(): Int = findMax().max()
+  override fun min(): Int = findWinner().min()
+  override fun mid(): Int = findWinner().mid()
+  override fun max(): Int = findWinner().max()
 
   override fun range(): Int {
     if (range == Int.MIN_VALUE) {
