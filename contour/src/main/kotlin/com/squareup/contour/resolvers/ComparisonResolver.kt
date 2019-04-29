@@ -1,8 +1,12 @@
-package com.squareup.contour
+package com.squareup.contour.resolvers
 
 import android.view.View
-import com.squareup.contour.ComparisonResolver.CompareBy.MaxOf
-import com.squareup.contour.ComparisonResolver.CompareBy.MinOf
+import com.squareup.contour.constraints.Constraint
+import com.squareup.contour.ContourLayoutParams
+import com.squareup.contour.XResolver
+import com.squareup.contour.YResolver
+import com.squareup.contour.resolvers.ComparisonResolver.CompareBy.MaxOf
+import com.squareup.contour.resolvers.ComparisonResolver.CompareBy.MinOf
 
 internal class ComparisonResolver(
   private val p0: ScalarResolver,

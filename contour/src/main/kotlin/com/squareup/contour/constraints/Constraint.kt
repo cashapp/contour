@@ -1,6 +1,11 @@
-package com.squareup.contour
+package com.squareup.contour.constraints
 
+import com.squareup.contour.IntProvider
+import com.squareup.contour.LayoutContext
+import com.squareup.contour.SizeMode
 import com.squareup.contour.SizeMode.Exact
+import com.squareup.contour.errors.CircularReferenceDetected
+import com.squareup.contour.resolvers.SimpleScalarResolver.Point
 
 internal open class Constraint {
   private var isResolving: Boolean = false

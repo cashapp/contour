@@ -1,35 +1,12 @@
 package com.squareup.contour
 
-import android.view.View
 import android.view.ViewGroup
-
-interface HasDimensions {
-  fun measure(
-    w: Int,
-    h: Int
-  )
-
-  val width: Int
-  val height: Int
-}
-
-class ViewDimensions(private val view: View) : HasDimensions {
-  override fun measure(
-    w: Int,
-    h: Int
-  ) {
-    view.measure(w, h)
-  }
-
-  override val width: Int
-    get() = view.measuredWidth
-  override val height: Int
-    get() = view.measuredHeight
-}
+import com.squareup.contour.resolvers.ScalarResolver
+import com.squareup.contour.wrappers.HasDimensions
 
 private const val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
 
-class ContourLayoutParams internal constructor(
+internal class ContourLayoutParams(
   private val dimen: HasDimensions,
   internal val x: ScalarResolver,
   internal val y: ScalarResolver

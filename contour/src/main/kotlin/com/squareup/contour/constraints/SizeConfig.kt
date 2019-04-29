@@ -1,4 +1,4 @@
-package com.squareup.contour
+package com.squareup.contour.constraints
 
 internal class SizeConfig {
   var available: Int = Int.MIN_VALUE

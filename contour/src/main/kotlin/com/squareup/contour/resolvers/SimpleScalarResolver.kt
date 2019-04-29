@@ -1,27 +1,33 @@
-package com.squareup.contour
+package com.squareup.contour.resolvers
 
 import android.view.View
+import com.squareup.contour.ContourLayoutParams
+import com.squareup.contour.FromBottomContext
+import com.squareup.contour.FromHorizontalCenterContext
+import com.squareup.contour.FromLeftContext
+import com.squareup.contour.FromRightContext
+import com.squareup.contour.FromTopContext
+import com.squareup.contour.FromYPositionedContext
+import com.squareup.contour.SizeMode
+import com.squareup.contour.XProvider
+import com.squareup.contour.XResolver
+import com.squareup.contour.YProvider
+import com.squareup.contour.YResolver
+import com.squareup.contour.constraints.Constraint
+import com.squareup.contour.constraints.PositionConstraint
+import com.squareup.contour.unwrapXProvider
+import com.squareup.contour.unwrapYProvider
 import kotlin.math.abs
-
-interface YResolver
-interface XResolver
-
-internal interface ScalarResolver {
-  fun min(): Int
-  fun mid(): Int
-  fun max(): Int
-  fun range(): Int
-
-  fun onAttach(parent: ContourLayoutParams)
-  fun onRangeResolved(value: Int)
-
-  fun measureSpec(): Int
-  fun clear()
-}
 
 internal class SimpleScalarResolver(private val p0: PositionConstraint) : ScalarResolver,
     XResolver, FromLeftContext, FromRightContext, FromHorizontalCenterContext,
     YResolver, FromTopContext, FromBottomContext, FromYPositionedContext {
+
+  internal enum class Point {
+    Min,
+    Mid,
+    Max
+  }
 
   private lateinit var parent: ContourLayoutParams
 

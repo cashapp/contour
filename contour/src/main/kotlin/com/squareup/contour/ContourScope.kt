@@ -1,8 +1,15 @@
 package com.squareup.contour
 
 import android.view.View
-import com.squareup.contour.ComparisonResolver.CompareBy.MaxOf
-import com.squareup.contour.ComparisonResolver.CompareBy.MinOf
+import com.squareup.contour.constraints.PositionConstraint
+import com.squareup.contour.errors.CircularReferenceDetected
+import com.squareup.contour.resolvers.ComparisonResolver
+import com.squareup.contour.resolvers.ComparisonResolver.CompareBy.MaxOf
+import com.squareup.contour.resolvers.ComparisonResolver.CompareBy.MinOf
+import com.squareup.contour.resolvers.ScalarResolver
+import com.squareup.contour.resolvers.SimpleScalarResolver
+import com.squareup.contour.resolvers.SimpleScalarResolver.Point
+import com.squareup.contour.wrappers.ViewDimensions
 
 interface ContourScope {
 

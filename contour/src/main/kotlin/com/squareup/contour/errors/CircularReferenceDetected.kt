@@ -1,4 +1,4 @@
-package com.squareup.contour
+package com.squareup.contour.errors
 
 import android.view.View
 

@@ -4,6 +4,9 @@ package com.squareup.contour
 
 import com.squareup.contour.SizeMode.Exact
 
+interface YResolver
+interface XResolver
+
 internal typealias IntProvider = LayoutContext.() -> Int
 
 interface LayoutContext {

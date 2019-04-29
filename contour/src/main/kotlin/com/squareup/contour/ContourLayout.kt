@@ -6,6 +6,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import com.squareup.contour.constraints.SizeConfig
+import com.squareup.contour.wrappers.ParentGeometryProvider
 
 open class ContourLayout(
   context: Context,
