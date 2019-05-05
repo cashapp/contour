@@ -2,7 +2,7 @@ package com.squareup.contour.resolvers
 
 import android.view.View
 import com.squareup.contour.constraints.Constraint
-import com.squareup.contour.ContourLayoutParams
+import com.squareup.contour.ContourLayout.LayoutSpec
 import com.squareup.contour.XResolver
 import com.squareup.contour.YResolver
 import com.squareup.contour.resolvers.ComparisonResolver.CompareBy.MaxOf
@@ -21,7 +21,7 @@ internal class ComparisonResolver(
 
   private val size = Constraint()
   private var found: ScalarResolver? = null
-  private lateinit var parent: ContourLayoutParams
+  private lateinit var parent: LayoutSpec
   private var range: Int = Int.MIN_VALUE
 
   private fun findWinner(): ScalarResolver {
@@ -55,7 +55,7 @@ internal class ComparisonResolver(
     return range
   }
 
-  override fun onAttach(parent: ContourLayoutParams) {
+  override fun onAttach(parent: LayoutSpec) {
     this.parent = parent
     p0.onAttach(parent)
     p1.onAttach(parent)

@@ -1,6 +1,7 @@
 package com.squareup.contour
 
 import android.view.View
+import com.squareup.contour.ContourLayout.LayoutSpec
 import com.squareup.contour.constraints.PositionConstraint
 import com.squareup.contour.errors.CircularReferenceDetected
 import com.squareup.contour.resolvers.ComparisonResolver
@@ -9,21 +10,11 @@ import com.squareup.contour.resolvers.ComparisonResolver.CompareBy.MinOf
 import com.squareup.contour.resolvers.ScalarResolver
 import com.squareup.contour.resolvers.SimpleScalarResolver
 import com.squareup.contour.resolvers.SimpleScalarResolver.Point
-import com.squareup.contour.wrappers.ViewDimensions
 
 interface ContourScope {
 
-  fun View.layoutOf(
-    x: XResolver,
-    y: YResolver
-  ) {
-    x as ScalarResolver
-    y as ScalarResolver
-    layoutParams = ContourLayoutParams(ViewDimensions(this), x, y)
-  }
-
-  private inline fun <T> View.withParams(block: ContourLayoutParams.() -> T): T {
-    val params = layoutParams as ContourLayoutParams
+  private inline fun <T> View.withParams(block: LayoutSpec.() -> T): T {
+    val params = layoutParams as LayoutSpec
     if (parent !== this@ContourScope) {
       throw IllegalArgumentException("Referencing view outside of ViewGroup.")
     }

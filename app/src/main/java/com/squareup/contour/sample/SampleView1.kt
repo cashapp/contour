@@ -24,14 +24,15 @@ class SampleView1(context: SampleActivity) : ContourLayout(context) {
   private fun siskoWisdom(amount: Float): String =
     siskoWisdom.substring(0, (siskoWisdom.length * amount.coerceIn(0f, 1f)).toInt())
 
-  private val avatar =
-    AvatarImageView(context).apply {
-      scaleType = ImageView.ScaleType.CENTER_CROP
+  private val avatar: AvatarImageView =
+    AvatarImageView(context).contourOf {
       Picasso.get()
           .load("https://upload.wikimedia.org/wikipedia/en/9/92/BenSisko.jpg")
           .into(this)
+      scaleType = ImageView.ScaleType.CENTER_CROP
       paint.strokeWidth = 3f.dip
-      layoutOf(
+
+      LayoutSpec(
           leftTo {
             parent.left() + 15.dip
           }.widthOf {
@@ -46,12 +47,12 @@ class SampleView1(context: SampleActivity) : ContourLayout(context) {
       )
     }
 
-  private val name: TextView =
-    TextView(context).apply {
+  private val name =
+    TextView(context).contourOf {
       text = "Ben Sisko"
       setTextColor(White)
       setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-      layoutOf(
+      LayoutSpec(
           leftTo { avatar.left() },
           topTo { avatar.bottom() + 5.dip }
 
@@ -59,11 +60,11 @@ class SampleView1(context: SampleActivity) : ContourLayout(context) {
     }
 
   private val description =
-    TextView(context).apply {
+    TextView(context).contourOf {
       text = siskoWisdom(0.25f)
       setTextColor(White)
       setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
-      layoutOf(
+      LayoutSpec(
           leftTo {
             name.right() + 15.dip
           }.rightTo {
@@ -75,26 +76,22 @@ class SampleView1(context: SampleActivity) : ContourLayout(context) {
       )
     }
 
-  private val starDate = TextView(context).apply {
-    text = "Stardate: 23634.1"
-    setTextColor(White)
-    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-    layoutOf(
-        rightTo { parent.right() - 15.dip },
-        maxOf(
-            topTo { description.bottom() + 5.dip },
-            bottomTo { name.bottom() }
-        )
-    )
-  }
+  private val starDate =
+    TextView(context).contourOf {
+      text = "Stardate: 23634.1"
+      setTextColor(White)
+      setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
+      LayoutSpec(
+          rightTo { parent.right() - 15.dip },
+          maxOf(
+              topTo { description.bottom() + 5.dip },
+              bottomTo { name.bottom() }
+          )
+      )
+    }
 
   init {
     heightOf { starDate.bottom() + 15.dip }
-
-    addView(name)
-    addView(avatar)
-    addView(description)
-    addView(starDate)
 
     setBackgroundColor(Blue)
     var animated = false

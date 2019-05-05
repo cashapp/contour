@@ -1,7 +1,7 @@
 package com.squareup.contour.resolvers
 
 import android.view.View
-import com.squareup.contour.ContourLayoutParams
+import com.squareup.contour.ContourLayout.LayoutSpec
 import com.squareup.contour.FromBottomContext
 import com.squareup.contour.FromHorizontalCenterContext
 import com.squareup.contour.FromLeftContext
@@ -29,7 +29,7 @@ internal class SimpleScalarResolver(private val p0: PositionConstraint) : Scalar
     Max
   }
 
-  private lateinit var parent: ContourLayoutParams
+  private lateinit var parent: LayoutSpec
 
   private val p1 = PositionConstraint()
   private val size = Constraint()
@@ -105,7 +105,7 @@ internal class SimpleScalarResolver(private val p0: PositionConstraint) : Scalar
     }
   }
 
-  override fun onAttach(parent: ContourLayoutParams) {
+  override fun onAttach(parent: LayoutSpec) {
     this.parent = parent
     p0.onAttachContext(parent)
     p1.onAttachContext(parent)

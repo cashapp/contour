@@ -22,13 +22,13 @@ class SampleView2(context: SampleActivity) : ContourLayout(context) {
   )
 
   private val avatar =
-    AvatarImageView(context).apply {
+    AvatarImageView(context).contourOf {
       scaleType = ImageView.ScaleType.CENTER_CROP
       Picasso.get()
           .load("https://upload.wikimedia.org/wikipedia/en/9/92/BenSisko.jpg")
           .into(this)
       paint.strokeWidth = 3f.dip
-      layoutOf(
+      LayoutSpec(
           leftTo {
             parent.left() + 15.dip
           }.widthOf {
@@ -43,13 +43,13 @@ class SampleView2(context: SampleActivity) : ContourLayout(context) {
     }
 
   private val name: TextView =
-    TextView(context).apply {
+    TextView(context).contourOf {
       text = "Ben Sisko"
       setSingleLine()
       ellipsize = TruncateAt.END
       setTextColor(White)
       setTextSize(TypedValue.COMPLEX_UNIT_DIP, 24f)
-      layoutOf(
+      LayoutSpec(
           leftTo {
             avatar.right() + 15.dip
           }.rightTo(AtMost) {
@@ -60,9 +60,9 @@ class SampleView2(context: SampleActivity) : ContourLayout(context) {
     }
 
   private val checkmark =
-    ImageView(context).apply {
+    ImageView(context).contourOf {
       setImageResource(R.drawable.check_mark)
-      layoutOf(
+      LayoutSpec(
           minOf(
               leftTo { name.right() + 15.dip },
               rightTo { parent.width() - 15.dip }
@@ -72,10 +72,6 @@ class SampleView2(context: SampleActivity) : ContourLayout(context) {
     }
 
   init {
-    addView(avatar)
-    addView(name)
-    addView(checkmark)
-
     setBackgroundColor(Blue)
     heightOf { avatar.height() + 30.dip }
 
