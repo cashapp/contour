@@ -27,6 +27,7 @@ internal class SimpleScalarResolver(private val p0: PositionConstraint) : Scalar
   internal enum class Point {
     Min,
     Mid,
+    Baseline,
     Max
   }
 
@@ -37,8 +38,11 @@ internal class SimpleScalarResolver(private val p0: PositionConstraint) : Scalar
 
   private var min = Int.MIN_VALUE
   private var mid = Int.MIN_VALUE
+  private var baseline = Int.MIN_VALUE
   private var max = Int.MIN_VALUE
+
   private var range = Int.MIN_VALUE
+  private var baselineRange = Int.MIN_VALUE
 
   override fun min(): Int {
     if (min == Int.MIN_VALUE) {
@@ -56,6 +60,18 @@ internal class SimpleScalarResolver(private val p0: PositionConstraint) : Scalar
     if (mid == Int.MIN_VALUE) {
       if (p0.point == Point.Mid) {
         mid = p0.resolve()
+      } else {
+        parent.measureSelf()
+        resolveAxis()
+      }
+    }
+    return mid
+  }
+
+  override fun baseline(): Int {
+    if (baseline == Int.MIN_VALUE) {
+      if (p0.point == Point.Baseline) {
+        baseline = p0.resolve()
       } else {
         parent.measureSelf()
         resolveAxis()
@@ -85,23 +101,33 @@ internal class SimpleScalarResolver(private val p0: PositionConstraint) : Scalar
 
   private fun resolveAxis() {
     check(range != Int.MIN_VALUE)
+    check(baselineRange != Int.MIN_VALUE)
 
     val hV = range / 2
     when (p0.point) {
       Point.Min -> {
         min = p0.resolve()
         mid = min + hV
+        baseline = min + baselineRange
         max = min + range
       }
       Point.Mid -> {
         mid = p0.resolve()
         min = mid - hV
+        baseline = min + baselineRange
         max = mid + hV
+      }
+      Point.Baseline -> {
+        baseline = p0.resolve()
+        min = baseline - baselineRange
+        mid = min + hV
+        max = min + range
       }
       Point.Max -> {
         max = p0.resolve()
         mid = max - hV
         min = max - range
+        baseline = min + baselineRange
       }
     }
   }
@@ -113,8 +139,9 @@ internal class SimpleScalarResolver(private val p0: PositionConstraint) : Scalar
     size.onAttachContext(parent)
   }
 
-  override fun onRangeResolved(value: Int) {
-    range = value
+  override fun onRangeResolved(range: Int, baselineRange: Int) {
+    this.range = range
+    this.baselineRange = baselineRange
   }
 
   override fun measureSpec(): Int {
@@ -130,8 +157,10 @@ internal class SimpleScalarResolver(private val p0: PositionConstraint) : Scalar
   override fun clear() {
     min = Int.MIN_VALUE
     mid = Int.MIN_VALUE
+    baseline = Int.MIN_VALUE
     max = Int.MIN_VALUE
     range = Int.MIN_VALUE
+    baselineRange = Int.MIN_VALUE
     p0.clear()
     p1.clear()
     size.clear()

@@ -43,9 +43,18 @@ interface ContourScope {
   fun View.bottom(): YInt = withParams { bottom() }
   fun View.centerX(): XInt = withParams { centerX() }
   fun View.centerY(): YInt = withParams { centerY() }
+  fun View.baseline(): YInt = withParams { centerY() }
   fun View.width(): XInt = withParams { width() }
   fun View.height(): YInt = withParams { height() }
   fun View.preferredHeight(): YInt = withParams { preferredHeight() }
+
+  fun baselineTo(provider: YProvider): FromYPositionedContext =
+    SimpleScalarResolver(
+        PositionConstraint(
+            point = Point.Baseline,
+            lambda = unwrapYProvider(provider)
+        )
+    )
 
   fun topTo(provider: YProvider): FromTopContext =
     SimpleScalarResolver(

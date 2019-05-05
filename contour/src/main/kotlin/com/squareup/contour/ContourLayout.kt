@@ -125,6 +125,7 @@ open class ContourLayout(
     internal fun top(): YInt = y.min().toYInt()
     internal fun bottom(): YInt = y.max().toYInt()
     internal fun centerY(): YInt = y.mid().toYInt()
+    internal fun baseline(): YInt = y.baseline().toYInt()
     internal fun width(): XInt = x.range().toXInt()
     internal fun height(): YInt = y.range().toYInt()
 
@@ -135,8 +136,8 @@ open class ContourLayout(
 
     internal fun measureSelf() {
       dimen.measure(x.measureSpec(), y.measureSpec())
-      x.onRangeResolved(dimen.width)
-      y.onRangeResolved(dimen.height)
+      x.onRangeResolved(dimen.width, 0)
+      y.onRangeResolved(dimen.height, dimen.baseline)
     }
 
     internal fun clear() {

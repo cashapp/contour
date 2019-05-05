@@ -10,6 +10,7 @@ internal interface HasDimensions {
 
   val width: Int
   val height: Int
+  val baseline: Int
 }
 
 internal class ViewDimensions(private val view: View) : HasDimensions {
@@ -24,4 +25,6 @@ internal class ViewDimensions(private val view: View) : HasDimensions {
     get() = view.measuredWidth
   override val height: Int
     get() = view.measuredHeight
+  override val baseline: Int
+    get() = view.baseline
 }

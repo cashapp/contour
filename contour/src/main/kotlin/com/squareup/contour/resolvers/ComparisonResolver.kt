@@ -46,6 +46,7 @@ internal class ComparisonResolver(
 
   override fun min(): Int = findWinner().min()
   override fun mid(): Int = findWinner().mid()
+  override fun baseline(): Int = findWinner().baseline()
   override fun max(): Int = findWinner().max()
 
   override fun range(): Int {
@@ -61,10 +62,10 @@ internal class ComparisonResolver(
     p1.onAttach(parent)
   }
 
-  override fun onRangeResolved(value: Int) {
-    range = value
-    p0.onRangeResolved(value)
-    p1.onRangeResolved(value)
+  override fun onRangeResolved(range: Int, baselineRange: Int) {
+    this.range = range
+    p0.onRangeResolved(range, baselineRange)
+    p1.onRangeResolved(range, baselineRange)
   }
 
   override fun measureSpec(): Int {

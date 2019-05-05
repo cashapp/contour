@@ -5,11 +5,12 @@ import com.squareup.contour.ContourLayout.LayoutSpec
 internal interface ScalarResolver {
   fun min(): Int
   fun mid(): Int
+  fun baseline(): Int
   fun max(): Int
   fun range(): Int
 
   fun onAttach(parent: LayoutSpec)
-  fun onRangeResolved(value: Int)
+  fun onRangeResolved(range: Int, baselineRange: Int)
 
   fun measureSpec(): Int
   fun clear()
