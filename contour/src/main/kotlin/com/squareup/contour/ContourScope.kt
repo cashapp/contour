@@ -10,6 +10,12 @@ import com.squareup.contour.resolvers.ComparisonResolver.CompareBy.MinOf
 import com.squareup.contour.resolvers.ScalarResolver
 import com.squareup.contour.resolvers.SimpleScalarResolver
 import com.squareup.contour.resolvers.SimpleScalarResolver.Point
+import com.squareup.contour.utils.XProvider
+import com.squareup.contour.utils.YProvider
+import com.squareup.contour.utils.toXInt
+import com.squareup.contour.utils.toYInt
+import com.squareup.contour.utils.unwrapXProvider
+import com.squareup.contour.utils.unwrapYProvider
 
 interface ContourScope {
 
@@ -88,6 +94,12 @@ interface ContourScope {
             lambda = unwrapXProvider(provider)
         )
     )
+
+  fun minOf(a: XInt, b: XInt): XInt = Math.min(a.value, b.value).toXInt()
+  fun minOf(a: YInt, b: YInt): YInt = Math.min(a.value, b.value).toYInt()
+
+  fun maxOf(a: XInt, b: XInt): XInt = Math.max(a.value, b.value).toXInt()
+  fun maxOf(a: YInt, b: YInt): YInt = Math.max(a.value, b.value).toYInt()
 
   fun minOf(
     p0: YPositionWithoutSize,

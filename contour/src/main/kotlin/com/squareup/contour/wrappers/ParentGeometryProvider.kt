@@ -4,8 +4,8 @@ import com.squareup.contour.GeometryProvider
 import com.squareup.contour.XInt
 import com.squareup.contour.YInt
 import com.squareup.contour.constraints.SizeConfig
-import com.squareup.contour.toXInt
-import com.squareup.contour.toYInt
+import com.squareup.contour.utils.toXInt
+import com.squareup.contour.utils.toYInt
 
 internal class ParentGeometryProvider(
   private val widthConfig: SizeConfig,

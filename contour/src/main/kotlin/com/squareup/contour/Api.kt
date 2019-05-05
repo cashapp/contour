@@ -3,6 +3,8 @@
 package com.squareup.contour
 
 import com.squareup.contour.SizeMode.Exact
+import com.squareup.contour.utils.XProvider
+import com.squareup.contour.utils.YProvider
 
 interface XResolver
 interface YResolver

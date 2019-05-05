@@ -53,7 +53,7 @@ class SampleView2(context: SampleActivity) : ContourLayout(context) {
           leftTo {
             avatar.right() + 15.dip
           }.rightTo(AtMost) {
-            parent.width() - checkmark.width().value - 30.dip
+            parent.width() - checkmark.width() - 30.dip
           },
           verticallyCenterTo { parent.centerY() }
       )

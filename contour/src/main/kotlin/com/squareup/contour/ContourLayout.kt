@@ -8,6 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.contour.constraints.SizeConfig
 import com.squareup.contour.resolvers.ScalarResolver
+import com.squareup.contour.utils.toXInt
+import com.squareup.contour.utils.toYInt
+import com.squareup.contour.utils.unwrapXIntToXInt
+import com.squareup.contour.utils.unwrapYIntToYInt
 import com.squareup.contour.wrappers.HasDimensions
 import com.squareup.contour.wrappers.ParentGeometryProvider
 import com.squareup.contour.wrappers.ViewDimensions
