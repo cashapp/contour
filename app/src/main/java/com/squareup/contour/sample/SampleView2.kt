@@ -55,7 +55,7 @@ class SampleView2(context: SampleActivity) : ContourLayout(context) {
           }.rightTo(AtMost) {
             parent.width() - checkmark.width() - 30.dip
           },
-          verticallyCenterTo { parent.centerY() }
+          centerVerticallyTo { parent.centerY() }
       )
     }
 
@@ -67,7 +67,7 @@ class SampleView2(context: SampleActivity) : ContourLayout(context) {
               leftTo { name.right() + 15.dip },
               rightTo { parent.width() - 15.dip }
           ),
-          verticallyCenterTo { name.centerY() }
+          centerVerticallyTo { name.centerY() }
       )
     }
 

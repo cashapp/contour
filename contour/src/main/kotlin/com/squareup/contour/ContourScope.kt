@@ -72,7 +72,7 @@ interface ContourScope {
         )
     )
 
-  fun verticallyCenterTo(provider: YProvider): FromYPositionedContext =
+  fun centerVerticallyTo(provider: YProvider): FromYPositionedContext =
     SimpleScalarResolver(
         PositionConstraint(
             point = Point.Mid,
@@ -96,7 +96,7 @@ interface ContourScope {
         )
     )
 
-  fun horizontallyCenterTo(provider: XProvider): FromHorizontalCenterContext =
+  fun centerHorizontallyTo(provider: XProvider): FromHorizontalCenterContext =
     SimpleScalarResolver(
         PositionConstraint(
             point = Point.Mid,
