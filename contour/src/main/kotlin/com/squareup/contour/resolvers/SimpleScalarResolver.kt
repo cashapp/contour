@@ -3,11 +3,11 @@ package com.squareup.contour.resolvers
 import android.view.View
 import com.squareup.contour.ContourLayout.LayoutSpec
 import com.squareup.contour.FromBottomContext
-import com.squareup.contour.FromHorizontalCenterContext
+import com.squareup.contour.WidthOfOnlyContext
 import com.squareup.contour.FromLeftContext
 import com.squareup.contour.FromRightContext
 import com.squareup.contour.FromTopContext
-import com.squareup.contour.FromYPositionedContext
+import com.squareup.contour.HeightOfOnlyContext
 import com.squareup.contour.SizeMode
 import com.squareup.contour.XResolver
 import com.squareup.contour.YResolver
@@ -21,8 +21,8 @@ import com.squareup.contour.utils.unwrapYProvider
 import kotlin.math.abs
 
 internal class SimpleScalarResolver(private val p0: PositionConstraint) : ScalarResolver,
-    XResolver, FromLeftContext, FromRightContext, FromHorizontalCenterContext,
-    YResolver, FromTopContext, FromBottomContext, FromYPositionedContext {
+    XResolver, FromLeftContext, FromRightContext, WidthOfOnlyContext,
+    YResolver, FromTopContext, FromBottomContext, HeightOfOnlyContext {
 
   internal enum class Point {
     Min,

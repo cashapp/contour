@@ -48,7 +48,7 @@ interface ContourScope {
   fun View.height(): YInt = withParams { height() }
   fun View.preferredHeight(): YInt = withParams { preferredHeight() }
 
-  fun baselineTo(provider: YProvider): FromYPositionedContext =
+  fun baselineTo(provider: YProvider): HeightOfOnlyContext =
     SimpleScalarResolver(
         PositionConstraint(
             point = Point.Baseline,
@@ -72,7 +72,7 @@ interface ContourScope {
         )
     )
 
-  fun centerVerticallyTo(provider: YProvider): FromYPositionedContext =
+  fun centerVerticallyTo(provider: YProvider): HeightOfOnlyContext =
     SimpleScalarResolver(
         PositionConstraint(
             point = Point.Mid,
@@ -96,7 +96,7 @@ interface ContourScope {
         )
     )
 
-  fun centerHorizontallyTo(provider: XProvider): FromHorizontalCenterContext =
+  fun centerHorizontallyTo(provider: XProvider): WidthOfOnlyContext =
     SimpleScalarResolver(
         PositionConstraint(
             point = Point.Mid,
@@ -111,8 +111,8 @@ interface ContourScope {
   fun maxOf(a: YInt, b: YInt): YInt = Math.max(a.value, b.value).toYInt()
 
   fun minOf(
-    p0: YPositionWithoutSize,
-    p1: YPositionWithoutSize
+    p0: HasYPositionNoSize,
+    p1: HasYPositionNoSize
   ): YResolver {
     p0 as ScalarResolver
     p1 as ScalarResolver
@@ -120,8 +120,8 @@ interface ContourScope {
   }
 
   fun maxOf(
-    p0: YPositionWithoutSize,
-    p1: YPositionWithoutSize
+    p0: HasYPositionNoSize,
+    p1: HasYPositionNoSize
   ): YResolver {
     p0 as ScalarResolver
     p1 as ScalarResolver
@@ -129,8 +129,8 @@ interface ContourScope {
   }
 
   fun minOf(
-    p0: XPositionWithoutSize,
-    p1: XPositionWithoutSize
+    p0: HasXPositionNoSize,
+    p1: HasXPositionNoSize
   ): XResolver {
     p0 as ScalarResolver
     p1 as ScalarResolver
@@ -138,8 +138,8 @@ interface ContourScope {
   }
 
   fun maxOf(
-    p0: XPositionWithoutSize,
-    p1: XPositionWithoutSize
+    p0: HasXPositionNoSize,
+    p1: HasXPositionNoSize
   ): XResolver {
     p0 as ScalarResolver
     p1 as ScalarResolver

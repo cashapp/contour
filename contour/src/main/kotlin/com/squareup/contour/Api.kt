@@ -15,11 +15,11 @@ interface LayoutContext {
   val parent: GeometryProvider
 }
 
-interface XPositionWithoutSize
-interface YPositionWithoutSize
+interface HasXPositionNoSize
+interface HasYPositionNoSize
 
-interface FromHorizontalCenterContext : XResolver, XPositionWithoutSize, WidthOfAllowedContext
-interface FromYPositionedContext : YResolver, HeightOfAllowedContext
+interface WidthOfOnlyContext : XResolver, HasXPositionNoSize, WidthOfAllowedContext
+interface HeightOfOnlyContext : YResolver, HasYPositionNoSize, HeightOfAllowedContext
 
 interface WidthOfAllowedContext {
   fun widthOf(
@@ -35,28 +35,28 @@ interface HeightOfAllowedContext {
   ): YResolver
 }
 
-interface FromLeftContext : XResolver, XPositionWithoutSize, WidthOfAllowedContext {
+interface FromLeftContext : XResolver, HasXPositionNoSize, WidthOfAllowedContext {
   fun rightTo(
     mode: SizeMode = Exact,
     provider: XProvider
   ): XResolver
 }
 
-interface FromRightContext : XResolver, XPositionWithoutSize, WidthOfAllowedContext {
+interface FromRightContext : XResolver, HasXPositionNoSize, WidthOfAllowedContext {
   fun leftTo(
     mode: SizeMode = Exact,
     provider: XProvider
   ): XResolver
 }
 
-interface FromTopContext : YResolver, YPositionWithoutSize, HeightOfAllowedContext {
+interface FromTopContext : YResolver, HasYPositionNoSize, HeightOfAllowedContext {
   fun bottomTo(
     mode: SizeMode = Exact,
     provider: YProvider
   ): YResolver
 }
 
-interface FromBottomContext : YResolver, YPositionWithoutSize, HeightOfAllowedContext {
+interface FromBottomContext : YResolver, HasYPositionNoSize, HeightOfAllowedContext {
   fun topTo(
     mode: SizeMode = Exact,
     provider: YProvider
