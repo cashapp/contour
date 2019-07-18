@@ -5,6 +5,7 @@ package com.squareup.contour
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.View.MeasureSpec.EXACTLY
 import android.view.ViewGroup
 import com.squareup.contour.constraints.SizeConfig
 import com.squareup.contour.resolvers.ScalarResolver
@@ -40,6 +41,9 @@ open class ContourLayout(
   private val heightConfig = SizeConfig()
   private val geometryProvider = ParentGeometryProvider(widthConfig, heightConfig)
   private var initialized: Boolean = true
+
+  private var lastResolvedWidthMeasureSpec: Int? = null
+  private var lastResolvedHeightMeasureSpec: Int? = null
 
   fun View.updateLayoutSpec(
     x: XResolver,
@@ -80,12 +84,7 @@ open class ContourLayout(
 
   override fun requestLayout() {
     if (initialized) {
-      widthConfig.clear()
-      heightConfig.clear()
-      for (i in 0 until childCount) {
-        val child = getChildAt(i)
-        (child.layoutParams as? LayoutSpec)?.clear()
-      }
+      invalidateAll()
     }
     super.requestLayout()
   }
@@ -94,9 +93,23 @@ open class ContourLayout(
     widthMeasureSpec: Int,
     heightMeasureSpec: Int
   ) {
-    widthConfig.available = MeasureSpec.getSize(widthMeasureSpec)
-    heightConfig.available = MeasureSpec.getSize(heightMeasureSpec)
+    val measuredWidth = MeasureSpec.getSize(widthMeasureSpec)
+    val measuredHeight = MeasureSpec.getSize(heightMeasureSpec)
+    if (lastResolvedWidthMeasureSpec == measuredWidth
+        && lastResolvedHeightMeasureSpec == measuredHeight) {
+      // Nothing to do here, we've already resolved the config for these specs.
+      return
+    }
+
+    widthConfig.available = measuredWidth
+    heightConfig.available = measuredHeight
     setMeasuredDimension(widthConfig.resolve(), heightConfig.resolve())
+
+    invalidateAll()
+
+    // Cache measured dimensions for optimization of onMeasure
+    lastResolvedWidthMeasureSpec = measuredWidth
+    lastResolvedHeightMeasureSpec = measuredHeight
   }
 
   override fun onLayout(
@@ -114,6 +127,15 @@ open class ContourLayout(
           params.left().value, params.top().value,
           params.right().value, params.bottom().value
       )
+    }
+  }
+
+  private fun invalidateAll() {
+    widthConfig.clear()
+    heightConfig.clear()
+    for (i in 0 until childCount) {
+      val child = getChildAt(i)
+      (child.layoutParams as? LayoutSpec)?.clear()
     }
   }
 
