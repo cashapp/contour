@@ -19,7 +19,7 @@ import com.squareup.contour.utils.unwrapXProvider
 import com.squareup.contour.utils.unwrapYProvider
 import kotlin.math.abs
 
-internal class SimpleScalarResolver(private val p0: PositionConstraint) : ScalarResolver,
+internal class SimpleScalarResolver(private val p0: PositionConstraint) :
     XResolver, FromLeftContext, FromRightContext, WidthOfOnlyContext,
     YResolver, FromTopContext, FromBottomContext, HeightOfOnlyContext {
 

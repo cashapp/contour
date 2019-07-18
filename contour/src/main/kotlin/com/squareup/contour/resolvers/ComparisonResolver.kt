@@ -12,7 +12,7 @@ internal class ComparisonResolver(
   private val p0: ScalarResolver,
   private val p1: ScalarResolver,
   private val compareBy: CompareBy
-) : ScalarResolver, XResolver, YResolver {
+) : XResolver, YResolver {
 
   internal enum class CompareBy {
     MaxOf,

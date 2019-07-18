@@ -3,11 +3,12 @@
 package com.squareup.contour
 
 import com.squareup.contour.SizeMode.Exact
+import com.squareup.contour.resolvers.ScalarResolver
 import com.squareup.contour.utils.XProvider
 import com.squareup.contour.utils.YProvider
 
-interface XResolver
-interface YResolver
+interface XResolver : ScalarResolver
+interface YResolver : ScalarResolver
 
 internal typealias IntProvider = LayoutContext.() -> Int
 
