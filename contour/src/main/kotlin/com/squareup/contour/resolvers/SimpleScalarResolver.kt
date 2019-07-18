@@ -3,12 +3,12 @@ package com.squareup.contour.resolvers
 import android.view.View
 import com.squareup.contour.ContourLayout.LayoutSpec
 import com.squareup.contour.FromBottomContext
-import com.squareup.contour.WidthOfOnlyContext
 import com.squareup.contour.FromLeftContext
 import com.squareup.contour.FromRightContext
 import com.squareup.contour.FromTopContext
 import com.squareup.contour.HeightOfOnlyContext
 import com.squareup.contour.SizeMode
+import com.squareup.contour.WidthOfOnlyContext
 import com.squareup.contour.XResolver
 import com.squareup.contour.YResolver
 import com.squareup.contour.constraints.Constraint
@@ -17,7 +17,6 @@ import com.squareup.contour.utils.XProvider
 import com.squareup.contour.utils.YProvider
 import com.squareup.contour.utils.unwrapXProvider
 import com.squareup.contour.utils.unwrapYProvider
-
 import kotlin.math.abs
 
 internal class SimpleScalarResolver(private val p0: PositionConstraint) : ScalarResolver,
@@ -77,7 +76,7 @@ internal class SimpleScalarResolver(private val p0: PositionConstraint) : Scalar
         resolveAxis()
       }
     }
-    return mid
+    return baseline
   }
 
   override fun max(): Int {
