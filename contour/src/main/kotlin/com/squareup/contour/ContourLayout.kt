@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import com.squareup.contour.constraints.SizeConfig
-import com.squareup.contour.resolvers.ScalarResolver
 import com.squareup.contour.utils.toXInt
 import com.squareup.contour.utils.toYInt
 import com.squareup.contour.utils.unwrapXIntToXInt
@@ -42,8 +41,8 @@ open class ContourLayout(
   private var initialized: Boolean = true
 
   fun View.updateLayoutSpec(
-    x: XResolver,
-    y: YResolver
+    x: XResolver = (layoutParams as LayoutSpec).x,
+    y: YResolver = (layoutParams as LayoutSpec).y
   ) {
     updateLayoutSpec(LayoutSpec(x, y))
   }
@@ -125,12 +124,9 @@ open class ContourLayout(
   }
 
   class LayoutSpec(
-    x: XResolver,
-    y: YResolver
+    internal val x: XResolver,
+    internal val y: YResolver
   ) : ViewGroup.LayoutParams(WRAP, WRAP), LayoutContext {
-
-    internal val x = x as ScalarResolver
-    internal val y = y as ScalarResolver
 
     override lateinit var parent: GeometryProvider
     internal lateinit var dimen: HasDimensions

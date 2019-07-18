@@ -2,7 +2,7 @@ package com.squareup.contour.resolvers
 
 import com.squareup.contour.ContourLayout.LayoutSpec
 
-internal interface ScalarResolver {
+interface ScalarResolver {
   fun min(): Int
   fun mid(): Int
   fun baseline(): Int
