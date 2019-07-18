@@ -43,7 +43,7 @@ interface ContourScope {
   fun View.bottom(): YInt = withParams { bottom() }
   fun View.centerX(): XInt = withParams { centerX() }
   fun View.centerY(): YInt = withParams { centerY() }
-  fun View.baseline(): YInt = withParams { centerY() }
+  fun View.baseline(): YInt = withParams { baseline() }
   fun View.width(): XInt = withParams { width() }
   fun View.height(): YInt = withParams { height() }
   fun View.preferredHeight(): YInt = withParams { preferredHeight() }
