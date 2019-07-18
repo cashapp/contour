@@ -41,15 +41,29 @@ open class ContourLayout(
   private val geometryProvider = ParentGeometryProvider(widthConfig, heightConfig)
   private var initialized: Boolean = true
 
+  fun View.updateLayoutSpec(
+    x: XResolver,
+    y: YResolver
+  ) {
+    updateLayoutSpec(LayoutSpec(x, y))
+  }
+
+  fun View.updateLayoutSpec(
+    spec: LayoutSpec
+  ) {
+    val viewGroup = this@ContourLayout
+    spec.dimen = ViewDimensions(this)
+    spec.parent = viewGroup.geometryProvider
+    layoutParams = spec
+  }
+
   fun <T : View> T.contourOf(
     addToViewGroup: Boolean = true,
     config: T.() -> LayoutSpec
   ): T {
     val viewGroup = this@ContourLayout
     val spec = config()
-    spec.dimen = ViewDimensions(this)
-    spec.parent = viewGroup.geometryProvider
-    layoutParams = spec
+    updateLayoutSpec(spec)
     if (addToViewGroup) {
       viewGroup.addView(this)
     }
