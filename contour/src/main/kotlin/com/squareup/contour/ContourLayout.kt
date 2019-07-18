@@ -5,7 +5,6 @@ package com.squareup.contour
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.view.View.MeasureSpec.EXACTLY
 import android.view.ViewGroup
 import com.squareup.contour.constraints.SizeConfig
 import com.squareup.contour.resolvers.ScalarResolver
@@ -41,9 +40,6 @@ open class ContourLayout(
   private val heightConfig = SizeConfig()
   private val geometryProvider = ParentGeometryProvider(widthConfig, heightConfig)
   private var initialized: Boolean = true
-
-  private var lastResolvedWidthMeasureSpec: Int? = null
-  private var lastResolvedHeightMeasureSpec: Int? = null
 
   fun View.updateLayoutSpec(
     x: XResolver,
@@ -93,23 +89,12 @@ open class ContourLayout(
     widthMeasureSpec: Int,
     heightMeasureSpec: Int
   ) {
-    val measuredWidth = MeasureSpec.getSize(widthMeasureSpec)
-    val measuredHeight = MeasureSpec.getSize(heightMeasureSpec)
-    if (lastResolvedWidthMeasureSpec == measuredWidth
-        && lastResolvedHeightMeasureSpec == measuredHeight) {
-      // Nothing to do here, we've already resolved the config for these specs.
-      return
-    }
-
-    widthConfig.available = measuredWidth
-    heightConfig.available = measuredHeight
-    setMeasuredDimension(widthConfig.resolve(), heightConfig.resolve())
-
+    // Clear caches to force layout recalculations
     invalidateAll()
 
-    // Cache measured dimensions for optimization of onMeasure
-    lastResolvedWidthMeasureSpec = measuredWidth
-    lastResolvedHeightMeasureSpec = measuredHeight
+    widthConfig.available = MeasureSpec.getSize(widthMeasureSpec)
+    heightConfig.available = MeasureSpec.getSize(heightMeasureSpec)
+    setMeasuredDimension(widthConfig.resolve(), heightConfig.resolve())
   }
 
   override fun onLayout(
