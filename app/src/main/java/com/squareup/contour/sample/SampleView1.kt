@@ -24,70 +24,34 @@ class SampleView1(context: SampleActivity) : ContourLayout(context) {
   private fun siskoWisdom(amount: Float): String =
     siskoWisdom.substring(0, (siskoWisdom.length * amount.coerceIn(0f, 1f)).toInt())
 
-  private val avatar: AvatarImageView =
-    AvatarImageView(context).contourOf {
+  private val avatar =
+    AvatarImageView(context).apply {
       Picasso.get()
           .load("https://upload.wikimedia.org/wikipedia/en/9/92/BenSisko.jpg")
           .into(this)
       scaleType = ImageView.ScaleType.CENTER_CROP
       paint.strokeWidth = 3f.dip
-
-      LayoutSpec(
-          leftTo {
-            parent.left() + 15.dip
-          }.widthOf {
-            name.width()
-          },
-          topTo {
-            parent.top() + 15.dip
-          }.heightOf {
-            name.width()
-                .toY()
-          }
-      )
     }
 
   private val name =
-    TextView(context).contourOf {
+    TextView(context).apply {
       text = "Ben Sisko"
       setTextColor(White)
       setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-      LayoutSpec(
-          leftTo { avatar.left() },
-          topTo { avatar.bottom() + 5.dip }
-
-      )
     }
 
   private val description =
-    TextView(context).contourOf {
+    TextView(context).apply {
       text = siskoWisdom(0.25f)
       setTextColor(White)
       setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
-      LayoutSpec(
-          leftTo {
-            name.right() + 15.dip
-          }.rightTo {
-            parent.right() - 15.dip
-          },
-          topTo {
-            parent.top() + 15.dip
-          }
-      )
     }
 
   private val starDate =
-    TextView(context).contourOf {
+    TextView(context).apply {
       text = "Stardate: 23634.1"
       setTextColor(White)
       setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-      LayoutSpec(
-          rightTo { parent.right() - 15.dip },
-          maxOf(
-              topTo { description.bottom() + 5.dip },
-              bottomTo { name.bottom() }
-          )
-      )
     }
 
   init {
@@ -111,5 +75,42 @@ class SampleView1(context: SampleActivity) : ContourLayout(context) {
             .start()
       }
     }
+  }
+
+  override fun onInitializeLayout() {
+    avatar.applyLayout(
+        leftTo {
+          parent.left() + 15.dip
+        }.widthOf {
+          name.width()
+        },
+        topTo {
+          parent.top() + 15.dip
+        }.heightOf {
+          name.width()
+              .toY()
+        }
+    )
+    name.applyLayout(
+        leftTo { avatar.left() },
+        topTo { avatar.bottom() + 5.dip }
+    )
+    description.applyLayout(
+        leftTo {
+          name.right() + 15.dip
+        }.rightTo {
+          parent.right() - 15.dip
+        },
+        topTo {
+          parent.top() + 15.dip
+        }
+    )
+    starDate.applyLayout(
+        rightTo { parent.right() - 15.dip },
+        maxOf(
+            topTo { description.bottom() + 5.dip },
+            bottomTo { name.bottom() }
+        )
+    )
   }
 }
