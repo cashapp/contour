@@ -38,7 +38,8 @@ open class ContourLayout(
   private val widthConfig = SizeConfig()
   private val heightConfig = SizeConfig()
   private val geometryProvider = ParentGeometryProvider(widthConfig, heightConfig)
-  private var initialized: Boolean = true
+  private var constructed: Boolean = true
+  private var initialized: Boolean = false
 
   fun View.updateLayoutSpec(
     x: XResolver = (layoutParams as LayoutSpec).x,
@@ -56,6 +57,10 @@ open class ContourLayout(
     layoutParams = spec
   }
 
+  @Deprecated(
+      "Views should be configured by overriding onInitializeLayout() in your ContourLayout " +
+          "subclass and calling view.applyLayout() on the corresponding view."
+  )
   fun <T : View> T.contourOf(
     addToViewGroup: Boolean = true,
     config: T.() -> LayoutSpec
@@ -77,17 +82,48 @@ open class ContourLayout(
     heightConfig.lambda = unwrapYIntToYInt(config)
   }
 
+  fun View.applyLayout(
+    x: XResolver,
+    y: YResolver,
+    addToViewGroup: Boolean = true
+  ) {
+    val viewGroup = this@ContourLayout
+    val spec = LayoutSpec(x, y)
+    spec.dimen = ViewDimensions(this)
+    spec.parent = viewGroup.geometryProvider
+    layoutParams = spec
+    if (addToViewGroup && parent == null) {
+      viewGroup.addView(this)
+    }
+  }
+
+  open fun onInitializeLayout() {}
+
+  private fun initializeLayout() {
+    if (!initialized) {
+      onInitializeLayout()
+      initialized = true
+    }
+  }
+
   override fun requestLayout() {
-    if (initialized) {
+    if (constructed) {
       invalidateAll()
     }
     super.requestLayout()
+  }
+
+  override fun onAttachedToWindow() {
+    super.onAttachedToWindow()
+    initializeLayout()
   }
 
   override fun onMeasure(
     widthMeasureSpec: Int,
     heightMeasureSpec: Int
   ) {
+    initializeLayout()
+
     // Clear caches to force layout recalculations
     invalidateAll()
 
