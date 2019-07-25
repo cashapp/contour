@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply from: 'gradle-mvn-push.gradle'
 
 repositories {
     mavenCentral()
@@ -11,9 +12,6 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
     }
 
     sourceSets {
