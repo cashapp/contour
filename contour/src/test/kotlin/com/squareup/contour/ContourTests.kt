@@ -134,4 +134,50 @@ class ContourTests {
         assertThat(view0.top).isEqualTo(30)
         assertThat(view1.top).isEqualTo(20)
     }
+
+    @Test
+    fun `width as percentage of parents width`() {
+        val view = View(activity)
+
+        var pct = 0.4f
+
+        val layout = contourLayout(
+            activity,
+            width = 50
+        ) {
+            view.applyLayout(
+                leftTo { parent.left() }.widthOf { parent.width() * pct },
+                centerVerticallyTo { parent.centerY() }
+            )
+        }
+
+        assertThat(view.width).isEqualTo(20) // 50 * 0.4
+
+        pct = 0.51f
+        layout.forceRelayout()
+        assertThat(view.width).isEqualTo(25) // 50 * 0.51 = 25.5 ~= 25 floored
+    }
+
+    @Test
+    fun `height as percentage of parents height`() {
+        val view = View(activity)
+
+        var pct = 0.1f
+
+        val layout = contourLayout(
+            activity,
+            width = 260
+        ) {
+            view.applyLayout(
+                leftTo { parent.left() }.widthOf { parent.width() * pct },
+                centerVerticallyTo { parent.centerY() }
+            )
+        }
+
+        assertThat(view.width).isEqualTo(26) // 260 * 0.1
+
+        pct = 0.13f
+        layout.forceRelayout()
+        assertThat(view.width).isEqualTo(33) // 260 * 0.13 = 33.8 ~= 33 floored
+    }
 }

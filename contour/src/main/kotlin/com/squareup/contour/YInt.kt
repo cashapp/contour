@@ -19,6 +19,11 @@ inline class YInt(val value: Int) {
   inline operator fun times(other: YInt): YInt =
     YInt(value * other.value)
 
+  inline operator fun times(multiplier: Float): YInt =
+    YInt((value * multiplier).toInt())
+  inline operator fun times(multiplier: Double): YInt =
+    YInt((value * multiplier).toInt())
+
   inline operator fun div(other: Int): YInt =
     YInt(value / other)
   inline operator fun div(other: YInt): YInt =
