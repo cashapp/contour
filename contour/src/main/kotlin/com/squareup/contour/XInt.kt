@@ -19,6 +19,11 @@ inline class XInt(val value: Int) {
   inline operator fun times(other: XInt): XInt =
     XInt(value * other.value)
 
+  inline operator fun times(multiplier: Float): XInt =
+    XInt((value * multiplier).toInt())
+  inline operator fun times(multiplier: Double): XInt =
+    XInt((value * multiplier).toInt())
+
   inline operator fun div(other: Int): XInt =
     XInt(value / other)
   inline operator fun div(other: XInt): XInt =

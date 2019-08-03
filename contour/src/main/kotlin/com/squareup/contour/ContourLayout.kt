@@ -31,9 +31,7 @@ open class ContourLayout(
     get() = density * this
 
   inline fun Int.toXInt(): XInt = XInt(this)
-  inline fun Float.toXInt(): XInt = XInt(toInt())
   inline fun Int.toYInt(): YInt = YInt(this)
-  inline fun Float.toYInt(): YInt = YInt(toInt())
 
   private val widthConfig = SizeConfig()
   private val heightConfig = SizeConfig()

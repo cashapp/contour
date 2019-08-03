@@ -21,6 +21,4 @@ internal inline fun unwrapXProvider(crossinline lambda: XProvider): IntProvider 
 internal inline fun unwrapYProvider(crossinline lambda: YProvider): IntProvider = { lambda().value }
 
 internal inline fun Int.toXInt(): XInt = XInt(this)
-internal inline fun Float.toXInt(): XInt = XInt(toInt())
 internal inline fun Int.toYInt(): YInt = YInt(this)
-internal inline fun Float.toYInt(): YInt = YInt(toInt())
