@@ -1,2 +1,2 @@
-include ':app'
 include ':contour'
+include ':sample-app'
