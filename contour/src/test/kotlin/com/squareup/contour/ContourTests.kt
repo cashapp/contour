@@ -136,47 +136,47 @@ class ContourTests {
     }
 
     @Test
-    fun `width as percentage of parents width`() {
+    fun `width as fraction of parents width`() {
         val view = View(activity)
 
-        var pct = 0.4f
+        var amount = 0.4f
 
         val layout = contourLayout(
             activity,
             width = 50
         ) {
             view.applyLayout(
-                leftTo { parent.left() }.widthOf { parent.width() * pct },
+                leftTo { parent.left() }.widthOfFloat { parent.width() * amount },
                 centerVerticallyTo { parent.centerY() }
             )
         }
 
         assertThat(view.width).isEqualTo(20) // 50 * 0.4
 
-        pct = 0.51f
+        amount = 0.51f
         layout.forceRelayout()
         assertThat(view.width).isEqualTo(25) // 50 * 0.51 = 25.5 ~= 25 floored
     }
 
     @Test
-    fun `height as percentage of parents height`() {
+    fun `height as fraction of parents height`() {
         val view = View(activity)
 
-        var pct = 0.1f
+        var amount = 0.1f
 
         val layout = contourLayout(
             activity,
             width = 260
         ) {
             view.applyLayout(
-                leftTo { parent.left() }.widthOf { parent.width() * pct },
+                leftTo { parent.left() }.widthOfFloat { parent.width() * amount },
                 centerVerticallyTo { parent.centerY() }
             )
         }
 
         assertThat(view.width).isEqualTo(26) // 260 * 0.1
 
-        pct = 0.13f
+        amount = 0.13f
         layout.forceRelayout()
         assertThat(view.width).isEqualTo(33) // 260 * 0.13 = 33.8 ~= 33 floored
     }

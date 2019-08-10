@@ -7,19 +7,26 @@ import com.squareup.contour.FromLeftContext
 import com.squareup.contour.FromRightContext
 import com.squareup.contour.FromTopContext
 import com.squareup.contour.HeightOfOnlyContext
+import com.squareup.contour.LayoutContext
 import com.squareup.contour.SizeMode
 import com.squareup.contour.WidthOfOnlyContext
+import com.squareup.contour.XFloat
+import com.squareup.contour.XInt
 import com.squareup.contour.XResolver
+import com.squareup.contour.YFloat
+import com.squareup.contour.YInt
 import com.squareup.contour.YResolver
 import com.squareup.contour.constraints.Constraint
 import com.squareup.contour.constraints.PositionConstraint
-import com.squareup.contour.utils.XProvider
-import com.squareup.contour.utils.YProvider
-import com.squareup.contour.utils.unwrapXProvider
-import com.squareup.contour.utils.unwrapYProvider
+import com.squareup.contour.utils.unwrapXFloatLambda
+import com.squareup.contour.utils.unwrapXIntLambda
+import com.squareup.contour.utils.unwrapYFloatLambda
+import com.squareup.contour.utils.unwrapYIntLambda
 import kotlin.math.abs
 
-internal class SimpleScalarResolver(private val p0: PositionConstraint) :
+internal class SimpleScalarResolver(
+  private val p0: PositionConstraint
+) :
     XResolver, FromLeftContext, FromRightContext, WidthOfOnlyContext,
     YResolver, FromTopContext, FromBottomContext, HeightOfOnlyContext {
 
@@ -165,43 +172,113 @@ internal class SimpleScalarResolver(private val p0: PositionConstraint) :
     size.clear()
   }
 
-  override fun topTo(mode: SizeMode, provider: YProvider): YResolver {
+  override fun leftTo(
+    mode: SizeMode,
+    provider: LayoutContext.() -> XInt
+  ): XResolver {
     p1.point = Point.Min
     p1.mode = mode
-    p1.lambda = unwrapYProvider(provider)
+    p1.lambda = unwrapXIntLambda(provider)
     return this
   }
 
-  override fun bottomTo(mode: SizeMode, provider: YProvider): YResolver {
-    p1.point = Point.Mid
-    p1.mode = mode
-    p1.lambda = unwrapYProvider(provider)
-    return this
-  }
-
-  override fun heightOf(mode: SizeMode, provider: YProvider): YResolver {
-    size.mode = mode
-    size.lambda = unwrapYProvider(provider)
-    return this
-  }
-
-  override fun leftTo(mode: SizeMode, provider: XProvider): XResolver {
+  override fun leftToFloat(
+    mode: SizeMode,
+    provider: LayoutContext.() -> XFloat
+  ): XResolver {
     p1.point = Point.Min
     p1.mode = mode
-    p1.lambda = unwrapXProvider(provider)
+    p1.lambda = unwrapXFloatLambda(provider)
     return this
   }
 
-  override fun rightTo(mode: SizeMode, provider: XProvider): XResolver {
+  override fun topTo(
+    mode: SizeMode,
+    provider: LayoutContext.() -> YInt
+  ): YResolver {
+    p1.point = Point.Min
+    p1.mode = mode
+    p1.lambda = unwrapYIntLambda(provider)
+    return this
+  }
+
+  override fun topToFloat(
+    mode: SizeMode,
+    provider: LayoutContext.() -> YFloat
+  ): YResolver {
+    p1.point = Point.Min
+    p1.mode = mode
+    p1.lambda = unwrapYFloatLambda(provider)
+    return this
+  }
+
+  override fun rightTo(mode: SizeMode, provider: LayoutContext.() -> XInt): XResolver {
     p1.point = Point.Max
     p1.mode = mode
-    p1.lambda = unwrapXProvider(provider)
+    p1.lambda = unwrapXIntLambda(provider)
     return this
   }
 
-  override fun widthOf(mode: SizeMode, provider: XProvider): XResolver {
+  override fun rightToFloat(
+    mode: SizeMode,
+    provider: LayoutContext.() -> XFloat
+  ): XResolver {
+    p1.point = Point.Max
+    p1.mode = mode
+    p1.lambda = unwrapXFloatLambda(provider)
+    return this
+  }
+
+  override fun bottomTo(
+    mode: SizeMode,
+    provider: LayoutContext.() -> YInt
+  ): YResolver {
+    p1.point = Point.Mid
+    p1.mode = mode
+    p1.lambda = unwrapYIntLambda(provider)
+    return this
+  }
+
+  override fun bottomToFloat(
+    mode: SizeMode,
+    provider: LayoutContext.() -> YFloat
+  ): YResolver {
+    p1.point = Point.Mid
+    p1.mode = mode
+    p1.lambda = unwrapYFloatLambda(provider)
+    return this
+  }
+
+  override fun widthOf(mode: SizeMode, provider: LayoutContext.() -> XInt): XResolver {
     size.mode = mode
-    size.lambda = unwrapXProvider(provider)
+    size.lambda = unwrapXIntLambda(provider)
+    return this
+  }
+
+  override fun widthOfFloat(
+    mode: SizeMode,
+    provider: LayoutContext.() -> XFloat
+  ): XResolver {
+    size.mode = mode
+    size.lambda = unwrapXFloatLambda(provider)
+    return this
+  }
+
+  override fun heightOf(
+    mode: SizeMode,
+    provider: LayoutContext.() -> YInt
+  ): YResolver {
+    size.mode = mode
+    size.lambda = unwrapYIntLambda(provider)
+    return this
+  }
+
+  override fun heightOfFloat(
+    mode: SizeMode,
+    provider: LayoutContext.() -> YFloat
+  ): YResolver {
+    size.mode = mode
+    size.lambda = unwrapYFloatLambda(provider)
     return this
   }
 }

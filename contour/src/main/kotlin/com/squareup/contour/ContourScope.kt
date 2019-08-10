@@ -14,8 +14,8 @@ import com.squareup.contour.utils.XProvider
 import com.squareup.contour.utils.YProvider
 import com.squareup.contour.utils.toXInt
 import com.squareup.contour.utils.toYInt
-import com.squareup.contour.utils.unwrapXProvider
-import com.squareup.contour.utils.unwrapYProvider
+import com.squareup.contour.utils.unwrapXIntLambda
+import com.squareup.contour.utils.unwrapYIntLambda
 
 interface ContourScope {
 
@@ -46,13 +46,14 @@ interface ContourScope {
   fun View.baseline(): YInt = withParams { baseline() }
   fun View.width(): XInt = withParams { width() }
   fun View.height(): YInt = withParams { height() }
+  fun View.preferredWidth(): XInt = withParams { preferredWidth() }
   fun View.preferredHeight(): YInt = withParams { preferredHeight() }
 
   fun baselineTo(provider: YProvider): HeightOfOnlyContext =
     SimpleScalarResolver(
         PositionConstraint(
             point = Point.Baseline,
-            lambda = unwrapYProvider(provider)
+            lambda = unwrapYIntLambda(provider)
         )
     )
 
@@ -60,7 +61,7 @@ interface ContourScope {
     SimpleScalarResolver(
         PositionConstraint(
             point = Point.Min,
-            lambda = unwrapYProvider(provider)
+            lambda = unwrapYIntLambda(provider)
         )
     )
 
@@ -68,7 +69,7 @@ interface ContourScope {
     SimpleScalarResolver(
         PositionConstraint(
             point = Point.Max,
-            lambda = unwrapYProvider(provider)
+            lambda = unwrapYIntLambda(provider)
         )
     )
 
@@ -76,7 +77,7 @@ interface ContourScope {
     SimpleScalarResolver(
         PositionConstraint(
             point = Point.Mid,
-            lambda = unwrapYProvider(provider)
+            lambda = unwrapYIntLambda(provider)
         )
     )
 
@@ -84,7 +85,7 @@ interface ContourScope {
     SimpleScalarResolver(
         PositionConstraint(
             point = Point.Min,
-            lambda = unwrapXProvider(provider)
+            lambda = unwrapXIntLambda(provider)
         )
     )
 
@@ -92,7 +93,7 @@ interface ContourScope {
     SimpleScalarResolver(
         PositionConstraint(
             point = Point.Max,
-            lambda = unwrapXProvider(provider)
+            lambda = unwrapXIntLambda(provider)
         )
     )
 
@@ -100,7 +101,7 @@ interface ContourScope {
     SimpleScalarResolver(
         PositionConstraint(
             point = Point.Mid,
-            lambda = unwrapXProvider(provider)
+            lambda = unwrapXIntLambda(provider)
         )
     )
 

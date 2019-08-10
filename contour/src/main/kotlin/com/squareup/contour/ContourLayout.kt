@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import com.squareup.contour.constraints.SizeConfig
 import com.squareup.contour.utils.toXInt
 import com.squareup.contour.utils.toYInt
-import com.squareup.contour.utils.unwrapXIntToXInt
-import com.squareup.contour.utils.unwrapYIntToYInt
+import com.squareup.contour.utils.unwrapXIntToXIntLambda
+import com.squareup.contour.utils.unwrapYIntToYIntLambda
 import com.squareup.contour.wrappers.HasDimensions
 import com.squareup.contour.wrappers.ParentGeometryProvider
 import com.squareup.contour.wrappers.ViewDimensions
@@ -24,11 +24,13 @@ open class ContourLayout(
 
   private val density = context.resources.displayMetrics.density
 
-  val Int.dip: Int
-    get() = (density * this).toInt()
+  val Int.dip: Int get() = (density * this).toInt()
+  val Int.xdip: XInt get() = XInt((density * this).toInt())
+  val Int.ydip: YInt get() = YInt((density * this).toInt())
 
-  val Float.dip: Float
-    get() = density * this
+  val Float.dip: Float get() = density * this
+  val Float.xdip: XFloat get() = XFloat(density * this)
+  val Float.ydip: YFloat get() = YFloat(density * this)
 
   inline fun Int.toXInt(): XInt = XInt(this)
   inline fun Int.toYInt(): YInt = YInt(this)
@@ -73,11 +75,11 @@ open class ContourLayout(
   }
 
   fun widthOf(config: (available: XInt) -> XInt) {
-    widthConfig.lambda = unwrapXIntToXInt(config)
+    widthConfig.lambda = unwrapXIntToXIntLambda(config)
   }
 
   fun heightOf(config: (available: YInt) -> YInt) {
-    heightConfig.lambda = unwrapYIntToYInt(config)
+    heightConfig.lambda = unwrapYIntToYIntLambda(config)
   }
 
   fun View.applyLayout(
@@ -179,6 +181,11 @@ open class ContourLayout(
     internal fun baseline(): YInt = y.baseline().toYInt()
     internal fun width(): XInt = x.range().toXInt()
     internal fun height(): YInt = y.range().toYInt()
+
+    internal fun preferredWidth(): XInt {
+      dimen.measure(0, y.measureSpec())
+      return dimen.width.toXInt()
+    }
 
     internal fun preferredHeight(): YInt {
       dimen.measure(x.measureSpec(), 0)

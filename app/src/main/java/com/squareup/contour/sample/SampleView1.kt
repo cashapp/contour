@@ -87,8 +87,7 @@ class SampleView1(context: SampleActivity) : ContourLayout(context) {
         topTo {
           parent.top() + 15.dip
         }.heightOf {
-          name.width()
-              .toY()
+          name.width().toY()
         }
     )
     name.applyLayout(
