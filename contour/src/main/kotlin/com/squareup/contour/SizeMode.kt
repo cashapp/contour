@@ -18,6 +18,12 @@ package com.squareup.contour
 
 import android.view.View.MeasureSpec
 
+/**
+ * Corresponds with the [MeasureSpec] modes [MeasureSpec.EXACTLY] & [MeasureSpec.AT_MOST].
+ * Majority of the time [SizeMode.Exact] is what should be used. A common use-case for [SizeMode.AtMost] is if you
+ * are laying out text and want the corresponding view to size itself based on the text width, but ellipsize if the
+ * once the view hits the specified maximum value.
+ */
 enum class SizeMode(val mask: Int) {
   Exact(MeasureSpec.EXACTLY),
   AtMost(MeasureSpec.AT_MOST)

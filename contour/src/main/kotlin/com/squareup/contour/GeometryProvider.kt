@@ -18,6 +18,12 @@
 
 package com.squareup.contour
 
+/**
+ * Represents a rectangle in your layout.
+ * The methods obey a contract that they will either return the correct laid out or throw a
+ * [com.squareup.contour.errors.CircularReferenceDetected] if the [com.squareup.contour.ContourLayout]
+ * is configured incorrectly.
+ */
 interface GeometryProvider {
   fun left(): XInt
   fun right(): XInt

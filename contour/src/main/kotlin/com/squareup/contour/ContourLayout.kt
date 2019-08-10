@@ -47,6 +47,73 @@ import kotlin.math.min
 
 private const val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
 
+/**
+ * The central class to use when interacting with Contour.
+ *
+ * To build a custom layout inherit from [ContourLayout]. This will:
+ * a) Expose a set of functions & extension functions - scoped to your layout - that will allow you to define
+ * your layout.
+ * b) Provide the layout mechanism to drive your layout.
+ *
+ * Views ~can~ be defined in XML layouts and configured with [ContourLayout] but this is not really recommended.
+ * The intended use case for inheritors of [ContourLayout] is to define the children views programmatically in Kotlin
+ * using [apply] block's to declare the views content and style. You can see examples of this in
+ * [sample-app/src/main/java/com/squareup/contour/sample] but here is an example of defining a simple [TextView]:
+ *
+ *     private val starDate = TextView(context).apply {
+ *         text = "Stardate: 23634.1"
+ *         setTextColor(White)
+ *         setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
+ *     }
+ *
+ *  This will instantiate and configure your child view but does not add it to your layout. To add a view to the
+ *  [ContourLayout] use the extension function [View.applyLayout] which is defined in the scope of [ContourLayout].
+ *  [View.applyLayout] does two things. It adds the child view to your layout - if not already added - and configures
+ *  the layout of the view. The configuration happens via the arguments provided to [View.applyLayout] which are an
+ *  instance of a [XResolver] and a [YResolver]. [XResolver] and [YResolver] are symmetrical interfaces which tell
+ *  Contour how to layout the child view on its x and y axes.
+ *
+ *  To start defining [XResolver] / [YResolver] use any of the position declaration functions defined in the
+ *  [ContourLayout] scope. Eg: [leftTo], [rightTo], [centerHorizontallyTo], [topTo], etc. These functions will
+ *  return a [XResolver]/[YResolver] with the minimum configuration to show your view on screen.
+ *
+ *  In the example above the view [starDate] could be configured with the code:
+ *
+ *     starDate.applyLayout(
+ *         leftTo { parent.left() },
+ *         topTo { parent.top() }
+ *     )
+ *
+ *  This would layout your view at the top-left corner of your layout with child views default desired size. In the case
+ *  of a [TextView] this would be to wrap it's text, in the case of an [ImageView] this would be the image resources
+ *  implicit size, in the case of the base class [View] this would be 0 width and height.
+ *
+ *  In the example above there a couple things to note. First the reference to [parent] of made available within all
+ *  [XResolver] / [YResolver] scopes. [parent] represents the parent geometry and is guaranteed to be resolved when
+ *  any of its methods are called. The values returned by [parent] will be in the layuot's coordinate space, where
+ *  0,0 is top-left and the layout width, height will be bottom-right.
+ *
+ *  An additional thing to note is all the [parent] methods return one of two types: [XInt] and [YInt].
+ *  [XInt] and [YInt] represent a resolved layout value on it's corresponding axis, what this provides us is axis level
+ *  type-safety. For example:
+ *
+ *     starDate.applyLayout(
+ *         leftTo { parent.top() },
+ *         topTo { parent.top() }
+ *     )
+ *
+ *  Will not compile. [leftTo] requires an [XInt] and [top()] returns a [YInt]. The intention of this decision is to
+ *  a) avoid accidentally configure against an point on the wrong axis.
+ *  b) avoid accidentally referencing the virtual methods on [View] - [View.getLeft], [View.getTop], etc.
+ *  The methods [View.getLeft], [View.getTop], etc. still work and return [Int] values in the context of contour, but
+ *  do not provide the guarantee that the corresponding contour methods [View.left], [View.top], etc provide - which is
+ *  they will always be laid out and valid by the time the function returns.
+ *
+ *  [XInt] and [YInt] are implemented as inline classes which means performance should be no different from using
+ *  regular [Int]s - and infact will compile down to native [Int] primitives in most cases.
+ *  More on inline classes: https://kotlinlang.org/docs/reference/inline-classes.html
+ *
+ */
 open class ContourLayout(
   context: Context,
   attrs: AttributeSet? = null

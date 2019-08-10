@@ -18,6 +18,9 @@
 
 package com.squareup.contour
 
+/**
+ * Represents an [Float] on the x axis.
+ */
 inline class XFloat(val value: Float) {
 
   inline operator fun plus(other: Int) = XFloat(value + other)
