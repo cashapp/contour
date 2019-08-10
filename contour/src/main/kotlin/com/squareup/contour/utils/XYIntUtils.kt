@@ -8,9 +8,6 @@ import com.squareup.contour.XInt
 import com.squareup.contour.YFloat
 import com.squareup.contour.YInt
 
-internal typealias XProvider = LayoutContext.() -> XInt
-internal typealias YProvider = LayoutContext.() -> YInt
-
 internal inline fun unwrapXIntToXIntLambda(
   crossinline lambda: (XInt) -> XInt
 ): (Int) -> Int =

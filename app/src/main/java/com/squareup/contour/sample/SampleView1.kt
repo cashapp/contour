@@ -55,7 +55,7 @@ class SampleView1(context: SampleActivity) : ContourLayout(context) {
     }
 
   init {
-    heightOf { starDate.bottom() + 15.dip }
+    contourHeightOf { starDate.bottom() + 15.dip }
 
     setBackgroundColor(Blue)
     var animated = false

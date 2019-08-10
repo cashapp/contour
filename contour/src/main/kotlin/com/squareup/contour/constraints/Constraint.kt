@@ -1,6 +1,5 @@
 package com.squareup.contour.constraints
 
-import com.squareup.contour.IntProvider
 import com.squareup.contour.LayoutContext
 import com.squareup.contour.SizeMode
 import com.squareup.contour.SizeMode.Exact
@@ -12,7 +11,7 @@ internal open class Constraint {
   private var layoutContext: LayoutContext? = null
   private var value: Int = Int.MIN_VALUE
   var mode: SizeMode = Exact
-  var lambda: (IntProvider)? = null
+  var lambda: (LayoutContext.() -> Int)? = null
 
   val isSet: Boolean get() = lambda != null
 
@@ -45,7 +44,7 @@ internal open class Constraint {
 
 internal class PositionConstraint(
   var point: Point = Point.Min,
-  lambda: IntProvider? = null
+  lambda: (LayoutContext.() -> Int)? = null
 ) : Constraint() {
   init {
     this.lambda = lambda

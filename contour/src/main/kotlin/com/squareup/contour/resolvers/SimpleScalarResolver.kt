@@ -25,7 +25,8 @@ import com.squareup.contour.utils.unwrapYIntLambda
 import kotlin.math.abs
 
 internal class SimpleScalarResolver(
-  private val p0: PositionConstraint
+  point: Point,
+  lambda: LayoutContext.() -> Int
 ) :
     XResolver, FromLeftContext, FromRightContext, WidthOfOnlyContext,
     YResolver, FromTopContext, FromBottomContext, HeightOfOnlyContext {
@@ -39,6 +40,7 @@ internal class SimpleScalarResolver(
 
   private lateinit var parent: LayoutSpec
 
+  private val p0 = PositionConstraint(point, lambda)
   private val p1 = PositionConstraint()
   private val size = Constraint()
 

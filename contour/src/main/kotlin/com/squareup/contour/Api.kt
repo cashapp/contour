@@ -8,8 +8,6 @@ import com.squareup.contour.resolvers.ScalarResolver
 interface XResolver : ScalarResolver
 interface YResolver : ScalarResolver
 
-internal typealias IntProvider = LayoutContext.() -> Int
-
 interface LayoutContext {
   val parent: GeometryProvider
 }

@@ -46,7 +46,7 @@ class SampleView2(context: SampleActivity) : ContourLayout(context) {
 
   init {
     setBackgroundColor(Blue)
-    heightOf { avatar.height() + 30.dip }
+    contourHeightOf { avatar.height() + 30.dip }
 
     var animated = false
     setOnClickListener {
