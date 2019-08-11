@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@file:Suppress("unused", "NOTHING_TO_INLINE")
+@file:Suppress("unused", "NOTHING_TO_INLINE", "MemberVisibilityCanBePrivate")
 
 package com.squareup.contour
 
@@ -110,9 +110,42 @@ private const val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
  *  they will always be laid out and valid by the time the function returns.
  *
  *  [XInt] and [YInt] are implemented as inline classes which means performance should be no different from using
- *  regular [Int]s - and infact will compile down to native [Int] primitives in most cases.
+ *  regular [Int]s - and infact will compile down to native java [Int] primitives in most cases.
  *  More on inline classes: https://kotlinlang.org/docs/reference/inline-classes.html
  *
+ *  In addition to siding [XResolver] and [YResolver] can define the width / height of the layout. In the example
+ *  above we can hard-code a height and set a max width with:
+ *
+ *     starDate.applyLayout(
+ *         leftTo { parent.left() }
+ *             .rightTo(AtMost) { parent.right() },
+ *         topTo { parent.top() }
+ *             .heightOf { 50.ydip }
+ *     )
+ *
+ *  In the above example width is implicitly determined by the leftTo, rightTo directives and by including the AtMost
+ *  argument, will dynamically size the width (starDate will be as wide as the text dictates - up until the right edge
+ *  reaches the parent.right() - when it will ellipsize). heightOf is simply hardcoded with heightOf { 50.ydip }.
+ *  Something of note here is the scoped extension function [ydip] and the corresponding [xdip]. These unsurprisingly
+ *  return Android DIP values as [XInt]/[YInt].
+ *
+ *  You can also use an scoped extension function plain-old [dip], which cannot be used directly with Resolvers
+ *  ( widthOf { 10.dip } will not compile Int != YInt), but when combined with other functions doesn't require the
+ *  explicitness of [xdip]/[ydip] eg: ( widthOf { parent.width() - 10.dip } *will* compile. (XInt + Int) == XInt)
+ *
+ *  Finally, you can reference not only your parent in contour, but any sibling in the layout. So instead of aligning
+ *  your left side with the [ContourLayout], you could inistead reference another view, we'll call avatar:
+ *
+ *     starDate.applyLayout(
+ *         leftTo { avatar.right() }
+ *         centerVerticallyTo { avatar.centerY() }
+ *     )
+ *
+ *  Where you call [applyLayout] is up to you. There are two available styles. Either calling directly in your child
+ *  views [apply] block, or alternatively you can override the method [onInitializeLayout] which will be called
+ *  exactly once before layout happens. One thing to note about [applyLayout] is it will add the view to the
+ *  [ContourLayout] if not already added. This dictates the draw order - first added will be drawn underneath
+ *  everything else.
  */
 open class ContourLayout(
   context: Context,
@@ -120,14 +153,11 @@ open class ContourLayout(
 ) : ViewGroup(context, attrs) {
 
   private val density = context.resources.displayMetrics.density
-
   private val widthConfig = SizeConfig()
   private val heightConfig = SizeConfig()
   private val geometryProvider = ParentGeometryProvider(widthConfig, heightConfig)
   private var constructed: Boolean = true
   private var initialized: Boolean = false
-
-  open fun onInitializeLayout() {}
 
   private fun initializeLayout() {
     if (!initialized) {
@@ -212,6 +242,12 @@ open class ContourLayout(
 
   // API
 
+  /**
+   * Option hook in the [ContourLayout] where [applyLayout] can be called on children views to add and configure
+   * before layout. This will be called exactly once before layout.
+   */
+  open fun onInitializeLayout() {}
+
   val Int.dip: Int get() = (density * this).toInt()
   val Int.xdip: XInt get() = XInt((density * this).toInt())
   val Int.ydip: YInt get() = YInt((density * this).toInt())
@@ -242,14 +278,41 @@ open class ContourLayout(
     return this
   }
 
+  /**
+   * Overrides how the [ContourLayout] should size it's width. By default [ContourLayout] will take all the available
+   * space it is given.
+   * @param config a function that takes a [XInt] - which is the available space supplied by the [ContourLayout]'s
+   * parent - and returns a [XInt] describing how wide the [ContourLayout] should be.
+   *
+   * Note: It is acceptable to reference the children views in the [config] so long as circular references are not
+   * introduced!
+   */
   fun contourWidthOf(config: (available: XInt) -> XInt) {
     widthConfig.lambda = unwrapXIntToXIntLambda(config)
   }
 
+  /**
+   * Overrides how the [ContourLayout] should size it's height. By default [ContourLayout] will take all the available
+   * space it is given.
+   * @param config a function that takes a [YInt] - which is the available space supplied by the [ContourLayout]'s
+   * parent - and returns a [YInt] describing how tall the [ContourLayout] should be.
+   *
+   * Note: It is acceptable to reference the children views in the [config] so long as circular references are not
+   * introduced!
+   */
   fun contourHeightOf(config: (available: YInt) -> YInt) {
     heightConfig.lambda = unwrapYIntToYIntLambda(config)
   }
 
+  /**
+   * Optionally adds the receiver child [View] to the [ContourLayout] and configures the it's layout using the provided
+   * [XResolver] and [YResolver]
+   * @receiver the view to configure and optionally add to the [ContourLayout]
+   * @param x configures how the [View] will be positioned and sized on the x-axis.
+   * @param y configures how the [View] will be positioned and sized on the y-axis.
+   * @param addToViewGroup if true [applyLayout] will add the receiver [View] to the [ContourLayout] if it is not
+   * already added. Defaults true.
+   */
   fun View.applyLayout(
     x: XResolver,
     y: YResolver,
@@ -265,7 +328,12 @@ open class ContourLayout(
     }
   }
 
-  @Suppress("MemberVisibilityCanBePrivate")
+  /**
+   * Updates the layout configuration of receiver view with new optional [XResolver] and/or [YResolver]
+   * @receiver the view to configure
+   * @param x configures how the [View] will be positioned and sized on the x-axis.
+   * @param y configures how the [View] will be positioned and sized on the y-axis.
+   */
   fun View.updateLayout(
     x: XResolver = spec().x,
     y: YResolver = spec().y
@@ -285,16 +353,73 @@ open class ContourLayout(
     updateLayout(x, y)
   }
 
+  /**
+   * The left position of the receiver [View]. Guaranteed to return the resolved value or throw.
+   * @return the laid-out left position of the [View]
+   */
   fun View.left(): XInt = handleCrd { spec().left() }
+
+  /**
+   * The top position of the receiver [View]. Guaranteed to return the resolved value or throw.
+   * @return the laid-out top position of the [View]
+   */
   fun View.top(): YInt = handleCrd { spec().top() }
+
+  /**
+   * The right position of the receiver [View]. Guaranteed to return the resolved value or throw.
+   * @return the laid-out right position of the [View]
+   */
   fun View.right(): XInt = handleCrd { spec().right() }
+
+  /**
+   * The bottom position of the receiver [View]. Guaranteed to return the resolved value or throw.
+   * @return the laid-out bottom position of the [View]
+   */
   fun View.bottom(): YInt = handleCrd { spec().bottom() }
+
+  /**
+   * The center-x position of the receiver [View]. Guaranteed to return the resolved value or throw.
+   * @return the laid-out left center-x of the [View]
+   */
   fun View.centerX(): XInt = handleCrd { spec().centerX() }
+
+  /**
+   * The center-y position of the receiver [View]. Guaranteed to return the resolved value or throw.
+   * @return the laid-out center-y position of the [View]
+   */
   fun View.centerY(): YInt = handleCrd { spec().centerY() }
+
+  /**
+   * The baseline position of the receiver [View]. Guaranteed to return the resolved value or throw.
+   * @return the laid-out baseline position of the [View]
+   *
+   * The baseline position will be 0 if the receiver [View] does not have a baseline. The most notable use of baseline
+   * is in [TextView] which provides the baseline of the text.
+   */
   fun View.baseline(): YInt = handleCrd { spec().baseline() }
+
+  /**
+   * The width of the receiver [View]. Guaranteed to return the resolved value or throw.
+   * @return the laid-out width of the [View]
+   */
   fun View.width(): XInt = handleCrd { spec().width() }
+
+  /**
+   * The height of the receiver [View]. Guaranteed to return the resolved value or throw.
+   * @return the laid-out height of the [View]
+   */
   fun View.height(): YInt = handleCrd { spec().height() }
+
+  /**
+   * The preferred width of the receiver [View] when no constraints are applied to the view.
+   * @return the preferred width of the [View]
+   */
   fun View.preferredWidth(): XInt = handleCrd { spec().preferredWidth() }
+
+  /**
+   * The preferred height of the receiver [View] when no constraints are applied to the view.
+   * @return the preferred height of the [View]
+   */
   fun View.preferredHeight(): YInt = handleCrd { spec().preferredHeight() }
 
   fun baselineTo(provider: LayoutContext.() -> YInt): HeightOfOnlyContext =
@@ -404,8 +529,8 @@ open class ContourLayout(
     internal lateinit var dimen: HasDimensions
 
     init {
-      this.x.onAttach(this)
-      this.y.onAttach(this)
+      x.onAttach(this)
+      y.onAttach(this)
     }
 
     internal fun left(): XInt = x.min().toXInt()
