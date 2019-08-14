@@ -114,7 +114,7 @@ private const val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
  *  More on inline classes: https://kotlinlang.org/docs/reference/inline-classes.html
  *
  */
-open class ContourLayout(
+abstract class ContourLayout(
   context: Context,
   attrs: AttributeSet? = null
 ) : ViewGroup(context, attrs) {
@@ -127,7 +127,7 @@ open class ContourLayout(
   private var constructed: Boolean = true
   private var initialized: Boolean = false
 
-  open fun onInitializeLayout() {}
+  abstract fun onInitializeLayout()
 
   private fun initializeLayout() {
     if (!initialized) {
