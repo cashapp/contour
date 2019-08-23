@@ -69,7 +69,6 @@ class SampleView1(context: SampleActivity) : ContourLayout(context) {
               duration = 1000
               addUpdateListener {
                 description.text = siskoWisdom(it.animatedValue as Float)
-                description.requestLayout()
               }
             }
             .start()

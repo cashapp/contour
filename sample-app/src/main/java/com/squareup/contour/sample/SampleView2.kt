@@ -61,7 +61,6 @@ class SampleView2(context: SampleActivity) : ContourLayout(context) {
                 val t = it.animatedValue as Float
                 val size = names.size
                 name.text = names[(size * t).toInt().coerceAtMost(size - 1)]
-                name.requestLayout()
               }
             }
             .start()

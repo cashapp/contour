@@ -152,12 +152,14 @@ open class ContourLayout(
   attrs: AttributeSet? = null
 ) : ViewGroup(context, attrs) {
 
-  private val density = context.resources.displayMetrics.density
+  private val density: Float = context.resources.displayMetrics.density
   private val widthConfig = SizeConfig()
   private val heightConfig = SizeConfig()
   private val geometryProvider = ParentGeometryProvider(widthConfig, heightConfig)
   private var constructed: Boolean = true
   private var initialized: Boolean = false
+  private var lastWidthSpec: Int = 0
+  private var lastHeightSpec: Int = 0
 
   private fun initializeLayout() {
     if (!initialized) {
@@ -183,13 +185,16 @@ open class ContourLayout(
     heightMeasureSpec: Int
   ) {
     initializeLayout()
-
-    // Clear caches to force layout recalculations
-    invalidateAll()
+    if (lastWidthSpec != widthMeasureSpec || lastHeightSpec != heightMeasureSpec) {
+      invalidateAll()
+    }
 
     widthConfig.available = MeasureSpec.getSize(widthMeasureSpec)
     heightConfig.available = MeasureSpec.getSize(heightMeasureSpec)
     setMeasuredDimension(widthConfig.resolve(), heightConfig.resolve())
+
+    lastWidthSpec = widthMeasureSpec
+    lastHeightSpec = heightMeasureSpec
   }
 
   override fun onLayout(
