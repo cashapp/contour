@@ -1,6 +1,8 @@
 # Contour
 Contour is a typesafe, Kotlin-first API for complex layouts on Android.
 
+This project is currently **experimental and the API subject to breaking changes without notice**. 
+
 ## Example
 Let's create a simple note-taking view that displays a username aligned to the left, and fills the remaining horizontal space with the note.
 
