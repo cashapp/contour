@@ -3,6 +3,18 @@ Contour is a typesafe, Kotlin-first API for complex layouts on Android.
 
 This project is currently **experimental and the API subject to breaking changes without notice**. 
 
+## What Contour Is Not
+There is a lot of buzz and interest around writing views in code right now with the development of [Jetpack Compose](https://developer.android.com/jetpack/compose) & [Anko](https://github.com/Kotlin/anko).
+
+### Contour is *not* Compose:
+Compose is a programmatic UI toolkit that uses reactive programming to drive the views. In contrast Contour doesn’t care about the update mechanisms - whether they be FRP or plain old imperative. Contour is only concerned with the nuts and bolts of view layouts - and making them as flexible and easy as possible.
+
+### Contour is *not* Anko:
+Anko is JetBrain’s typesafe builder library for Android. It introduces none of it’s own layout logic, but provides convenience builders for the existing Android views and layouts. In contrast Contour provides its own layout mechanism - and actually discourages highly nested view hierarchies because it turns out they are [kinda problematic](https://developer.android.com/topic/performance/rendering/optimizing-view-hierarchies)
+
+## What Contour Is: 
+Contour aims to be the thinnest possible wrapper around Android’s layout APIs. It allows you to build compound views in pure Kotlin without using opaque layout rules - but instead by hooking into the layout phase yourself. The best comparison for Contour would be to ConstraintLayout - but instead of defining Constraints in XML you actually provide them as executable lambdas.
+
 ## Example
 Let's create a simple note-taking view that displays a username aligned to the left, and fills the remaining horizontal space with the note.
 
