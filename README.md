@@ -26,8 +26,8 @@ class NoteView(context: Context) : ContourLayout(context) {
       setTextColor(White)
       setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
       layoutOf(
-        leftTo { parent.left() + 15.dip },
-        topTo { parent.top() + 15.dip }
+        x = leftTo { parent.left() + 15.dip },
+        y = topTo { parent.top() + 15.dip }
       )
     }
 
@@ -37,14 +37,9 @@ class NoteView(context: Context) : ContourLayout(context) {
       setTextColor(White)
       setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
       layoutOf(
-        leftTo {
-          name.right() + 15.dip
-        }.rightTo {
-          parent.right() - 15.dip
-        },
-        topTo {
-          parent.top() + 15.dip
-        }
+        x = leftTo { name.right() + 15.dip }
+          .rightTo { parent.right() - 15.dip },
+        y = topTo { parent.top() + 15.dip }
       )
     }
 }
@@ -68,16 +63,10 @@ Let's also introduce an avatar, and have its width and height match the width of
         .load("https://upload.wikimedia.org/wikipedia/en/9/92/BenSisko.jpg")
         .into(this)
       layoutOf(
-        leftTo {
-          name.left()
-        }.widthOf {
-          name.width()
-        },
-        topTo {
-          name.bottom()
-        }.heightOf {
-          name.width().toY()
-        }
+        x = leftTo { name.left() }
+          .widthOf { name.width() },
+        y = topTo { name.bottom() }
+          .heightOf { name.width().toY() }
       )
     }
 ```
@@ -90,8 +79,8 @@ Finally, let's insert a created date between the note content and the bottom of 
     setTextColor(White)
     setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
     layoutOf(
-      rightTo { parent.right() - 15.dip },
-      maxOf(
+      x = rightTo { parent.right() - 15.dip },
+      y = maxOf(
         topTo { note.bottom() + 5.dip },
         bottomTo { name.bottom() }
       )
@@ -143,14 +132,9 @@ For example, when defining a constraint of `leftTo`, the only exposed methods to
 In short:
 ```
 layoutOf(
-  leftTo {
-    name.left()
-  }.leftTo {
-    name.right()
-  },
-  topTo {
-    name.bottom()
-  }
+  x = leftTo { name.left() }
+    .leftTo { name.right() },
+  y = topTo { name.bottom() }
 )
 ```
 Will not compile.
