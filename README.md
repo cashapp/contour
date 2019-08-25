@@ -13,7 +13,25 @@ Compose is a programmatic UI toolkit that uses reactive programming to drive the
 Anko is JetBrain’s typesafe builder library for Android. It introduces none of it’s own layout logic, but provides convenience builders for the existing Android views and layouts. In contrast Contour provides its own layout mechanism - and actually discourages highly nested view hierarchies because it turns out they are [kinda problematic](https://developer.android.com/topic/performance/rendering/optimizing-view-hierarchies)
 
 ## What Contour Is: 
-Contour aims to be the thinnest possible wrapper around Android’s layout APIs. It allows you to build compound views in pure Kotlin without using opaque layout rules - but instead by hooking into the layout phase yourself. The best comparison for Contour would be to ConstraintLayout - but instead of defining Constraints in XML you actually provide them as executable lambdas.
+Contour aims to be the thinnest possible wrapper around Android’s layout APIs. It allows you to build compound views in pure Kotlin without using opaque layout rules - but instead by hooking into the layout phase yourself. The best comparison for Contour would be to ConstraintLayout - but instead of defining constraints in XML you actually provide them as executable lambdas.
+
+Also - on the topic of XML layouts ...
+
+### Deprecating XML
+XML had a good ride but times have changed and we should too. XML is a decent format for declaring static content - but that’s not what UI’s are anymore. UI’s increasingly have a ton of dynamic behavior - and trying to [jerry-rig](https://developer.android.com/topic/libraries/data-binding) XML layouts into adopting this dynamic behavior has taken things from bad to worse. What sort of dynamic behaviors do we expect from our UIs?
+- Change configuration based on screen size
+- Lazy loading elements of the UI.
+- A / B testing components at runtime
+- Dynamic theming
+- Add & remove components based on app state
+
+Let’s face it - XML is a static markup language and we’re trying to make it a full-fledged programming language. What’s the alternative? A full-fledged programming language! Kotlin! What sort of things do we get by abandoning the XML model?
+- No findViewById - view declaration exists in scope.
+- No R.id.my_view ambiguity - Kotlin has namespacing & encapsulation!
+- Static typing!
+- Great IDE Support (No more laggy xml editor)
+- ViewHolders aren’t needed
+- Easier DI
 
 ## Example
 Let's create a simple note-taking view that displays a username aligned to the left, and fills the remaining horizontal space with the note.
