@@ -43,7 +43,7 @@ class NoteView(context: Context) : ContourLayout(context) {
       text = "Ben Sisko"
       setTextColor(White)
       setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-      layoutOf(
+      applyLayout(
         x = leftTo { parent.left() + 15.dip },
         y = topTo { parent.top() + 15.dip }
       )
@@ -54,7 +54,7 @@ class NoteView(context: Context) : ContourLayout(context) {
       text = siskoWisdom
       setTextColor(White)
       setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
-      layoutOf(
+      applyLayout(
         x = leftTo { name.right() + 15.dip }
           .rightTo { parent.right() - 15.dip },
         y = topTo { parent.top() + 15.dip }
@@ -80,7 +80,7 @@ Let's also introduce an avatar, and have its width and height match the width of
       Picasso.get()
         .load("https://upload.wikimedia.org/wikipedia/en/9/92/BenSisko.jpg")
         .into(this)
-      layoutOf(
+      applyLayout(
         x = leftTo { name.left() }
           .widthOf { name.width() },
         y = topTo { name.bottom() }
@@ -96,7 +96,7 @@ Finally, let's insert a created date between the note content and the bottom of 
     text = "Stardate: 23634.1"
     setTextColor(White)
     setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-    layoutOf(
+    applyLayout(
       x = rightTo { parent.right() - 15.dip },
       y = maxOf(
         topTo { note.bottom() + 5.dip },
@@ -149,7 +149,7 @@ Contour tries to make it easy to do the right thing. As part of this effort, all
 For example, when defining a constraint of `leftTo`, the only exposed methods to chain in this layout are `rightTo` or `widthOf`. Another `leftTo`, or `centerHorizontallyTo` don't really make sense in this context and are hidden.
 In short:
 ```
-layoutOf(
+applyLayout(
   x = leftTo { name.left() }
     .leftTo { name.right() },
   y = topTo { name.bottom() }
