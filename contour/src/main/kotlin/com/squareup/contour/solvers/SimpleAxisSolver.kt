@@ -18,12 +18,12 @@ package com.squareup.contour.solvers
 
 import android.view.View
 import com.squareup.contour.ContourLayout.LayoutSpec
-import com.squareup.contour.FromBottomContext
-import com.squareup.contour.FromLeftContext
-import com.squareup.contour.FromRightContext
-import com.squareup.contour.FromTopContext
+import com.squareup.contour.HasBottom
+import com.squareup.contour.HasLeft
+import com.squareup.contour.HasRight
+import com.squareup.contour.HasTop
 import com.squareup.contour.HeightOfOnlyContext
-import com.squareup.contour.LayoutContext
+import com.squareup.contour.LayoutContainer
 import com.squareup.contour.SizeMode
 import com.squareup.contour.WidthOfOnlyContext
 import com.squareup.contour.XFloat
@@ -40,10 +40,10 @@ import kotlin.math.abs
 
 internal class SimpleAxisSolver(
   point: Point,
-  lambda: LayoutContext.() -> Int
+  lambda: LayoutContainer.() -> Int
 ) :
-    XAxisSolver, FromLeftContext, FromRightContext, WidthOfOnlyContext,
-  YAxisSolver, FromTopContext, FromBottomContext, HeightOfOnlyContext {
+    XAxisSolver, HasLeft, HasRight, WidthOfOnlyContext,
+  YAxisSolver, HasTop, HasBottom, HeightOfOnlyContext {
 
   internal enum class Point {
     Min,
@@ -190,7 +190,7 @@ internal class SimpleAxisSolver(
 
   override fun leftTo(
     mode: SizeMode,
-    provider: LayoutContext.() -> XInt
+    provider: LayoutContainer.() -> XInt
   ): XAxisSolver {
     p1.point = Point.Min
     p1.mode = mode
@@ -200,7 +200,7 @@ internal class SimpleAxisSolver(
 
   override fun leftToFloat(
     mode: SizeMode,
-    provider: LayoutContext.() -> XFloat
+    provider: LayoutContainer.() -> XFloat
   ): XAxisSolver {
     p1.point = Point.Min
     p1.mode = mode
@@ -210,7 +210,7 @@ internal class SimpleAxisSolver(
 
   override fun topTo(
     mode: SizeMode,
-    provider: LayoutContext.() -> YInt
+    provider: LayoutContainer.() -> YInt
   ): YAxisSolver {
     p1.point = Point.Min
     p1.mode = mode
@@ -220,7 +220,7 @@ internal class SimpleAxisSolver(
 
   override fun topToFloat(
     mode: SizeMode,
-    provider: LayoutContext.() -> YFloat
+    provider: LayoutContainer.() -> YFloat
   ): YAxisSolver {
     p1.point = Point.Min
     p1.mode = mode
@@ -228,7 +228,7 @@ internal class SimpleAxisSolver(
     return this
   }
 
-  override fun rightTo(mode: SizeMode, provider: LayoutContext.() -> XInt): XAxisSolver {
+  override fun rightTo(mode: SizeMode, provider: LayoutContainer.() -> XInt): XAxisSolver {
     p1.point = Point.Max
     p1.mode = mode
     p1.lambda = unwrapXIntLambda(provider)
@@ -237,7 +237,7 @@ internal class SimpleAxisSolver(
 
   override fun rightToFloat(
     mode: SizeMode,
-    provider: LayoutContext.() -> XFloat
+    provider: LayoutContainer.() -> XFloat
   ): XAxisSolver {
     p1.point = Point.Max
     p1.mode = mode
@@ -247,7 +247,7 @@ internal class SimpleAxisSolver(
 
   override fun bottomTo(
     mode: SizeMode,
-    provider: LayoutContext.() -> YInt
+    provider: LayoutContainer.() -> YInt
   ): YAxisSolver {
     p1.point = Point.Mid
     p1.mode = mode
@@ -257,7 +257,7 @@ internal class SimpleAxisSolver(
 
   override fun bottomToFloat(
     mode: SizeMode,
-    provider: LayoutContext.() -> YFloat
+    provider: LayoutContainer.() -> YFloat
   ): YAxisSolver {
     p1.point = Point.Mid
     p1.mode = mode
@@ -265,7 +265,7 @@ internal class SimpleAxisSolver(
     return this
   }
 
-  override fun widthOf(mode: SizeMode, provider: LayoutContext.() -> XInt): XAxisSolver {
+  override fun widthOf(mode: SizeMode, provider: LayoutContainer.() -> XInt): XAxisSolver {
     size.mode = mode
     size.lambda = unwrapXIntLambda(provider)
     return this
@@ -273,7 +273,7 @@ internal class SimpleAxisSolver(
 
   override fun widthOfFloat(
     mode: SizeMode,
-    provider: LayoutContext.() -> XFloat
+    provider: LayoutContainer.() -> XFloat
   ): XAxisSolver {
     size.mode = mode
     size.lambda = unwrapXFloatLambda(provider)
@@ -282,7 +282,7 @@ internal class SimpleAxisSolver(
 
   override fun heightOf(
     mode: SizeMode,
-    provider: LayoutContext.() -> YInt
+    provider: LayoutContainer.() -> YInt
   ): YAxisSolver {
     size.mode = mode
     size.lambda = unwrapYIntLambda(provider)
@@ -291,7 +291,7 @@ internal class SimpleAxisSolver(
 
   override fun heightOfFloat(
     mode: SizeMode,
-    provider: LayoutContext.() -> YFloat
+    provider: LayoutContainer.() -> YFloat
   ): YAxisSolver {
     size.mode = mode
     size.lambda = unwrapYFloatLambda(provider)

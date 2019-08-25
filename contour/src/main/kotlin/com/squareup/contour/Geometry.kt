@@ -24,7 +24,7 @@ package com.squareup.contour
  * [com.squareup.contour.errors.CircularReferenceDetected] if the [com.squareup.contour.ContourLayout]
  * is configured incorrectly.
  */
-interface GeometryProvider {
+interface Geometry {
   fun left(): XInt
   fun right(): XInt
   fun width(): XInt

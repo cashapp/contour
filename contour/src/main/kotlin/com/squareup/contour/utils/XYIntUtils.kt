@@ -18,7 +18,7 @@
 
 package com.squareup.contour.utils
 
-import com.squareup.contour.LayoutContext
+import com.squareup.contour.LayoutContainer
 import com.squareup.contour.XFloat
 import com.squareup.contour.XInt
 import com.squareup.contour.YFloat
@@ -35,23 +35,23 @@ internal inline fun unwrapYIntToYIntLambda(
   { lambda(it.toYInt()).value }
 
 internal inline fun unwrapXIntLambda(
-  crossinline lambda: LayoutContext.() -> XInt
-): LayoutContext.() -> Int =
+  crossinline lambda: LayoutContainer.() -> XInt
+): LayoutContainer.() -> Int =
   { lambda().value }
 
 internal inline fun unwrapXFloatLambda(
-  crossinline lambda: LayoutContext.() -> XFloat
-): LayoutContext.() -> Int =
+  crossinline lambda: LayoutContainer.() -> XFloat
+): LayoutContainer.() -> Int =
   { lambda().value.toInt() }
 
 internal inline fun unwrapYIntLambda(
-  crossinline lambda: LayoutContext.() -> YInt
-): LayoutContext.() -> Int =
+  crossinline lambda: LayoutContainer.() -> YInt
+): LayoutContainer.() -> Int =
   { lambda().value }
 
 internal inline fun unwrapYFloatLambda(
-  crossinline lambda: LayoutContext.() -> YFloat
-): LayoutContext.() -> Int =
+  crossinline lambda: LayoutContainer.() -> YFloat
+): LayoutContainer.() -> Int =
   { lambda().value.toInt() }
 
 internal inline fun Int.toXInt() = XInt(this)

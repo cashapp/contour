@@ -40,7 +40,7 @@ import com.squareup.contour.utils.unwrapXIntToXIntLambda
 import com.squareup.contour.utils.unwrapYIntLambda
 import com.squareup.contour.utils.unwrapYIntToYIntLambda
 import com.squareup.contour.wrappers.HasDimensions
-import com.squareup.contour.wrappers.ParentGeometryProvider
+import com.squareup.contour.wrappers.ParentGeometry
 import com.squareup.contour.wrappers.ViewDimensions
 import kotlin.math.max
 import kotlin.math.min
@@ -155,7 +155,7 @@ open class ContourLayout(
   private val density: Float = context.resources.displayMetrics.density
   private val widthConfig = SizeConfig()
   private val heightConfig = SizeConfig()
-  private val geometryProvider = ParentGeometryProvider(widthConfig, heightConfig)
+  private val geometry = ParentGeometry(widthConfig, heightConfig)
   private var constructed: Boolean = true
   private var initialized: Boolean = false
   private var lastWidthSpec: Int = 0
@@ -275,7 +275,7 @@ open class ContourLayout(
     val viewGroup = this@ContourLayout
     val spec = config()
     spec.dimen = ViewDimensions(this)
-    spec.parent = viewGroup.geometryProvider
+    spec.parent = viewGroup.geometry
     layoutParams = spec
     if (addToViewGroup) {
       viewGroup.addView(this)
@@ -326,7 +326,7 @@ open class ContourLayout(
     val viewGroup = this@ContourLayout
     val spec = LayoutSpec(x, y)
     spec.dimen = ViewDimensions(this)
-    spec.parent = viewGroup.geometryProvider
+    spec.parent = viewGroup.geometry
     layoutParams = spec
     if (addToViewGroup && parent == null) {
       viewGroup.addView(this)
@@ -346,7 +346,7 @@ open class ContourLayout(
     val viewGroup = this@ContourLayout
     val spec = LayoutSpec(x, y)
     spec.dimen = ViewDimensions(this)
-    spec.parent = viewGroup.geometryProvider
+    spec.parent = viewGroup.geometry
     layoutParams = spec
   }
 
@@ -427,43 +427,43 @@ open class ContourLayout(
    */
   fun View.preferredHeight(): YInt = handleCrd { spec().preferredHeight() }
 
-  fun baselineTo(provider: LayoutContext.() -> YInt): HeightOfOnlyContext =
+  fun baselineTo(provider: LayoutContainer.() -> YInt): HeightOfOnlyContext =
     SimpleAxisSolver(
         point = Baseline,
         lambda = unwrapYIntLambda(provider)
     )
 
-  fun topTo(provider: LayoutContext.() -> YInt): FromTopContext =
+  fun topTo(provider: LayoutContainer.() -> YInt): HasTop =
     SimpleAxisSolver(
         point = Min,
         lambda = unwrapYIntLambda(provider)
     )
 
-  fun bottomTo(provider: LayoutContext.() -> YInt): FromBottomContext =
+  fun bottomTo(provider: LayoutContainer.() -> YInt): HasBottom =
     SimpleAxisSolver(
         point = Max,
         lambda = unwrapYIntLambda(provider)
     )
 
-  fun centerVerticallyTo(provider: LayoutContext.() -> YInt): HeightOfOnlyContext =
+  fun centerVerticallyTo(provider: LayoutContainer.() -> YInt): HeightOfOnlyContext =
     SimpleAxisSolver(
         point = Mid,
         lambda = unwrapYIntLambda(provider)
     )
 
-  fun leftTo(provider: LayoutContext.() -> XInt): FromLeftContext =
+  fun leftTo(provider: LayoutContainer.() -> XInt): HasLeft =
     SimpleAxisSolver(
         point = Min,
         lambda = unwrapXIntLambda(provider)
     )
 
-  fun rightTo(provider: LayoutContext.() -> XInt): FromRightContext =
+  fun rightTo(provider: LayoutContainer.() -> XInt): HasRight =
     SimpleAxisSolver(
         point = Max,
         lambda = unwrapXIntLambda(provider)
     )
 
-  fun centerHorizontallyTo(provider: LayoutContext.() -> XInt): WidthOfOnlyContext =
+  fun centerHorizontallyTo(provider: LayoutContainer.() -> XInt): WidthOfOnlyContext =
     SimpleAxisSolver(
         point = Mid,
         lambda = unwrapXIntLambda(provider)
@@ -490,8 +490,8 @@ open class ContourLayout(
   ): YInt = max(a.value, b.value).toYInt()
 
   fun minOf(
-    p0: HasYPositionNoSize,
-    p1: HasYPositionNoSize
+    p0: HasYPositionWithoutHeight,
+    p1: HasYPositionWithoutHeight
   ): YAxisSolver {
     p0 as AxisSolver
     p1 as AxisSolver
@@ -499,8 +499,8 @@ open class ContourLayout(
   }
 
   fun maxOf(
-    p0: HasYPositionNoSize,
-    p1: HasYPositionNoSize
+    p0: HasYPositionWithoutHeight,
+    p1: HasYPositionWithoutHeight
   ): YAxisSolver {
     p0 as AxisSolver
     p1 as AxisSolver
@@ -508,8 +508,8 @@ open class ContourLayout(
   }
 
   fun minOf(
-    p0: HasXPositionNoSize,
-    p1: HasXPositionNoSize
+    p0: HasXPositionWithoutWidth,
+    p1: HasXPositionWithoutWidth
   ): XAxisSolver {
     p0 as AxisSolver
     p1 as AxisSolver
@@ -517,8 +517,8 @@ open class ContourLayout(
   }
 
   fun maxOf(
-    p0: HasXPositionNoSize,
-    p1: HasXPositionNoSize
+    p0: HasXPositionWithoutWidth,
+    p1: HasXPositionWithoutWidth
   ): XAxisSolver {
     p0 as AxisSolver
     p1 as AxisSolver
@@ -528,9 +528,9 @@ open class ContourLayout(
   class LayoutSpec(
     internal val x: XAxisSolver,
     internal val y: YAxisSolver
-  ) : ViewGroup.LayoutParams(WRAP, WRAP), LayoutContext {
+  ) : ViewGroup.LayoutParams(WRAP, WRAP), LayoutContainer {
 
-    override lateinit var parent: GeometryProvider
+    override lateinit var parent: Geometry
     internal lateinit var dimen: HasDimensions
 
     init {

@@ -16,17 +16,17 @@
 
 package com.squareup.contour.wrappers
 
-import com.squareup.contour.GeometryProvider
+import com.squareup.contour.Geometry
 import com.squareup.contour.XInt
 import com.squareup.contour.YInt
 import com.squareup.contour.constraints.SizeConfig
 import com.squareup.contour.utils.toXInt
 import com.squareup.contour.utils.toYInt
 
-internal class ParentGeometryProvider(
+internal class ParentGeometry(
   private val widthConfig: SizeConfig,
   private val heightConfig: SizeConfig
-) : GeometryProvider {
+) : Geometry {
   override fun left(): XInt = XInt.ZERO
   override fun right(): XInt = widthConfig.resolve().toXInt()
   override fun width(): XInt = widthConfig.resolve().toXInt()

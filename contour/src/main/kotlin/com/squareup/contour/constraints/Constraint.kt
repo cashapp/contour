@@ -16,7 +16,7 @@
 
 package com.squareup.contour.constraints
 
-import com.squareup.contour.LayoutContext
+import com.squareup.contour.LayoutContainer
 import com.squareup.contour.SizeMode
 import com.squareup.contour.SizeMode.Exact
 import com.squareup.contour.errors.CircularReferenceDetected
@@ -24,21 +24,21 @@ import com.squareup.contour.solvers.SimpleAxisSolver.Point
 
 internal open class Constraint {
   private var isResolving: Boolean = false
-  private var layoutContext: LayoutContext? = null
+  private var container: LayoutContainer? = null
   private var value: Int = Int.MIN_VALUE
   var mode: SizeMode = Exact
-  var lambda: (LayoutContext.() -> Int)? = null
+  var lambda: (LayoutContainer.() -> Int)? = null
 
   val isSet: Boolean get() = lambda != null
 
-  fun onAttachContext(layoutContext: LayoutContext) {
-    this.layoutContext = layoutContext
+  fun onAttachContext(container: LayoutContainer) {
+    this.container = container
   }
 
   fun resolve(): Int {
     if (value == Int.MIN_VALUE) {
       val context =
-        checkNotNull(layoutContext) { "Constraint called before LayoutContext attached" }
+        checkNotNull(container) { "Constraint called before LayoutContainer attached" }
       val lambda = checkNotNull(lambda) { "Constraint not set" }
 
       try {
@@ -60,7 +60,7 @@ internal open class Constraint {
 
 internal class PositionConstraint(
   var point: Point = Point.Min,
-  lambda: (LayoutContext.() -> Int)? = null
+  lambda: (LayoutContainer.() -> Int)? = null
 ) : Constraint() {
   init {
     this.lambda = lambda
