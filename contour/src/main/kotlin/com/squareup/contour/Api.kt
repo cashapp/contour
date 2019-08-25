@@ -19,10 +19,8 @@
 package com.squareup.contour
 
 import com.squareup.contour.SizeMode.Exact
-import com.squareup.contour.resolvers.ScalarResolver
-
-interface XResolver : ScalarResolver
-interface YResolver : ScalarResolver
+import com.squareup.contour.solvers.XAxisSolver
+import com.squareup.contour.solvers.YAxisSolver
 
 interface LayoutContext {
   val parent: GeometryProvider
@@ -31,77 +29,77 @@ interface LayoutContext {
 interface HasXPositionNoSize
 interface HasYPositionNoSize
 
-interface WidthOfOnlyContext : XResolver, HasXPositionNoSize, WidthOfAllowedContext
-interface HeightOfOnlyContext : YResolver, HasYPositionNoSize, HeightOfAllowedContext
+interface WidthOfOnlyContext : XAxisSolver, HasXPositionNoSize, WidthOfAllowedContext
+interface HeightOfOnlyContext : YAxisSolver, HasYPositionNoSize, HeightOfAllowedContext
 
 interface WidthOfAllowedContext {
   fun widthOf(
     mode: SizeMode = Exact,
     provider: LayoutContext.() -> XInt
-  ): XResolver
+  ): XAxisSolver
 
   fun widthOfFloat(
     mode: SizeMode = Exact,
     provider: LayoutContext.() -> XFloat
-  ): XResolver
+  ): XAxisSolver
 }
 
 interface HeightOfAllowedContext {
   fun heightOf(
     mode: SizeMode = Exact,
     provider: LayoutContext.() -> YInt
-  ): YResolver
+  ): YAxisSolver
 
   fun heightOfFloat(
     mode: SizeMode = Exact,
     provider: LayoutContext.() -> YFloat
-  ): YResolver
+  ): YAxisSolver
 }
 
-interface FromLeftContext : XResolver, HasXPositionNoSize, WidthOfAllowedContext {
+interface FromLeftContext : XAxisSolver, HasXPositionNoSize, WidthOfAllowedContext {
   fun rightTo(
     mode: SizeMode = Exact,
     provider: LayoutContext.() -> XInt
-  ): XResolver
+  ): XAxisSolver
 
   fun rightToFloat(
     mode: SizeMode = Exact,
     provider: LayoutContext.() -> XFloat
-  ): XResolver
+  ): XAxisSolver
 }
 
-interface FromRightContext : XResolver, HasXPositionNoSize, WidthOfAllowedContext {
+interface FromRightContext : XAxisSolver, HasXPositionNoSize, WidthOfAllowedContext {
   fun leftTo(
     mode: SizeMode = Exact,
     provider: LayoutContext.() -> XInt
-  ): XResolver
+  ): XAxisSolver
 
   fun leftToFloat(
     mode: SizeMode = Exact,
     provider: LayoutContext.() -> XFloat
-  ): XResolver
+  ): XAxisSolver
 }
 
-interface FromTopContext : YResolver, HasYPositionNoSize, HeightOfAllowedContext {
+interface FromTopContext : YAxisSolver, HasYPositionNoSize, HeightOfAllowedContext {
   fun bottomTo(
     mode: SizeMode = Exact,
     provider: LayoutContext.() -> YInt
-  ): YResolver
+  ): YAxisSolver
 
   fun bottomToFloat(
     mode: SizeMode = Exact,
     provider: LayoutContext.() -> YFloat
-  ): YResolver
+  ): YAxisSolver
 }
 
-interface FromBottomContext : YResolver, HasYPositionNoSize, HeightOfAllowedContext {
+interface FromBottomContext : YAxisSolver, HasYPositionNoSize, HeightOfAllowedContext {
   fun topTo(
     mode: SizeMode = Exact,
     provider: LayoutContext.() -> YInt
-  ): YResolver
+  ): YAxisSolver
 
   fun topToFloat(
     mode: SizeMode = Exact,
     provider: LayoutContext.() -> YFloat
-  ): YResolver
+  ): YAxisSolver
 }

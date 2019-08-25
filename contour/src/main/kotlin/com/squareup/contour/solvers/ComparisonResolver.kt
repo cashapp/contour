@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package com.squareup.contour.resolvers
+package com.squareup.contour.solvers
 
 import android.view.View
 import com.squareup.contour.constraints.Constraint
 import com.squareup.contour.ContourLayout.LayoutSpec
-import com.squareup.contour.XResolver
-import com.squareup.contour.YResolver
-import com.squareup.contour.resolvers.ComparisonResolver.CompareBy.MaxOf
-import com.squareup.contour.resolvers.ComparisonResolver.CompareBy.MinOf
+import com.squareup.contour.solvers.ComparisonResolver.CompareBy.MaxOf
+import com.squareup.contour.solvers.ComparisonResolver.CompareBy.MinOf
 
 internal class ComparisonResolver(
-  private val p0: ScalarResolver,
-  private val p1: ScalarResolver,
-  private val compareBy: CompareBy
-) : XResolver, YResolver {
+    private val p0: AxisSolver,
+    private val p1: AxisSolver,
+    private val compareBy: CompareBy
+) : XAxisSolver, YAxisSolver {
 
   internal enum class CompareBy {
     MaxOf,
@@ -36,11 +34,11 @@ internal class ComparisonResolver(
   }
 
   private val size = Constraint()
-  private var found: ScalarResolver? = null
+  private var found: AxisSolver? = null
   private lateinit var parent: LayoutSpec
   private var range: Int = Int.MIN_VALUE
 
-  private fun findWinner(): ScalarResolver {
+  private fun findWinner(): AxisSolver {
     val found = found
     if (found != null) return found
     else {

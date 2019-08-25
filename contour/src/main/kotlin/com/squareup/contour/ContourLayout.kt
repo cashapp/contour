@@ -24,15 +24,15 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.contour.constraints.SizeConfig
 import com.squareup.contour.errors.CircularReferenceDetected
-import com.squareup.contour.resolvers.ComparisonResolver
-import com.squareup.contour.resolvers.ComparisonResolver.CompareBy.MaxOf
-import com.squareup.contour.resolvers.ComparisonResolver.CompareBy.MinOf
-import com.squareup.contour.resolvers.ScalarResolver
-import com.squareup.contour.resolvers.SimpleScalarResolver
-import com.squareup.contour.resolvers.SimpleScalarResolver.Point.Baseline
-import com.squareup.contour.resolvers.SimpleScalarResolver.Point.Max
-import com.squareup.contour.resolvers.SimpleScalarResolver.Point.Mid
-import com.squareup.contour.resolvers.SimpleScalarResolver.Point.Min
+import com.squareup.contour.solvers.*
+import com.squareup.contour.solvers.ComparisonResolver
+import com.squareup.contour.solvers.ComparisonResolver.CompareBy.MaxOf
+import com.squareup.contour.solvers.ComparisonResolver.CompareBy.MinOf
+import com.squareup.contour.solvers.SimpleAxisSolver
+import com.squareup.contour.solvers.SimpleAxisSolver.Point.Baseline
+import com.squareup.contour.solvers.SimpleAxisSolver.Point.Max
+import com.squareup.contour.solvers.SimpleAxisSolver.Point.Mid
+import com.squareup.contour.solvers.SimpleAxisSolver.Point.Min
 import com.squareup.contour.utils.toXInt
 import com.squareup.contour.utils.toYInt
 import com.squareup.contour.utils.unwrapXIntLambda
@@ -70,12 +70,12 @@ private const val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
  *  [ContourLayout] use the extension function [View.applyLayout] which is defined in the scope of [ContourLayout].
  *  [View.applyLayout] does two things. It adds the child view to your layout - if not already added - and configures
  *  the layout of the view. The configuration happens via the arguments provided to [View.applyLayout] which are an
- *  instance of a [XResolver] and a [YResolver]. [XResolver] and [YResolver] are symmetrical interfaces which tell
+ *  instance of a [XAxisSolver] and a [YAxisSolver]. [XAxisSolver] and [YAxisSolver] are symmetrical interfaces which tell
  *  Contour how to layout the child view on its x and y axes.
  *
- *  To start defining [XResolver] / [YResolver] use any of the position declaration functions defined in the
+ *  To start defining [XAxisSolver] / [YAxisSolver] use any of the position declaration functions defined in the
  *  [ContourLayout] scope. Eg: [leftTo], [rightTo], [centerHorizontallyTo], [topTo], etc. These functions will
- *  return a [XResolver]/[YResolver] with the minimum configuration to show your view on screen.
+ *  return a [XAxisSolver]/[YAxisSolver] with the minimum configuration to show your view on screen.
  *
  *  In the example above the view [starDate] could be configured with the code:
  *
@@ -89,7 +89,7 @@ private const val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
  *  implicit size, in the case of the base class [View] this would be 0 width and height.
  *
  *  In the example above there a couple things to note. First the reference to [parent] of made available within all
- *  [XResolver] / [YResolver] scopes. [parent] represents the parent geometry and is guaranteed to be resolved when
+ *  [XAxisSolver] / [YAxisSolver] scopes. [parent] represents the parent geometry and is guaranteed to be resolved when
  *  any of its methods are called. The values returned by [parent] will be in the layuot's coordinate space, where
  *  0,0 is top-left and the layout width, height will be bottom-right.
  *
@@ -113,7 +113,7 @@ private const val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
  *  regular [Int]s - and infact will compile down to native java [Int] primitives in most cases.
  *  More on inline classes: https://kotlinlang.org/docs/reference/inline-classes.html
  *
- *  In addition to siding [XResolver] and [YResolver] can define the width / height of the layout. In the example
+ *  In addition to siding [XAxisSolver] and [YAxisSolver] can define the width / height of the layout. In the example
  *  above we can hard-code a height and set a max width with:
  *
  *     starDate.applyLayout(
@@ -311,7 +311,7 @@ open class ContourLayout(
 
   /**
    * Optionally adds the receiver child [View] to the [ContourLayout] and configures the it's layout using the provided
-   * [XResolver] and [YResolver]
+   * [XAxisSolver] and [YAxisSolver]
    * @receiver the view to configure and optionally add to the [ContourLayout]
    * @param x configures how the [View] will be positioned and sized on the x-axis.
    * @param y configures how the [View] will be positioned and sized on the y-axis.
@@ -319,8 +319,8 @@ open class ContourLayout(
    * already added. Defaults true.
    */
   fun View.applyLayout(
-    x: XResolver,
-    y: YResolver,
+    x: XAxisSolver,
+    y: YAxisSolver,
     addToViewGroup: Boolean = true
   ) {
     val viewGroup = this@ContourLayout
@@ -334,14 +334,14 @@ open class ContourLayout(
   }
 
   /**
-   * Updates the layout configuration of receiver view with new optional [XResolver] and/or [YResolver]
+   * Updates the layout configuration of receiver view with new optional [XAxisSolver] and/or [YAxisSolver]
    * @receiver the view to configure
    * @param x configures how the [View] will be positioned and sized on the x-axis.
    * @param y configures how the [View] will be positioned and sized on the y-axis.
    */
   fun View.updateLayout(
-    x: XResolver = spec().x,
-    y: YResolver = spec().y
+    x: XAxisSolver = spec().x,
+    y: YAxisSolver = spec().y
   ) {
     val viewGroup = this@ContourLayout
     val spec = LayoutSpec(x, y)
@@ -352,8 +352,8 @@ open class ContourLayout(
 
   @Deprecated("Use updateLayout", ReplaceWith("updateLayout(x, y)"))
   fun View.updateLayoutSpec(
-    x: XResolver = spec().x,
-    y: YResolver = spec().y
+    x: XAxisSolver = spec().x,
+    y: YAxisSolver = spec().y
   ) {
     updateLayout(x, y)
   }
@@ -428,43 +428,43 @@ open class ContourLayout(
   fun View.preferredHeight(): YInt = handleCrd { spec().preferredHeight() }
 
   fun baselineTo(provider: LayoutContext.() -> YInt): HeightOfOnlyContext =
-    SimpleScalarResolver(
+    SimpleAxisSolver(
         point = Baseline,
         lambda = unwrapYIntLambda(provider)
     )
 
   fun topTo(provider: LayoutContext.() -> YInt): FromTopContext =
-    SimpleScalarResolver(
+    SimpleAxisSolver(
         point = Min,
         lambda = unwrapYIntLambda(provider)
     )
 
   fun bottomTo(provider: LayoutContext.() -> YInt): FromBottomContext =
-    SimpleScalarResolver(
+    SimpleAxisSolver(
         point = Max,
         lambda = unwrapYIntLambda(provider)
     )
 
   fun centerVerticallyTo(provider: LayoutContext.() -> YInt): HeightOfOnlyContext =
-    SimpleScalarResolver(
+    SimpleAxisSolver(
         point = Mid,
         lambda = unwrapYIntLambda(provider)
     )
 
   fun leftTo(provider: LayoutContext.() -> XInt): FromLeftContext =
-    SimpleScalarResolver(
+    SimpleAxisSolver(
         point = Min,
         lambda = unwrapXIntLambda(provider)
     )
 
   fun rightTo(provider: LayoutContext.() -> XInt): FromRightContext =
-    SimpleScalarResolver(
+    SimpleAxisSolver(
         point = Max,
         lambda = unwrapXIntLambda(provider)
     )
 
   fun centerHorizontallyTo(provider: LayoutContext.() -> XInt): WidthOfOnlyContext =
-    SimpleScalarResolver(
+    SimpleAxisSolver(
         point = Mid,
         lambda = unwrapXIntLambda(provider)
     )
@@ -492,42 +492,42 @@ open class ContourLayout(
   fun minOf(
     p0: HasYPositionNoSize,
     p1: HasYPositionNoSize
-  ): YResolver {
-    p0 as ScalarResolver
-    p1 as ScalarResolver
+  ): YAxisSolver {
+    p0 as AxisSolver
+    p1 as AxisSolver
     return ComparisonResolver(p0, p1, MinOf)
   }
 
   fun maxOf(
     p0: HasYPositionNoSize,
     p1: HasYPositionNoSize
-  ): YResolver {
-    p0 as ScalarResolver
-    p1 as ScalarResolver
+  ): YAxisSolver {
+    p0 as AxisSolver
+    p1 as AxisSolver
     return ComparisonResolver(p0, p1, MaxOf)
   }
 
   fun minOf(
     p0: HasXPositionNoSize,
     p1: HasXPositionNoSize
-  ): XResolver {
-    p0 as ScalarResolver
-    p1 as ScalarResolver
+  ): XAxisSolver {
+    p0 as AxisSolver
+    p1 as AxisSolver
     return ComparisonResolver(p0, p1, MinOf)
   }
 
   fun maxOf(
     p0: HasXPositionNoSize,
     p1: HasXPositionNoSize
-  ): XResolver {
-    p0 as ScalarResolver
-    p1 as ScalarResolver
+  ): XAxisSolver {
+    p0 as AxisSolver
+    p1 as AxisSolver
     return ComparisonResolver(p0, p1, MaxOf)
   }
 
   class LayoutSpec(
-    internal val x: XResolver,
-    internal val y: YResolver
+    internal val x: XAxisSolver,
+    internal val y: YAxisSolver
   ) : ViewGroup.LayoutParams(WRAP, WRAP), LayoutContext {
 
     override lateinit var parent: GeometryProvider

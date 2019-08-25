@@ -20,7 +20,7 @@ import com.squareup.contour.LayoutContext
 import com.squareup.contour.SizeMode
 import com.squareup.contour.SizeMode.Exact
 import com.squareup.contour.errors.CircularReferenceDetected
-import com.squareup.contour.resolvers.SimpleScalarResolver.Point
+import com.squareup.contour.solvers.SimpleAxisSolver.Point
 
 internal open class Constraint {
   private var isResolving: Boolean = false
