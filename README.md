@@ -18,7 +18,7 @@ Contour aims to be the thinnest possible wrapper around Android’s layout APIs.
 Also - on the topic of XML layouts ...
 
 ### Deprecating XML
-XML had a good ride but times have changed and we should too. XML is a decent format for declaring static content - but that’s not what UI’s are anymore. UI’s increasingly have a ton of dynamic behavior - and trying to [jerry-rig](https://developer.android.com/topic/libraries/data-binding) XML layouts into adopting this dynamic behavior has taken things from bad to worse. What sort of dynamic behaviors do we expect from our UIs?
+XML had a good ride but times have changed and we should too. XML is a decent format for declaring static content - but that’s not what UIs are anymore. UIs increasingly have a ton of dynamic behavior - and trying to [jerry-rig](https://developer.android.com/topic/libraries/data-binding) XML layouts into adopting this dynamic behavior has taken things from bad to worse. What sort of dynamic behaviors do we expect from our UIs?
 - Change configuration based on screen size
 - Lazy loading elements of the UI.
 - A / B testing components at runtime
