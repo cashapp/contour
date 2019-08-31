@@ -23,9 +23,9 @@ import com.squareup.contour.solvers.ComparisonResolver.CompareBy.MaxOf
 import com.squareup.contour.solvers.ComparisonResolver.CompareBy.MinOf
 
 internal class ComparisonResolver(
-    private val p0: AxisSolver,
-    private val p1: AxisSolver,
-    private val compareBy: CompareBy
+  private val p0: AxisSolver,
+  private val p1: AxisSolver,
+  private val compareBy: CompareBy
 ) : XAxisSolver, YAxisSolver {
 
   internal enum class CompareBy {
