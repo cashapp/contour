@@ -35,4 +35,3 @@ interface Geometry {
   fun height(): YInt
   fun centerY(): YInt
 }
-

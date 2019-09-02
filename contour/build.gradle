@@ -3,24 +3,24 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply from: 'gradle-mvn-push.gradle'
 
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
 
 android {
-    compileSdkVersion 28
+  compileSdkVersion 28
 
-    defaultConfig {
-        minSdkVersion 21
-    }
+  defaultConfig {
+    minSdkVersion 21
+  }
 
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-        test.java.srcDirs += 'src/test/kotlin'
-    }
+  sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+    test.java.srcDirs += 'src/test/kotlin'
+  }
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    testImplementation "com.google.truth:truth:1.0"
-    testImplementation 'org.robolectric:robolectric:4.3'
+  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+  testImplementation "com.google.truth:truth:1.0"
+  testImplementation 'org.robolectric:robolectric:4.3'
 }
