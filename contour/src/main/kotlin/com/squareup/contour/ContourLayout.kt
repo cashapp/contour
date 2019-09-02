@@ -310,7 +310,7 @@ open class ContourLayout(
   }
 
   /**
-   * Optionally adds the receiver child [View] to the [ContourLayout] and configures the it's layout using the provided
+   * Optionally adds the receiver child [View] to the [ContourLayout] and configures its layout using the provided
    * [XAxisSolver] and [YAxisSolver]
    * @receiver the view to configure and optionally add to the [ContourLayout]
    * @param x configures how the [View] will be positioned and sized on the x-axis.
