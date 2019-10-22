@@ -16,8 +16,7 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class ContourTests {
 
-  private val activity = Robolectric.buildActivity(Activity::class.java)
-      .get()
+  private val activity = Robolectric.buildActivity(Activity::class.java).get()
 
   @Test
   fun `simple single child layout`() {
@@ -187,5 +186,27 @@ class ContourTests {
     amount = 0.13f
     layout.forceRelayout()
     assertThat(view.width).isEqualTo(33) // 260 * 0.13 = 33.8 ~= 33 floored
+  }
+
+  @Test
+  fun `view set to GONE has position but no size`() {
+    val view = View(activity)
+    view.visibility = View.GONE
+
+    contourLayout(
+        activity
+    ) {
+      view.applyLayout(
+          leftTo { parent.centerX() },
+          topTo { parent.centerY() }
+      )
+    }
+
+    assertThat(view.left).isEqualTo(100)
+    assertThat(view.right).isEqualTo(100)
+    assertThat(view.top).isEqualTo(25)
+    assertThat(view.bottom).isEqualTo(25)
+    assertThat(view.width).isEqualTo(0)
+    assertThat(view.height).isEqualTo(0)
   }
 }

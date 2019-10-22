@@ -206,8 +206,8 @@ open class ContourLayout(
   ) {
     for (i in 0 until childCount) {
       val child = getChildAt(i)
-      val params = child.layoutParams as LayoutSpec
-      child.measure(params.x.measureSpec(), params.y.measureSpec())
+      val params = child.spec()
+      params.measureSelf()
       child.layout(
           params.left().value, params.top().value,
           params.right().value, params.bottom().value
@@ -327,6 +327,7 @@ open class ContourLayout(
     val spec = LayoutSpec(x, y)
     spec.dimen = ViewDimensions(this)
     spec.parent = viewGroup.geometry
+    spec.view = this
     layoutParams = spec
     if (addToViewGroup && parent == null) {
       viewGroup.addView(this)
@@ -347,6 +348,7 @@ open class ContourLayout(
     val spec = LayoutSpec(x, y)
     spec.dimen = ViewDimensions(this)
     spec.parent = viewGroup.geometry
+    spec.view = this
     layoutParams = spec
   }
 
@@ -532,6 +534,7 @@ open class ContourLayout(
 
     override lateinit var parent: Geometry
     internal lateinit var dimen: HasDimensions
+    internal lateinit var view: View
 
     init {
       x.onAttach(this)
@@ -549,19 +552,32 @@ open class ContourLayout(
     internal fun height(): YInt = y.range().toYInt()
 
     internal fun preferredWidth(): XInt {
-      dimen.measure(0, y.measureSpec())
-      return dimen.width.toXInt()
+      return if (view.visibility == View.GONE) {
+        XInt.ZERO
+      } else {
+        dimen.measure(0, y.measureSpec())
+        dimen.width.toXInt()
+      }
     }
 
     internal fun preferredHeight(): YInt {
-      dimen.measure(x.measureSpec(), 0)
-      return dimen.height.toYInt()
+      return if (view.visibility == View.GONE) {
+        YInt.ZERO
+      } else {
+        dimen.measure(x.measureSpec(), 0)
+        dimen.height.toYInt()
+      }
     }
 
     internal fun measureSelf() {
-      dimen.measure(x.measureSpec(), y.measureSpec())
-      x.onRangeResolved(dimen.width, 0)
-      y.onRangeResolved(dimen.height, dimen.baseline)
+      if (view.visibility == View.GONE) {
+        x.onRangeResolved(0, 0)
+        y.onRangeResolved(0, 0)
+      } else {
+        dimen.measure(x.measureSpec(), y.measureSpec())
+        x.onRangeResolved(dimen.width, 0)
+        y.onRangeResolved(dimen.height, dimen.baseline)
+      }
     }
 
     internal fun clear() {
