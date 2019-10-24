@@ -206,6 +206,10 @@ open class ContourLayout(
   ) {
     for (i in 0 until childCount) {
       val child = getChildAt(i)
+      if (child.visibility == GONE) {
+        continue
+      }
+
       val params = child.spec()
       params.measureSelf()
       child.layout(
