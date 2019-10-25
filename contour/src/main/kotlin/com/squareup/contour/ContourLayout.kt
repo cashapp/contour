@@ -339,6 +339,16 @@ open class ContourLayout(
   }
 
   /**
+   * Convenience method for adding a [View] as child to the [ContourLayout] with a zero-width, zero-height
+   * [LayoutSpec].
+   * @receiver the view to configure and add to the [ContourLayout]
+   */
+  fun View.applyEmptyLayout() = applyLayout(
+      x = leftTo { parent.left() }.widthOf { 0.toXInt() },
+      y = topTo { parent.top() }.heightOf { 0.toYInt() }
+  )
+
+  /**
    * Updates the layout configuration of receiver view with new optional [XAxisSolver] and/or [YAxisSolver]
    * @receiver the view to configure
    * @param x configures how the [View] will be positioned and sized on the x-axis.
