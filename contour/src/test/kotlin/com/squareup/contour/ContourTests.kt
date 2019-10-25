@@ -189,18 +189,27 @@ class ContourTests {
   }
 
   @Test
-  fun `view set to GONE has position but no size`() {
+  fun `view set to GONE does not get laid out and is considered to have position and size 0`() {
     val view = View(activity)
     view.visibility = View.GONE
 
-    contourLayout(
-        activity
-    ) {
+    val layout = contourLayout(activity) {
       view.applyLayout(
           leftTo { parent.centerX() },
           topTo { parent.centerY() }
       )
     }
+
+    assertThat(view.left).isEqualTo(0)
+    assertThat(view.right).isEqualTo(0)
+    assertThat(view.top).isEqualTo(0)
+    assertThat(view.bottom).isEqualTo(0)
+    assertThat(view.width).isEqualTo(0)
+    assertThat(view.height).isEqualTo(0)
+
+    // Now make it visible.
+    view.visibility = View.VISIBLE
+    layout.forceRelayout()
 
     assertThat(view.left).isEqualTo(100)
     assertThat(view.right).isEqualTo(100)
@@ -208,5 +217,45 @@ class ContourTests {
     assertThat(view.bottom).isEqualTo(25)
     assertThat(view.width).isEqualTo(0)
     assertThat(view.height).isEqualTo(0)
+  }
+
+  @Test
+  fun `reference to height and width of view set to GONE should evaluate to 0`() {
+    val viewThatIsGone = View(activity).apply { visibility = View.GONE }
+    val otherView = View(activity)
+
+    val layout = contourLayout(activity, width = 200, height = 50) {
+      viewThatIsGone.applyLayout(
+          leftTo { parent.centerX() }
+              .widthOf { 10.xdip },
+          topTo { parent.centerY() }
+              .heightOf { 15.ydip }
+      )
+
+      otherView.applyLayout(
+          leftTo { parent.left() + 5 }
+              .widthOf { viewThatIsGone.width() + 1 },
+          topTo { parent.top() + 10 }
+              .heightOf { viewThatIsGone.height() + 2 }
+      )
+    }
+
+    assertThat(otherView.left).isEqualTo(5)
+    assertThat(otherView.right).isEqualTo(5 + 1)
+    assertThat(otherView.top).isEqualTo(10)
+    assertThat(otherView.bottom).isEqualTo(10 + 2)
+    assertThat(otherView.width).isEqualTo(1)
+    assertThat(otherView.height).isEqualTo(2)
+
+    // Now make the view that was GONE visible.
+    viewThatIsGone.visibility = View.VISIBLE
+    layout.forceRelayout()
+
+    assertThat(otherView.left).isEqualTo(5)
+    assertThat(otherView.right).isEqualTo(5 + 10 + 1)
+    assertThat(otherView.top).isEqualTo(10)
+    assertThat(otherView.bottom).isEqualTo(10 + 15 + 2)
+    assertThat(otherView.width).isEqualTo(10 + 1)
+    assertThat(otherView.height).isEqualTo(15 + 2)
   }
 }
