@@ -1,2 +1,4 @@
+rootProject.name = 'contour-parent'
+
 include ':contour'
 include ':sample-app'
