@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
-apply from: 'gradle-mvn-push.gradle'
 
 repositories {
   mavenCentral()
@@ -24,3 +23,5 @@ dependencies {
   testImplementation "com.google.truth:truth:1.0"
   testImplementation 'org.robolectric:robolectric:4.3'
 }
+
+apply from: "$rootDir/gradle/gradle-mvn-push.gradle"
