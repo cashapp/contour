@@ -5,9 +5,9 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
-import android.widget.ImageView
+import android.support.v7.widget.AppCompatImageView
 
-class AvatarImageView(context: Context) : ImageView(context) {
+class AvatarImageView(context: Context) : AppCompatImageView(context) {
   private val path = Path()
   val paint = Paint().apply {
     isAntiAlias = true
