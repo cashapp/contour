@@ -178,6 +178,22 @@ Contour fails fast and loud when these errors are detected, and provides as much
   <img src="screenshots/crd.png">
 </p>
 
+## Releases
+```groovy
+implementation 'app.cash.contour:contour:(latest)'
+```
+
+Snapshots of the development version are available in [Sonatype's `snapshots` repository][snap].
+
+```groovy
+repositories {
+  mavenCentral()
+  maven {
+    url 'https://oss.sonatype.org/content/repositories/snapshots/'
+  }
+}
+```
+
 ## License
 
 ```
@@ -197,3 +213,5 @@ limitations under the License.
 ```
 
 See terms and conditions [here](./LICENSE.txt).
+
+ [snap]: https://oss.sonatype.org/content/repositories/snapshots/app/cash/contour/
