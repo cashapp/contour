@@ -485,6 +485,62 @@ open class ContourLayout(
         lambda = unwrapXIntLambda(provider)
     )
 
+  /**
+   * Matches the position and width to those of [View] on the x-axis.
+   * @param view sibling [View] to match to.
+   * @param marginLeft extra space on the left.
+   * @param marginRight extra space on the right.
+   * @return the configured position on the x-axis
+   */
+  fun matchXTo(
+    view: View,
+    marginLeft: Int = 0,
+    marginRight: Int = 0
+  ): XAxisSolver {
+    return leftTo { view.left() + marginLeft }.rightTo { view.right() - marginRight }
+  }
+
+  /**
+   * Matches the position and width to those of the parent view on the x-axis.
+   * @param marginLeft extra space on the left.
+   * @param marginRight extra space on the right.
+   * @return the configured position on the x-axis
+   */
+  fun matchParentX(
+    marginLeft: Int = 0,
+    marginRight: Int = 0
+  ): XAxisSolver {
+    return leftTo { parent.left() + marginLeft }.rightTo { parent.right() - marginRight }
+  }
+
+  /**
+   * Matches the position and height to those of [View] on the y-axis.
+   * @param view sibling [View] to match to.
+   * @param marginTop extra space on the top.
+   * @param marginBottom extra space on the bottom.
+   * @return the configured position on the y-axis
+   */
+  fun matchYTo(
+    view: View,
+    marginTop: Int = 0,
+    marginBottom: Int = 0
+  ): YAxisSolver {
+    return topTo { view.top() + marginTop }.bottomTo { view.bottom() - marginBottom }
+  }
+
+  /**
+   * Matches the position and height to those of the parent view on the y-axis.
+   * @param marginTop extra space on the top.
+   * @param marginBottom extra space on the bottom.
+   * @return the configured position on the y-axis
+   */
+  fun matchParentY(
+    marginTop: Int = 0,
+    marginBottom: Int = 0
+  ): YAxisSolver {
+    return topTo { parent.top() + marginTop }.bottomTo { parent.bottom() - marginBottom }
+  }
+
   fun minOf(
     a: XInt,
     b: XInt
