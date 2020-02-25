@@ -11,9 +11,6 @@ before_install:
   - mkdir "$ANDROID_HOME/licenses" || true
   - echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > "$ANDROID_HOME/licenses/android-sdk-license"
 
-after_success:
-  - .buildscript/deploy_snapshot.sh
-
 env:
   global:
     - secure: "D/huesY5hkq8JqwTmRUSePvagrJztRdQ7Bn58mSU2A5BugU90C/5QnejyyVtLDhEdn7DkndERsqEfr3v9nL3bQvsRj9SOa3tK7ylRt//0NuhDKKBYsZcf6A1xKp4FWrnzn79YoFrDHP5xWhYEEsyaVBYAI/box9MW3XS36fV9QmHHCSU5fPavUvV3g47U5gaEkXfM6ehhBosO3RR2MG1m8X4GU31FfEmk9HJFnUJ0JbrFjxAaZctciPgXXqYDqwfZHMJQMNvy9xgxh3pYRsrdFkdLrNk4NOI8SYggt4F8/eBu0kk22pQ97mt3cqZvUO43aKLAnbkpC5Sh5Ofy+xQOy8jo9fKEkn9gS8GxY4WA1ZfsMus+aWt3n+QuyZFkFd5dBy703R3Pl/SHN5mRdqBIvQR4dvXnQvRG79Ms7LMYv/WIQMAQIRhoTc21bwV9dxAqiPlkR+TBRaFA8AyTq3ZKtA3fIxfy84MJvVpXvwSYxJshrtdyPs984qtgEFkBl7ZwzHr+SLivGoAeXnK0knwfEiursNFlZpkSfqHLLmuVi2ulwVa8Kc4f9JRz07OJI1FW9Z2IJxkYxNM7oEqiiVBTViAHrgj7vM45Wt2xuXSFDgbKNPe9RzJK2VtIZkm07b6q3LKeq3TLT3ZWNeK3fT691k75KlpHOg0qNbejDLbzls="
