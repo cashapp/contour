@@ -180,7 +180,7 @@ Contour fails fast and loud when these errors are detected, and provides as much
 
 ## Releases
 ```groovy
-implementation 'app.cash.contour:contour:0.1.5'
+implementation 'app.cash.contour:contour:0.1.6'
 ```
 
 Snapshots of the development version are available in [Sonatype's `snapshots` repository][snap].
