@@ -67,7 +67,7 @@ We should also set the view height to match the `note: TextView` height, plus so
 
 ```kotlin
 init {
-  heightOf { description.bottom() + 15.dip }
+  contourHeightOf { description.bottom() + 15.dip }
 }
 ```
 
