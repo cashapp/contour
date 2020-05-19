@@ -43,6 +43,11 @@ inline class XFloat(val value: Float) {
   inline operator fun div(other: Float) = XFloat(value / other)
   inline operator fun div(other: XFloat) = XFloat(value / other.value)
 
+  inline operator fun compareTo(other: Int) = value.compareTo(other)
+  inline operator fun compareTo(other: XInt) = value.compareTo(other.value)
+  inline operator fun compareTo(other: Float) = value.compareTo(other)
+  inline operator fun compareTo(other: XFloat) = value.compareTo(other.value)
+
   inline fun toY() = YFloat(value)
 
   companion object {
