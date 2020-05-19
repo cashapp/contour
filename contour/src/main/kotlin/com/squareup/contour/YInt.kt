@@ -43,6 +43,11 @@ inline class YInt(val value: Int) {
   inline operator fun div(other: Float) = YFloat(value / other)
   inline operator fun div(other: YFloat) = YFloat(value / other.value)
 
+  inline operator fun compareTo(other: Int) = value.compareTo(other)
+  inline operator fun compareTo(other: XInt) = value.compareTo(other.value)
+  inline operator fun compareTo(other: Float) = value.compareTo(other)
+  inline operator fun compareTo(other: XFloat) = value.compareTo(other.value)
+
   inline fun toX() = XInt(value)
 
   companion object {
