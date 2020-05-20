@@ -1,8 +1,6 @@
 # Contour
 Contour is a typesafe, Kotlin-first API for complex layouts on Android.
 
-This project is currently **experimental and the API subject to breaking changes without notice**. 
-
 ## What Contour Is Not
 There is a lot of buzz and interest around writing views in code right now with the development of [Jetpack Compose](https://developer.android.com/jetpack/compose) & [Anko](https://github.com/Kotlin/anko).
 
