@@ -24,7 +24,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.contour.constraints.SizeConfig
 import com.squareup.contour.errors.CircularReferenceDetected
-import com.squareup.contour.solvers.*
+import com.squareup.contour.solvers.AxisSolver
 import com.squareup.contour.solvers.ComparisonResolver
 import com.squareup.contour.solvers.ComparisonResolver.CompareBy.MaxOf
 import com.squareup.contour.solvers.ComparisonResolver.CompareBy.MinOf
@@ -33,6 +33,8 @@ import com.squareup.contour.solvers.SimpleAxisSolver.Point.Baseline
 import com.squareup.contour.solvers.SimpleAxisSolver.Point.Max
 import com.squareup.contour.solvers.SimpleAxisSolver.Point.Mid
 import com.squareup.contour.solvers.SimpleAxisSolver.Point.Min
+import com.squareup.contour.solvers.XAxisSolver
+import com.squareup.contour.solvers.YAxisSolver
 import com.squareup.contour.utils.toXInt
 import com.squareup.contour.utils.toYInt
 import com.squareup.contour.utils.unwrapXIntLambda
@@ -67,9 +69,9 @@ private const val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
  *     }
  *
  *  This will instantiate and configure your child view but does not add it to your layout. To add a view to the
- *  [ContourLayout] use the extension function [View.applyLayout] which is defined in the scope of [ContourLayout].
- *  [View.applyLayout] does two things. It adds the child view to your layout - if not already added - and configures
- *  the layout of the view. The configuration happens via the arguments provided to [View.applyLayout] which are an
+ *  [ContourLayout] use the extension function [View.layoutBy] which is defined in the scope of [ContourLayout].
+ *  [View.layoutBy] does two things. It adds the child view to your layout - if not already added - and configures
+ *  the layout of the view. The configuration happens via the arguments provided to [View.layoutBy] which are an
  *  instance of a [XAxisSolver] and a [YAxisSolver]. [XAxisSolver] and [YAxisSolver] are symmetrical interfaces which tell
  *  Contour how to layout the child view on its x and y axes.
  *
@@ -79,9 +81,9 @@ private const val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
  *
  *  In the example above the view [starDate] could be configured with the code:
  *
- *     starDate.applyLayout(
- *         leftTo { parent.left() },
- *         topTo { parent.top() }
+ *     starDate.layoutBy(
+ *         x = leftTo { parent.left() },
+ *         y = topTo { parent.top() }
  *     )
  *
  *  This would layout your view at the top-left corner of your layout with child views default desired size. In the case
@@ -97,9 +99,9 @@ private const val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
  *  [XInt] and [YInt] represent a resolved layout value on it's corresponding axis, what this provides us is axis level
  *  type-safety. For example:
  *
- *     starDate.applyLayout(
- *         leftTo { parent.top() },
- *         topTo { parent.top() }
+ *     starDate.layoutBy(
+ *         x = leftTo { parent.top() },
+ *         y = topTo { parent.top() }
  *     )
  *
  *  Will not compile. [leftTo] requires an [XInt] and [top()] returns a [YInt]. The intention of this decision is to
@@ -116,10 +118,10 @@ private const val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
  *  In addition to siding [XAxisSolver] and [YAxisSolver] can define the width / height of the layout. In the example
  *  above we can hard-code a height and set a max width with:
  *
- *     starDate.applyLayout(
- *         leftTo { parent.left() }
+ *     starDate.layoutBy(
+ *         x = leftTo { parent.left() }
  *             .rightTo(AtMost) { parent.right() },
- *         topTo { parent.top() }
+ *         y = topTo { parent.top() }
  *             .heightOf { 50.ydip }
  *     )
  *
@@ -134,16 +136,16 @@ private const val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
  *  explicitness of [xdip]/[ydip] eg: ( widthOf { parent.width() - 10.dip } *will* compile. (XInt + Int) == XInt)
  *
  *  Finally, you can reference not only your parent in contour, but any sibling in the layout. So instead of aligning
- *  your left side with the [ContourLayout], you could inistead reference another view, we'll call avatar:
+ *  your left side with the [ContourLayout], you could instead reference another view, we'll call avatar:
  *
- *     starDate.applyLayout(
- *         leftTo { avatar.right() }
- *         centerVerticallyTo { avatar.centerY() }
+ *     starDate.layoutBy(
+ *         x = leftTo { avatar.right() },
+ *         y = centerVerticallyTo { avatar.centerY() }
  *     )
  *
- *  Where you call [applyLayout] is up to you. There are two available styles. Either calling directly in your child
+ *  Where you call [layoutBy] is up to you. There are two available styles. Either calling directly in your child
  *  views [apply] block, or alternatively you can override the method [onInitializeLayout] which will be called
- *  exactly once before layout happens. One thing to note about [applyLayout] is it will add the view to the
+ *  exactly once before layout happens. One thing to note about [layoutBy] is it will add the view to the
  *  [ContourLayout] if not already added. This dictates the draw order - first added will be drawn underneath
  *  everything else.
  */
@@ -252,8 +254,8 @@ open class ContourLayout(
   // API
 
   /**
-   * Option hook in the [ContourLayout] where [applyLayout] can be called on children views to add and configure
-   * before layout. This will be called exactly once before layout.
+   * Option hook in the [ContourLayout] where [layoutBy] can be called on children views
+   * to add and configure before layout. This will be called exactly once before layout.
    */
   open fun onInitializeLayout() {}
 
@@ -269,8 +271,8 @@ open class ContourLayout(
   inline fun Int.toYInt(): YInt = YInt(this)
 
   @Deprecated(
-      "Views should be configured by overriding onInitializeLayout() in your ContourLayout " +
-          "subclass and calling view.applyLayout() on the corresponding view."
+      message = "Views should be configured using layoutBy{} instead.",
+      replaceWith = ReplaceWith("layoutBy(addToViewGroup, config)")
   )
   fun <T : View> T.contourOf(
     addToViewGroup: Boolean = true,
@@ -314,39 +316,83 @@ open class ContourLayout(
   }
 
   /**
-   * Optionally adds the receiver child [View] to the [ContourLayout] and configures its layout using the provided
-   * [XAxisSolver] and [YAxisSolver]
-   * @receiver the view to configure and optionally add to the [ContourLayout]
-   * @param x configures how the [View] will be positioned and sized on the x-axis.
-   * @param y configures how the [View] will be positioned and sized on the y-axis.
-   * @param addToViewGroup if true [applyLayout] will add the receiver [View] to the [ContourLayout] if it is not
-   * already added. Defaults true.
+   * Describes a View's position and dimensions according to the [LayoutSpec] returned
+   * by [spec]. If needed, the layout spec can later be modified using [updateLayout].
+   *
+   * Usage:
+   *
+   * ```
+   * private val starDate = TextView(context).layout {
+   *   text = "Hello World"
+   *   textSize = 16f
+   *   LayoutSpec(
+   *     x = leftTo { parent.left() },
+   *     y = topTo { parent.top() }
+   *   )
+   * }
+   * ```
+   *
+   * @param addToViewGroup if true, this View will be add to the [ContourLayout] if it
+   * is not already added.
    */
+  fun <T : View> T.layoutBy(
+    addToViewGroup: Boolean = true,
+    spec: T.() -> LayoutSpec
+  ): T {
+    val viewGroup = this@ContourLayout
+    layoutParams = spec().also {
+      it.dimen = ViewDimensions(this)
+      it.parent = viewGroup.geometry
+      it.view = this
+    }
+    if (addToViewGroup && parent == null) {
+      viewGroup.addView(this)
+    }
+    return this
+  }
+
+  /**
+   * Describes a View's position and dimensions according to the [x] and [y] layout specs.
+   * If needed, the layout spec can later be modified using [updateLayout].
+   *
+   * Usage:
+   *
+   * ```
+   * override fun onInitializeLayout() {
+   *   starDate.layoutBy(
+   *     x = leftTo { parent.left() },
+   *     y = topTo { parent.top() }
+   *   )
+   * }
+   * ```
+   *
+   * @param addToViewGroup if true, this View will be add to the [ContourLayout] if it
+   * is not already added.
+   */
+  fun View.layoutBy(
+    x: XAxisSolver,
+    y: YAxisSolver,
+    addToViewGroup: Boolean = true
+  ) {
+    layoutBy(addToViewGroup) { LayoutSpec(x, y) }
+  }
+
+  @Deprecated(
+      message = "Views should be configured using layoutBy() instead.",
+      replaceWith = ReplaceWith("layoutBy(\nx, \ny, addToViewGroup)")
+  )
   fun View.applyLayout(
     x: XAxisSolver,
     y: YAxisSolver,
     addToViewGroup: Boolean = true
   ) {
-    val viewGroup = this@ContourLayout
-    val spec = LayoutSpec(x, y)
-    spec.dimen = ViewDimensions(this)
-    spec.parent = viewGroup.geometry
-    spec.view = this
-    layoutParams = spec
-    if (addToViewGroup && parent == null) {
-      viewGroup.addView(this)
-    }
+    layoutBy(x, y, addToViewGroup)
   }
 
-  /**
-   * Convenience method for adding a [View] as child to the [ContourLayout] with a zero-width, zero-height
-   * [LayoutSpec].
-   * @receiver the view to configure and add to the [ContourLayout]
-   */
-  fun View.applyEmptyLayout() = applyLayout(
-      x = leftTo { parent.left() }.widthOf { 0.toXInt() },
-      y = topTo { parent.top() }.heightOf { 0.toYInt() }
-  )
+  @Deprecated(message = "Use layoutBy(x = emptyX(), y = emptyY()) instead.")
+  @Suppress("DeprecatedCallableAddReplaceWith") // breaks code
+  fun View.applyEmptyLayout() =
+    layoutBy(x = emptyX(), y = emptyY())
 
   /**
    * Updates the layout configuration of receiver view with new optional [XAxisSolver] and/or [YAxisSolver]
@@ -540,6 +586,16 @@ open class ContourLayout(
   ): YAxisSolver {
     return topTo { parent.top() + marginTop }.bottomTo { parent.bottom() - marginBottom }
   }
+
+  /**
+   * Assigns zero-width to the view.
+   */
+  fun emptyX() = leftTo { parent.left() }.widthOf { 0.toXInt() }
+
+  /**
+   * Assigns zero-height to the view.
+   */
+  fun emptyY() = topTo { parent.top() }.heightOf { 0.toYInt() }
 
   fun minOf(
     a: XInt,

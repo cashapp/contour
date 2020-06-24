@@ -22,26 +22,42 @@ class SampleView2(context: SampleActivity) : ContourLayout(context) {
   )
 
   private val avatar =
-    AvatarImageView(context).apply {
+    AvatarImageView(context).layoutBy {
       scaleType = ImageView.ScaleType.CENTER_CROP
       Picasso.get()
           .load("https://upload.wikimedia.org/wikipedia/en/9/92/BenSisko.jpg")
           .into(this)
       paint.strokeWidth = 3f.dip
+      LayoutSpec(
+          x = leftTo { parent.left() + 15.dip }.widthOf { 50.xdip },
+          y = topTo { parent.top() + 15.dip }.heightOf { 50.ydip }
+      )
     }
 
-  private val name =
-    TextView(context).apply {
+  private val name: TextView =
+    TextView(context).layoutBy {
       text = "Ben Sisko"
       setSingleLine()
       ellipsize = TruncateAt.END
       setTextColor(White)
       setTextSize(TypedValue.COMPLEX_UNIT_DIP, 24f)
+      LayoutSpec(
+          x = leftTo { avatar.right() + 15.dip }
+              .rightTo(AtMost) { parent.width() - checkmark.width() - 30.dip },
+          y = centerVerticallyTo { parent.centerY() }
+      )
     }
 
   private val checkmark =
-    ImageView(context).apply {
+    ImageView(context).layoutBy {
       setImageResource(R.drawable.check_mark)
+      LayoutSpec(
+          x = minOf(
+              leftTo { name.right() + 15.dip },
+              rightTo { parent.width() - 15.dip }
+          ),
+          y = centerVerticallyTo { name.centerY() }
+      )
     }
 
   init {
@@ -66,35 +82,5 @@ class SampleView2(context: SampleActivity) : ContourLayout(context) {
             .start()
       }
     }
-  }
-
-  override fun onInitializeLayout() {
-    avatar.applyLayout(
-        leftTo {
-          parent.left() + 15.dip
-        }.widthOf {
-          50.xdip
-        },
-        topTo {
-          parent.top() + 15.dip
-        }.heightOf {
-          50.ydip
-        }
-    )
-    name.applyLayout(
-        leftTo {
-          avatar.right() + 15.dip
-        }.rightTo(AtMost) {
-          parent.width() - checkmark.width() - 30.dip
-        },
-        centerVerticallyTo { parent.centerY() }
-    )
-    checkmark.applyLayout(
-        minOf(
-            leftTo { name.right() + 15.dip },
-            rightTo { parent.width() - 15.dip }
-        ),
-        centerVerticallyTo { name.centerY() }
-    )
   }
 }
