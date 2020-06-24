@@ -27,7 +27,7 @@ class ContourTests {
         width = 200,
         height = 50
     ) {
-      plainOldView.applyLayout(
+      plainOldView.layoutBy(
           leftTo { parent.left() }.rightTo { parent.right() },
           topTo { parent.top() }.bottomTo { parent.bottom() }
       )
@@ -47,14 +47,14 @@ class ContourTests {
         width = 200,
         height = 50
     ) {
-      fakeImageView.applyLayout(
+      fakeImageView.layoutBy(
           leftTo { parent.left() }.widthOf {
             parent.height()
                 .toX()
           },
           topTo { parent.top() }.heightOf { parent.height() }
       )
-      fakeTextView.applyLayout(
+      fakeTextView.layoutBy(
           leftTo { fakeImageView.right() }.rightTo { parent.right() },
           topTo { parent.top() }.heightOf { parent.height() }
       )
@@ -74,7 +74,7 @@ class ContourTests {
     val fakeTextView = FakeTextView(activity, "Test", 10)
 
     contourLayout(activity) {
-      fakeTextView.applyLayout(
+      fakeTextView.layoutBy(
           leftTo { parent.left() },
           topTo { parent.top() }
       )
@@ -93,11 +93,11 @@ class ContourTests {
     val x1 = 20.toXInt()
 
     val layout = contourLayout(activity) {
-      view0.applyLayout(
+      view0.layoutBy(
           maxOf(leftTo { x0 }, leftTo { x1 }),
           topTo { parent.top() }
       )
-      view1.applyLayout(
+      view1.layoutBy(
           minOf(leftTo { x0 }, leftTo { x1 }),
           topTo { parent.top() }
       )
@@ -122,11 +122,11 @@ class ContourTests {
     val y1 = 20.toYInt()
 
     val layout = contourLayout(activity) {
-      view0.applyLayout(
+      view0.layoutBy(
           leftTo { parent.left() },
           maxOf(topTo { y0 }, topTo { y1 })
       )
-      view1.applyLayout(
+      view1.layoutBy(
           leftTo { parent.left() },
           minOf(topTo { y0 }, topTo { y1 })
       )
@@ -152,7 +152,7 @@ class ContourTests {
         activity,
         width = 50
     ) {
-      view.applyLayout(
+      view.layoutBy(
           leftTo { parent.left() }.widthOfFloat { parent.width() * amount },
           centerVerticallyTo { parent.centerY() }
       )
@@ -175,7 +175,7 @@ class ContourTests {
         activity,
         width = 260
     ) {
-      view.applyLayout(
+      view.layoutBy(
           leftTo { parent.left() }.widthOfFloat { parent.width() * amount },
           centerVerticallyTo { parent.centerY() }
       )
@@ -194,7 +194,7 @@ class ContourTests {
     view.visibility = View.GONE
 
     val layout = contourLayout(activity) {
-      view.applyLayout(
+      view.layoutBy(
           leftTo { parent.centerX() },
           topTo { parent.centerY() }
       )
@@ -225,14 +225,14 @@ class ContourTests {
     val otherView = View(activity)
 
     val layout = contourLayout(activity, width = 200, height = 50) {
-      viewThatIsGone.applyLayout(
+      viewThatIsGone.layoutBy(
           leftTo { parent.centerX() }
               .widthOf { 10.xdip },
           topTo { parent.centerY() }
               .heightOf { 15.ydip }
       )
 
-      otherView.applyLayout(
+      otherView.layoutBy(
           leftTo { parent.left() + 5 }
               .widthOf { viewThatIsGone.width() + 1 },
           topTo { parent.top() + 10 }

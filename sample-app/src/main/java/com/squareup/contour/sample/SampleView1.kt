@@ -77,7 +77,7 @@ class SampleView1(context: SampleActivity) : ContourLayout(context) {
   }
 
   override fun onInitializeLayout() {
-    avatar.applyLayout(
+    avatar.layoutBy(
         leftTo {
           parent.left() + 15.dip
         }.widthOf {
@@ -89,11 +89,11 @@ class SampleView1(context: SampleActivity) : ContourLayout(context) {
           name.width().toY()
         }
     )
-    name.applyLayout(
+    name.layoutBy(
         leftTo { avatar.left() },
         topTo { avatar.bottom() + 5.dip }
     )
-    description.applyLayout(
+    description.layoutBy(
         leftTo {
           name.right() + 15.dip
         }.rightTo {
@@ -103,7 +103,7 @@ class SampleView1(context: SampleActivity) : ContourLayout(context) {
           parent.top() + 15.dip
         }
     )
-    starDate.applyLayout(
+    starDate.layoutBy(
         rightTo { parent.right() - 15.dip },
         maxOf(
             topTo { description.bottom() + 5.dip },

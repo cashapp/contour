@@ -10,7 +10,7 @@ Compose is a programmatic UI toolkit that uses reactive programming to drive the
 ### Contour is *not* Anko:
 Anko is JetBrain’s typesafe builder library for Android. It introduces none of its own layout logic, but provides convenience builders for the existing Android views and layouts. In contrast Contour provides its own layout mechanism - and actually discourages highly nested view hierarchies because it turns out they are [kinda problematic](https://developer.android.com/topic/performance/rendering/optimizing-view-hierarchies)
 
-## What Contour Is: 
+## What Contour Is:
 Contour aims to be the thinnest possible wrapper around Android’s layout APIs. It allows you to build compound views in pure Kotlin without using opaque layout rules - but instead by hooking into the layout phase yourself. The best comparison for Contour would be to ConstraintLayout - but instead of defining constraints in XML you actually provide them as executable lambdas.
 
 Also - on the topic of XML layouts ...
@@ -37,22 +37,22 @@ Let's create a simple note-taking view that displays a username aligned to the l
 ```kotlin
 class NoteView(context: Context) : ContourLayout(context) {
   private val name: TextView =
-    TextView(context).apply {
+    TextView(context).layoutBy {
       text = "Ben Sisko"
       setTextColor(White)
       setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-      applyLayout(
+      LayoutSpec(
         x = leftTo { parent.left() + 15.dip },
         y = topTo { parent.top() + 15.dip }
       )
     }
 
   private val note =
-    TextView(context).apply {
+    TextView(context).layoutBy {
       text = siskoWisdom
       setTextColor(White)
       setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
-      applyLayout(
+      LayoutSpec(
         x = leftTo { name.right() + 15.dip }
           .rightTo { parent.right() - 15.dip },
         y = topTo { parent.top() + 15.dip }
@@ -73,12 +73,12 @@ Let's also introduce an avatar, and have its width and height match the width of
 
 ```kotlin
   private val avatar =
-    AvatarImageView(context).apply {
+    AvatarImageView(context).layoutBy {
       scaleType = ImageView.ScaleType.CENTER_CROP
       Picasso.get()
         .load("https://upload.wikimedia.org/wikipedia/en/9/92/BenSisko.jpg")
         .into(this)
-      applyLayout(
+      LayoutSpec(
         x = leftTo { name.left() }
           .widthOf { name.width() },
         y = topTo { name.bottom() }
@@ -90,11 +90,11 @@ Let's also introduce an avatar, and have its width and height match the width of
 Finally, let's insert a created date between the note content and the bottom of the view. If there is not enough content in the `note: TextView`, let's align the created date vertically with the name & icon.
 
 ```kotlin
-  private val starDate = TextView(context).apply {
+  private val starDate = TextView(context).layoutBy {
     text = "Stardate: 23634.1"
     setTextColor(White)
     setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-    applyLayout(
+    LayoutSpec(
       x = rightTo { parent.right() - 15.dip },
       y = maxOf(
         topTo { note.bottom() + 5.dip },
@@ -119,12 +119,12 @@ This offers a couple advantages:
 Since configuration is simply provided through lambdas, you can make runtime layout decisions.
 For example:
 ```kotlin
-leftTo { 
+leftTo {
   if (user.name.isEmpty) parent.left()
   else nameView.right()
 }
 ```
-Or 
+Or
 ```kotlin
 heightOf {
   maxOf(note.height(), 100.dip)
@@ -147,7 +147,7 @@ Contour tries to make it easy to do the right thing. As part of this effort, all
 For example, when defining a constraint of `leftTo`, the only exposed methods to chain in this layout are `rightTo` or `widthOf`. Another `leftTo`, or `centerHorizontallyTo` don't really make sense in this context and are hidden.
 In short:
 ```
-applyLayout(
+layoutBy(
   x = leftTo { name.left() }
     .leftTo { name.right() },
   y = topTo { name.bottom() }
@@ -156,13 +156,13 @@ applyLayout(
 Will not compile.
 
 #### Axis Type Safety
-Contour makes heavy use of inline classes to provide axis type safety in layouts. What this means is 
+Contour makes heavy use of inline classes to provide axis type safety in layouts. What this means is
 ```kotlin
 toLeftOf { view.top() }
-``` 
-will not compile. `toLeftOf {}` requires a `XInt`, and `top()` returns a `YInt`. In cases where this needs to be forced, casting functions are made available to `toY()` & `toX()`. 
+```
+will not compile. `toLeftOf {}` requires a `XInt`, and `top()` returns a `YInt`. In cases where this needs to be forced, casting functions are made available to `toY()` & `toX()`.
 
-Inline classes are a lightweight compile-time addition that allow this feature with minimal to no performance costs. 
+Inline classes are a lightweight compile-time addition that allow this feature with minimal to no performance costs.
 https://kotlinlang.org/docs/reference/inline-classes.html
 
 ### Circular Reference Debugging
