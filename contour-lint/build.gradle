@@ -1,0 +1,19 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_1_8
+
+dependencies {
+  def lintVersion = "27.0.0"
+  compileOnly "com.android.tools.lint:lint-api:$lintVersion"
+  compileOnly "com.android.tools.lint:lint-checks:$lintVersion"
+  testImplementation "com.android.tools.lint:lint:$lintVersion"
+  testImplementation "com.android.tools.lint:lint-tests:$lintVersion"
+}
+
+jar {
+  manifest {
+    attributes('Lint-Registry-v2': 'com.squareup.contour.lint.ContourIssueRegistry')
+  }
+}
