@@ -33,8 +33,41 @@ class ContourTests {
       )
     }
 
+    assertThat(plainOldView.left).isEqualTo(0)
+    assertThat(plainOldView.top).isEqualTo(0)
+    assertThat(plainOldView.right).isEqualTo(200)
+    assertThat(plainOldView.bottom).isEqualTo(50)
     assertThat(plainOldView.width).isEqualTo(200)
     assertThat(plainOldView.height).isEqualTo(50)
+  }
+
+  @Test
+  fun `simple single child layout, with padding`() {
+    val plainOldView = View(activity)
+
+    val leftPadding = 1
+    val topPadding = 2
+    val rightPadding = 4
+    val bottomPadding = 8
+
+    contourLayout(
+        context = activity,
+        width = 200,
+        height = 50
+    ) {
+      setPadding(leftPadding, topPadding, rightPadding, bottomPadding)
+      plainOldView.layoutBy(
+          leftTo { parent.left() }.rightTo { parent.right() },
+          topTo { parent.top() }.bottomTo { parent.bottom() }
+      )
+    }
+
+    assertThat(plainOldView.left).isEqualTo(leftPadding)
+    assertThat(plainOldView.top).isEqualTo(topPadding)
+    assertThat(plainOldView.right).isEqualTo(200 - rightPadding)
+    assertThat(plainOldView.bottom).isEqualTo(50 - bottomPadding)
+    assertThat(plainOldView.width).isEqualTo(200 - leftPadding - rightPadding)
+    assertThat(plainOldView.height).isEqualTo(50 - topPadding - bottomPadding)
   }
 
   @Test

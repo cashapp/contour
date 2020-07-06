@@ -19,6 +19,7 @@
 package com.squareup.contour
 
 import android.content.Context
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -157,7 +158,11 @@ open class ContourLayout(
   private val density: Float = context.resources.displayMetrics.density
   private val widthConfig = SizeConfig()
   private val heightConfig = SizeConfig()
-  private val geometry = ParentGeometry(widthConfig, heightConfig)
+  private val geometry = ParentGeometry(
+      widthConfig = widthConfig,
+      heightConfig = heightConfig,
+      paddingConfig = { Rect(paddingLeft, paddingTop, paddingRight, paddingBottom) }
+  )
   private var constructed: Boolean = true
   private var initialized: Boolean = false
   private var lastWidthSpec: Int = 0
