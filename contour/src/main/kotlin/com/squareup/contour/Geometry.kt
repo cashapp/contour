@@ -18,6 +18,8 @@
 
 package com.squareup.contour
 
+import android.graphics.Rect
+
 /**
  * Represents a rectangle in your layout.
  * The methods obey a contract that they will either return the correct laid out or throw a
@@ -34,4 +36,6 @@ interface Geometry {
   fun bottom(): YInt
   fun height(): YInt
   fun centerY(): YInt
+
+  fun padding(): Rect
 }

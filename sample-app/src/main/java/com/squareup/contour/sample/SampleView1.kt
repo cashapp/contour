@@ -6,6 +6,7 @@ import android.util.TypedValue
 import android.widget.ImageView
 import android.widget.TextView
 import com.squareup.contour.ContourLayout
+import com.squareup.contour.sample.widget.PaddingAdjusterWidget
 import com.squareup.picasso.Picasso
 import kotlin.contracts.ExperimentalContracts
 
@@ -54,8 +55,12 @@ class SampleView1(context: SampleActivity) : ContourLayout(context) {
       setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
     }
 
+  private val paddingAdjusterWidget = PaddingAdjusterWidget(context) {
+      setPadding(it.left * 2, it.top * 2, it.right * 2, it.bottom * 2)
+  }
+
   init {
-    contourHeightOf { starDate.bottom() + 15.dip }
+    contourHeightOf { paddingAdjusterWidget.bottom() + paddingBottom }
 
     setBackgroundColor(Blue)
     var animated = false
@@ -79,12 +84,12 @@ class SampleView1(context: SampleActivity) : ContourLayout(context) {
   override fun onInitializeLayout() {
     avatar.layoutBy(
         leftTo {
-          parent.left() + 15.dip
+          parent.left()
         }.widthOf {
           name.width()
         },
         topTo {
-          parent.top() + 15.dip
+          parent.top()
         }.heightOf {
           name.width().toY()
         }
@@ -97,18 +102,23 @@ class SampleView1(context: SampleActivity) : ContourLayout(context) {
         leftTo {
           name.right() + 15.dip
         }.rightTo {
-          parent.right() - 15.dip
+          parent.right()
         },
         topTo {
-          parent.top() + 15.dip
+          parent.top()
         }
     )
     starDate.layoutBy(
-        rightTo { parent.right() - 15.dip },
+        rightTo { parent.right() },
         maxOf(
             topTo { description.bottom() + 5.dip },
             bottomTo { name.bottom() }
         )
+    )
+
+    paddingAdjusterWidget.layoutBy(
+        leftTo { parent.left() }.rightTo { parent.right() },
+        topTo { starDate.bottom() + 30.dip }
     )
   }
 }
