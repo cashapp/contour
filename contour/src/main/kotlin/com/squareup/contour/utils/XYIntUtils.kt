@@ -23,15 +23,16 @@ import com.squareup.contour.XFloat
 import com.squareup.contour.XInt
 import com.squareup.contour.YFloat
 import com.squareup.contour.YInt
+import com.squareup.contour.constraints.SizeConfigLambda
 
 internal inline fun unwrapXIntToXIntLambda(
   crossinline lambda: (XInt) -> XInt
-): (Int) -> Int =
+): SizeConfigLambda =
   { lambda(it.toXInt()).value }
 
 internal inline fun unwrapYIntToYIntLambda(
   crossinline lambda: (YInt) -> YInt
-): (Int) -> Int =
+): SizeConfigLambda =
   { lambda(it.toYInt()).value }
 
 internal inline fun unwrapXIntLambda(

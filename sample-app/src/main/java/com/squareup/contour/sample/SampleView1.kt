@@ -60,7 +60,7 @@ class SampleView1(context: SampleActivity) : ContourLayout(context) {
   }
 
   init {
-    contourHeightOf { paddingAdjusterWidget.bottom() + paddingBottom }
+    contourHeightWrapContent()
 
     setBackgroundColor(Blue)
     var animated = false
