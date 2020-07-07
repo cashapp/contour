@@ -16,10 +16,12 @@
 
 package com.squareup.contour.constraints
 
-internal class SizeConfig {
-  var available: Int = Int.MIN_VALUE
-  var result: Int = Int.MIN_VALUE
-  var lambda: (Int) -> Int = { it }
+internal typealias SizeConfigLambda = (available: Int) -> Int
+internal class SizeConfig(
+  var available: Int = Int.MIN_VALUE,
+  var result: Int = Int.MIN_VALUE,
+  var lambda: SizeConfigLambda
+) {
 
   fun resolve(): Int {
     if (result == Int.MIN_VALUE) {

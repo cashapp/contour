@@ -24,6 +24,10 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import com.squareup.contour.constraints.SizeConfig
+import com.squareup.contour.constraints.SizeConfigSmartLambdas.CoordinateAxis.HORIZONTAL
+import com.squareup.contour.constraints.SizeConfigSmartLambdas.CoordinateAxis.VERTICAL
+import com.squareup.contour.constraints.SizeConfigSmartLambdas.matchParent
+import com.squareup.contour.constraints.SizeConfigSmartLambdas.wrapContent
 import com.squareup.contour.errors.CircularReferenceDetected
 import com.squareup.contour.solvers.AxisSolver
 import com.squareup.contour.solvers.ComparisonResolver
@@ -156,8 +160,8 @@ open class ContourLayout(
 ) : ViewGroup(context, attrs) {
 
   private val density: Float = context.resources.displayMetrics.density
-  private val widthConfig = SizeConfig()
-  private val heightConfig = SizeConfig()
+  private val widthConfig = SizeConfig(lambda = matchParent())
+  private val heightConfig = SizeConfig(lambda = matchParent())
   private val geometry = ParentGeometry(
       widthConfig = widthConfig,
       heightConfig = heightConfig,
@@ -295,8 +299,16 @@ open class ContourLayout(
   }
 
   /**
-   * Overrides how the [ContourLayout] should size it's width. By default [ContourLayout] will take all the available
-   * space it is given.
+   * Overrides how the [ContourLayout] should size its width by reverting to the default behaviour, which
+   * is to take all the available space it is given
+   */
+  fun contourWidthMatchParent() {
+    widthConfig.lambda = matchParent()
+  }
+
+  /**
+   * Overrides how the [ContourLayout] should size its width. By default [ContourLayout] will take all the available
+   * space it is given. This override allows fine grained control over the resulting final measure.
    * @param config a function that takes a [XInt] - which is the available space supplied by the [ContourLayout]'s
    * parent - and returns a [XInt] describing how wide the [ContourLayout] should be.
    *
@@ -308,8 +320,24 @@ open class ContourLayout(
   }
 
   /**
-   * Overrides how the [ContourLayout] should size it's height. By default [ContourLayout] will take all the available
-   * space it is given.
+   * Overrides how the [ContourLayout] should size its width. This override instructs the view to take up
+   * as much space as necessary to wrap its subviews, including its own padding.
+   */
+  fun contourWidthWrapContent() {
+    widthConfig.lambda = wrapContent(this, HORIZONTAL)
+  }
+
+  /**
+   * Overrides how the [ContourLayout] should size its height by reverting to the default behaviour, which
+   * is to take all the available space it is given
+   */
+  fun contourHeightMatchParent() {
+    heightConfig.lambda = matchParent()
+  }
+
+  /**
+   * Overrides how the [ContourLayout] should size its height. By default [ContourLayout] will take all the available
+   * space it is given. This override allows fine grained control over the resulting final measure.
    * @param config a function that takes a [YInt] - which is the available space supplied by the [ContourLayout]'s
    * parent - and returns a [YInt] describing how tall the [ContourLayout] should be.
    *
@@ -318,6 +346,14 @@ open class ContourLayout(
    */
   fun contourHeightOf(config: (available: YInt) -> YInt) {
     heightConfig.lambda = unwrapYIntToYIntLambda(config)
+  }
+
+  /**
+   * Overrides how the [ContourLayout] should size its height. This override instructs the view to take up
+   * as much space as necessary to wrap its subviews, including its own padding.
+   */
+  fun contourHeightWrapContent() {
+    heightConfig.lambda = wrapContent(this, VERTICAL)
   }
 
   /**
