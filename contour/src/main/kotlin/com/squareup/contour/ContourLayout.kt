@@ -49,6 +49,8 @@ import com.squareup.contour.utils.unwrapYIntToYIntLambda
 import com.squareup.contour.wrappers.HasDimensions
 import com.squareup.contour.wrappers.ParentGeometry
 import com.squareup.contour.wrappers.ViewDimensions
+import java.lang.UnsupportedOperationException
+import kotlin.DeprecationLevel.ERROR
 import kotlin.math.max
 import kotlin.math.min
 
@@ -272,7 +274,7 @@ open class ContourLayout(
     spec.parent = viewGroup.geometry
     layoutParams = spec
     if (addToViewGroup) {
-      viewGroup.addView(this)
+      viewGroup.addViewInternal(this)
     }
     return this
   }
@@ -366,7 +368,7 @@ open class ContourLayout(
       it.view = this
     }
     if (addToViewGroup && parent == null) {
-      viewGroup.addView(this)
+      viewGroup.addViewInternal(this)
     }
     return this
   }
@@ -673,6 +675,37 @@ open class ContourLayout(
     return ComparisonResolver(p0, p1, MaxOf)
   }
 
+  private fun addViewInternal(child: View?) = super.addView(child)
+
+  @Deprecated(ADDVIEW_DEPRECATION_MESSAGE, ReplaceWith(ADDVIEW_DEPRECATION_QUICKFIX), ERROR)
+  override fun addView(child: View?) = super.addView(child)
+
+  @Deprecated(ADDVIEW_DEPRECATION_MESSAGE, ReplaceWith(ADDVIEW_DEPRECATION_QUICKFIX), ERROR)
+  override fun addView(child: View?, index: Int) = super.addView(child, index)
+
+  @Deprecated(ADDVIEW_DEPRECATION_MESSAGE, ReplaceWith(ADDVIEW_DEPRECATION_QUICKFIX), ERROR)
+  override fun addView(child: View?, params: LayoutParams?) = super.addView(child, params)
+
+  @Deprecated(ADDVIEW_DEPRECATION_MESSAGE, ReplaceWith(ADDVIEW_DEPRECATION_QUICKFIX), ERROR)
+  override fun addView(child: View?, index: Int, params: LayoutParams?) =
+    super.addView(child, index, params)
+
+  @Deprecated(ADDVIEW_DEPRECATION_MESSAGE, ReplaceWith(ADDVIEW_DEPRECATION_QUICKFIX), ERROR)
+  override fun addView(child: View?, width: Int, height: Int) =
+    super.addView(child, width, height)
+
+  @Deprecated(ADDVIEW_DEPRECATION_MESSAGE, ReplaceWith(ADDVIEW_DEPRECATION_QUICKFIX), ERROR)
+  override fun addViewInLayout(child: View?, index: Int, params: LayoutParams?) =
+    super.addViewInLayout(child, index, params)
+
+  @Deprecated(ADDVIEW_DEPRECATION_MESSAGE, ReplaceWith(ADDVIEW_DEPRECATION_QUICKFIX), ERROR)
+  override fun addViewInLayout(
+    child: View?, index: Int, params: LayoutParams?, preventRequestLayout: Boolean
+  ) = if (child?.layoutParams is LayoutSpec)
+    super.addViewInLayout(child, index, params, preventRequestLayout)
+  else
+    throw UnsupportedOperationException(ADDVIEW_DEPRECATION_MESSAGE)
+
   class LayoutSpec(
     internal val x: XAxisSolver,
     internal val y: YAxisSolver
@@ -730,5 +763,10 @@ open class ContourLayout(
       x.clear()
       y.clear()
     }
+  }
+
+  companion object {
+    const val ADDVIEW_DEPRECATION_MESSAGE = "Incorrectly adding view to ContourLayout"
+    const val ADDVIEW_DEPRECATION_QUICKFIX = "child.layoutBy(x = matchParentX(), y = matchParentY())"
   }
 }
