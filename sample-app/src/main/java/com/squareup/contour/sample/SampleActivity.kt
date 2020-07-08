@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import kotlin.LazyThreadSafetyMode.NONE
-import kotlin.contracts.ExperimentalContracts
 
-@ExperimentalContracts
 class SampleActivity : AppCompatActivity() {
 
   private var i = 0

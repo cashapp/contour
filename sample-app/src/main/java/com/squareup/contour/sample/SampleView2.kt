@@ -9,10 +9,8 @@ import android.widget.TextView
 import com.squareup.contour.ContourLayout
 import com.squareup.contour.SizeMode.AtMost
 import com.squareup.picasso.Picasso
-import kotlin.contracts.ExperimentalContracts
 
 @SuppressLint("ViewConstructor")
-@ExperimentalContracts
 class SampleView2(context: SampleActivity) : ContourLayout(context) {
 
   private val names = listOf(

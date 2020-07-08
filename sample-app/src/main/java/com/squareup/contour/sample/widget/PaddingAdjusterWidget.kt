@@ -7,10 +7,8 @@ import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.appcompat.widget.AppCompatTextView
 import com.squareup.contour.ContourLayout
 import com.squareup.contour.sample.SampleActivity
-import kotlin.contracts.ExperimentalContracts
 
 @SuppressLint("ViewConstructor")
-@ExperimentalContracts
 internal class PaddingAdjusterWidget(
     context: SampleActivity,
     private val onPaddingAdjusted: (Rect) -> Unit

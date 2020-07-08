@@ -8,10 +8,8 @@ import android.widget.TextView
 import com.squareup.contour.ContourLayout
 import com.squareup.contour.sample.widget.PaddingAdjusterWidget
 import com.squareup.picasso.Picasso
-import kotlin.contracts.ExperimentalContracts
 
 @SuppressLint("SetTextI18n", "ViewConstructor")
-@ExperimentalContracts
 class SampleView1(context: SampleActivity) : ContourLayout(context) {
 
   private val siskoWisdom: String =
