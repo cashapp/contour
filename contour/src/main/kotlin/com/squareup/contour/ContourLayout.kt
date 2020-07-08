@@ -149,10 +149,9 @@ private const val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
  *     )
  *
  *  Where you call [layoutBy] is up to you. There are two available styles. Either calling directly in your child
- *  views [apply] block, or alternatively you can override the method [onInitializeLayout] which will be called
- *  exactly once before layout happens. One thing to note about [layoutBy] is it will add the view to the
- *  [ContourLayout] if not already added. This dictates the draw order - first added will be drawn underneath
- *  everything else.
+ *  views [apply] block, or alternatively in your layout's [init] block. One thing to note about [layoutBy] is it
+ *  will add the view to the [ContourLayout] if not already added. This dictates the draw order - first added
+ *  will be drawn underneath everything else.
  */
 open class ContourLayout(
   context: Context,
@@ -168,16 +167,8 @@ open class ContourLayout(
       paddingConfig = { Rect(paddingLeft, paddingTop, paddingRight, paddingBottom) }
   )
   private var constructed: Boolean = true
-  private var initialized: Boolean = false
   private var lastWidthSpec: Int = 0
   private var lastHeightSpec: Int = 0
-
-  private fun initializeLayout() {
-    if (!initialized) {
-      onInitializeLayout()
-      initialized = true
-    }
-  }
 
   override fun requestLayout() {
     if (constructed) {
@@ -186,16 +177,10 @@ open class ContourLayout(
     super.requestLayout()
   }
 
-  override fun onAttachedToWindow() {
-    super.onAttachedToWindow()
-    initializeLayout()
-  }
-
   override fun onMeasure(
     widthMeasureSpec: Int,
     heightMeasureSpec: Int
   ) {
-    initializeLayout()
     if (lastWidthSpec != widthMeasureSpec || lastHeightSpec != heightMeasureSpec) {
       invalidateAll()
     }
@@ -261,12 +246,6 @@ open class ContourLayout(
   }
 
   // API
-
-  /**
-   * Option hook in the [ContourLayout] where [layoutBy] can be called on children views
-   * to add and configure before layout. This will be called exactly once before layout.
-   */
-  open fun onInitializeLayout() {}
 
   val Int.dip: Int get() = (density * this).toInt()
   val Int.xdip: XInt get() = XInt((density * this).toInt())
@@ -399,7 +378,7 @@ open class ContourLayout(
    * Usage:
    *
    * ```
-   * override fun onInitializeLayout() {
+   * init {
    *   starDate.layoutBy(
    *     x = leftTo { parent.left() },
    *     y = topTo { parent.top() }

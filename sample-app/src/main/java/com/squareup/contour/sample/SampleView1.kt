@@ -60,6 +60,8 @@ class SampleView1(context: SampleActivity) : ContourLayout(context) {
   init {
     contourHeightWrapContent()
 
+    initializeLayout()
+
     setBackgroundColor(Blue)
     var animated = false
     setOnClickListener {
@@ -79,7 +81,7 @@ class SampleView1(context: SampleActivity) : ContourLayout(context) {
     }
   }
 
-  override fun onInitializeLayout() {
+  private fun initializeLayout() {
     avatar.layoutBy(
         leftTo {
           parent.left()
