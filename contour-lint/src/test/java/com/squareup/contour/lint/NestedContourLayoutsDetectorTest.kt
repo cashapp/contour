@@ -183,7 +183,7 @@ class NestedContourLayoutsDetectorTest {
       |  private val view1 = View(context)
       |  private val view2 = BarView(context)
       | 
-      | override fun onInitializeLayout() {
+      | init {
       |    view1.layoutBy(
       |        x = leftTo { parent.left() },
       |        y = topTo { parent.top() }

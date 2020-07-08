@@ -21,7 +21,7 @@ fun contourLayout(
     initializeLayout: ContourLayout.() -> Unit
 ): ContourLayout =
   object : ContourLayout(context) {
-    override fun onInitializeLayout() {
+    init {
       initializeLayout()
     }
   }.layoutSizeOf(width, height)
