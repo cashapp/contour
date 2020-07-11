@@ -71,6 +71,47 @@ class ContourTests {
   }
 
   @Test
+  fun `simple single child layout, with padding, respectsPadding disable`() {
+    val plainOldView = View(activity)
+
+    val leftPadding = 1
+    val topPadding = 2
+    val rightPadding = 4
+    val bottomPadding = 8
+
+    val layout = contourLayout(
+        context = activity,
+        width = 200,
+        height = 50
+    ) {
+      respectPadding = false
+      setPadding(leftPadding, topPadding, rightPadding, bottomPadding)
+      plainOldView.layoutBy(
+          leftTo { parent.left() }.rightTo { parent.right() },
+          topTo { parent.top() }.bottomTo { parent.bottom() }
+      )
+    }
+
+    assertThat(plainOldView.left).isEqualTo(0)
+    assertThat(plainOldView.top).isEqualTo(0)
+    assertThat(plainOldView.right).isEqualTo(200)
+    assertThat(plainOldView.bottom).isEqualTo(50)
+    assertThat(plainOldView.width).isEqualTo(200)
+    assertThat(plainOldView.height).isEqualTo(50)
+
+    // Now re-enable respectPadding
+    layout.respectPadding = true
+    layout.forceRelayout()
+
+    assertThat(plainOldView.left).isEqualTo(leftPadding)
+    assertThat(plainOldView.top).isEqualTo(topPadding)
+    assertThat(plainOldView.right).isEqualTo(200 - rightPadding)
+    assertThat(plainOldView.bottom).isEqualTo(50 - bottomPadding)
+    assertThat(plainOldView.width).isEqualTo(200 - leftPadding - rightPadding)
+    assertThat(plainOldView.height).isEqualTo(50 - topPadding - bottomPadding)
+  }
+
+  @Test
   fun `child can be aligned to another child`() {
     val fakeImageView = View(activity)
     val fakeTextView = View(activity)
