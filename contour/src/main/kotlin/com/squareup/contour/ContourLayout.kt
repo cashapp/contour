@@ -160,13 +160,32 @@ open class ContourLayout(
   attrs: AttributeSet? = null
 ) : ViewGroup(context, attrs) {
 
+  /**
+   * Whether Contour should respect padding set on this layout as part of laying out its subviews.
+   * When set to `true`, padding will influence the alignment of subviews to the layout's inner edges
+   * When set to `false`, padding will be ignored in all layout calculations.
+   *
+   * This flag exists for the sole purpose of facilitating baby-steps migration from alpha versions
+   * of Contour where padding was not taken into account, allowing devs to migrate one view at a time.
+   *
+   * @see ViewGroup.setPadding
+   */
+  @Deprecated("Migrate implementation to properly take padding into account or explicitly null it out")
+  var respectPadding: Boolean = true
+
   private val density: Float = context.resources.displayMetrics.density
   private val widthConfig = SizeConfig(lambda = matchParent())
   private val heightConfig = SizeConfig(lambda = matchParent())
   private val geometry = ParentGeometry(
       widthConfig = widthConfig,
       heightConfig = heightConfig,
-      paddingConfig = { Rect(paddingLeft, paddingTop, paddingRight, paddingBottom) }
+      paddingConfig = {
+        if (respectPadding) {
+          Rect(paddingLeft, paddingTop, paddingRight, paddingBottom)
+        } else {
+          Rect(0, 0, 0, 0)
+        }
+      }
   )
   private var constructed: Boolean = true
   private var lastWidthSpec: Int = 0
