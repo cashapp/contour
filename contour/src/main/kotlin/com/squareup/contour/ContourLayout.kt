@@ -358,7 +358,7 @@ open class ContourLayout(
 
   /**
    * Describes a View's position and dimensions according to the [LayoutSpec] returned
-   * by [spec]. If needed, the layout spec can later be modified using [updateLayout].
+   * by [spec]. If needed, the layout spec can later be modified using [updateLayoutBy].
    *
    * Usage:
    *
@@ -394,7 +394,7 @@ open class ContourLayout(
 
   /**
    * Describes a View's position and dimensions according to the [x] and [y] layout specs.
-   * If needed, the layout spec can later be modified using [updateLayout].
+   * If needed, the layout spec can later be modified using [updateLayoutBy].
    *
    * Usage:
    *
@@ -441,7 +441,7 @@ open class ContourLayout(
    * @param x configures how the [View] will be positioned and sized on the x-axis.
    * @param y configures how the [View] will be positioned and sized on the y-axis.
    */
-  fun View.updateLayout(
+  fun View.updateLayoutBy(
     x: XAxisSolver = spec().x,
     y: YAxisSolver = spec().y
   ) {
@@ -453,12 +453,20 @@ open class ContourLayout(
     layoutParams = spec
   }
 
-  @Deprecated("Use updateLayout", ReplaceWith("updateLayout(x, y)"))
+  @Deprecated("Use updateLayoutBy", ReplaceWith("updateLayout(x, y)"))
+  fun View.updateLayout(
+    x: XAxisSolver = spec().x,
+    y: YAxisSolver = spec().y
+  ) {
+    updateLayoutBy(x, y)
+  }
+
+  @Deprecated("Use updateLayoutBy", ReplaceWith("updateLayoutBy(x, y)"))
   fun View.updateLayoutSpec(
     x: XAxisSolver = spec().x,
     y: YAxisSolver = spec().y
   ) {
-    updateLayout(x, y)
+    updateLayoutBy(x, y)
   }
 
   /**
