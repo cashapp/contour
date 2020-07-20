@@ -97,9 +97,6 @@ Cutting a Release
     sed -i "" \
       "s/VERSION_NAME=.*/VERSION_NAME=$NEXT_VERSION/g" \
       `find . -name "gradle.properties"`
-    sed -i "" \
-      "s/\"app.cash.contour:\([^\:]*\):[^\"]*\"/\"app.cash.contour:\1:$NEXT_VERSION\"/g" \
-      `find . -name "README.md"`
     git commit -am "Prepare next development version."
     git push && git push --tags
     ```
