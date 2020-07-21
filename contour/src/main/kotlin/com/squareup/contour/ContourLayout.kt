@@ -453,7 +453,7 @@ open class ContourLayout(
     layoutParams = spec
   }
 
-  @Deprecated("Use updateLayoutBy", ReplaceWith("updateLayout(x, y)"))
+  @Deprecated("Use updateLayoutBy", ReplaceWith("updateLayoutBy(x, y)"))
   fun View.updateLayout(
     x: XAxisSolver = spec().x,
     y: YAxisSolver = spec().y
