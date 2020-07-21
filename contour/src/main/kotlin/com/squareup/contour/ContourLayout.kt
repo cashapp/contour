@@ -705,30 +705,30 @@ open class ContourLayout(
   private fun addViewInternal(child: View?) = super.addView(child)
 
   @Deprecated(ADDVIEW_DEPRECATION_MESSAGE, ReplaceWith(ADDVIEW_DEPRECATION_QUICKFIX))
-  override fun addView(child: View?) = super.addView(child)
+  override fun addView(child: View) = super.addView(child)
 
   @Deprecated(ADDVIEW_DEPRECATION_MESSAGE, ReplaceWith(ADDVIEW_DEPRECATION_QUICKFIX))
-  override fun addView(child: View?, index: Int) = super.addView(child, index)
+  override fun addView(child: View, index: Int) = super.addView(child, index)
 
   @Deprecated(ADDVIEW_DEPRECATION_MESSAGE, ReplaceWith(ADDVIEW_DEPRECATION_QUICKFIX))
-  override fun addView(child: View?, params: LayoutParams?) = super.addView(child, params)
+  override fun addView(child: View, params: LayoutParams) = super.addView(child, params)
 
   @Deprecated(ADDVIEW_DEPRECATION_MESSAGE, ReplaceWith(ADDVIEW_DEPRECATION_QUICKFIX))
-  override fun addView(child: View?, index: Int, params: LayoutParams?) =
+  override fun addView(child: View, index: Int, params: LayoutParams) =
     super.addView(child, index, params)
 
   @Deprecated(ADDVIEW_DEPRECATION_MESSAGE, ReplaceWith(ADDVIEW_DEPRECATION_QUICKFIX))
-  override fun addView(child: View?, width: Int, height: Int) =
+  override fun addView(child: View, width: Int, height: Int) =
     super.addView(child, width, height)
 
   @Deprecated(ADDVIEW_DEPRECATION_MESSAGE, ReplaceWith(ADDVIEW_DEPRECATION_QUICKFIX))
-  override fun addViewInLayout(child: View?, index: Int, params: LayoutParams?) =
+  override fun addViewInLayout(child: View, index: Int, params: LayoutParams) =
     super.addViewInLayout(child, index, params)
 
   @Deprecated(ADDVIEW_DEPRECATION_MESSAGE, ReplaceWith(ADDVIEW_DEPRECATION_QUICKFIX))
   override fun addViewInLayout(
-    child: View?, index: Int, params: LayoutParams?, preventRequestLayout: Boolean
-  ) = if (child?.layoutParams is LayoutSpec)
+    child: View, index: Int, params: LayoutParams, preventRequestLayout: Boolean
+  ) = if (child.layoutParams is LayoutSpec)
     super.addViewInLayout(child, index, params, preventRequestLayout)
   else
     throw UnsupportedOperationException(ADDVIEW_DEPRECATION_MESSAGE)
