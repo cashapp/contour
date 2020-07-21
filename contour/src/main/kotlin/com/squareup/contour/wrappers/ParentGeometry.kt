@@ -32,18 +32,12 @@ internal class ParentGeometry(
   override fun left(): XInt = XInt.ZERO + padding().left
   override fun right(): XInt = widthConfig.resolve().toXInt() - padding().right
   override fun width(): XInt = widthConfig.resolve().toXInt()
-  override fun centerX(): XInt {
-    val widthMinusPadding = widthConfig.resolve() - padding().left - padding().right
-    return (widthMinusPadding / 2).toXInt()
-  }
+  override fun centerX(): XInt = widthConfig.resolve().toXInt() / 2
 
   override fun top(): YInt = YInt.ZERO + padding().top
   override fun bottom(): YInt = heightConfig.resolve().toYInt() - padding().bottom
   override fun height(): YInt = heightConfig.resolve().toYInt()
-  override fun centerY(): YInt {
-    val heightMinusPadding = heightConfig.resolve() - padding().top - padding().bottom
-    return (heightMinusPadding / 2).toYInt()
-  }
+  override fun centerY(): YInt = heightConfig.resolve().toYInt() / 2
 
   override fun padding(): Rect = paddingConfig()
 }

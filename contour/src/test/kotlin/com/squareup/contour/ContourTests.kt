@@ -42,8 +42,9 @@ class ContourTests {
   }
 
   @Test
-  fun `simple single child layout, with padding`() {
+  fun `simple layout, with padding`() {
     val plainOldView = View(activity)
+    val centeredView = View(activity)
 
     val leftPadding = 1
     val topPadding = 2
@@ -60,6 +61,10 @@ class ContourTests {
           leftTo { parent.left() }.rightTo { parent.right() },
           topTo { parent.top() }.bottomTo { parent.bottom() }
       )
+      centeredView.layoutBy(
+          centerHorizontallyTo { parent.centerX() }.widthOf { 10.xdip },
+          centerVerticallyTo { parent.centerY() }.heightOf { 10.ydip }
+      )
     }
 
     assertThat(plainOldView.left).isEqualTo(leftPadding)
@@ -68,11 +73,19 @@ class ContourTests {
     assertThat(plainOldView.bottom).isEqualTo(50 - bottomPadding)
     assertThat(plainOldView.width).isEqualTo(200 - leftPadding - rightPadding)
     assertThat(plainOldView.height).isEqualTo(50 - topPadding - bottomPadding)
+
+    assertThat(centeredView.left).isEqualTo(200 / 2 - 5)
+    assertThat(centeredView.top).isEqualTo(50 / 2 - 5)
+    assertThat(centeredView.right).isEqualTo(200 / 2 + 5)
+    assertThat(centeredView.bottom).isEqualTo(50 / 2 + 5)
+    assertThat(centeredView.width).isEqualTo(10)
+    assertThat(centeredView.height).isEqualTo(10)
   }
 
   @Test
-  fun `simple single child layout, with padding, respectsPadding disable`() {
+  fun `simple layout, with padding, respectsPadding disable`() {
     val plainOldView = View(activity)
+    val centeredView = View(activity)
 
     val leftPadding = 1
     val topPadding = 2
@@ -90,6 +103,10 @@ class ContourTests {
           leftTo { parent.left() }.rightTo { parent.right() },
           topTo { parent.top() }.bottomTo { parent.bottom() }
       )
+      centeredView.layoutBy(
+          centerHorizontallyTo { parent.centerX() }.widthOf { 10.xdip },
+          centerVerticallyTo { parent.centerY() }.heightOf { 10.ydip }
+      )
     }
 
     assertThat(plainOldView.left).isEqualTo(0)
@@ -98,6 +115,13 @@ class ContourTests {
     assertThat(plainOldView.bottom).isEqualTo(50)
     assertThat(plainOldView.width).isEqualTo(200)
     assertThat(plainOldView.height).isEqualTo(50)
+
+    assertThat(centeredView.left).isEqualTo(200 / 2 - 5)
+    assertThat(centeredView.top).isEqualTo(50 / 2 - 5)
+    assertThat(centeredView.right).isEqualTo(200 / 2 + 5)
+    assertThat(centeredView.bottom).isEqualTo(50 / 2 + 5)
+    assertThat(centeredView.width).isEqualTo(10)
+    assertThat(centeredView.height).isEqualTo(10)
 
     // Now re-enable respectPadding
     layout.respectPadding = true
@@ -109,6 +133,13 @@ class ContourTests {
     assertThat(plainOldView.bottom).isEqualTo(50 - bottomPadding)
     assertThat(plainOldView.width).isEqualTo(200 - leftPadding - rightPadding)
     assertThat(plainOldView.height).isEqualTo(50 - topPadding - bottomPadding)
+
+    assertThat(centeredView.left).isEqualTo(200 / 2 - 5)
+    assertThat(centeredView.top).isEqualTo(50 / 2 - 5)
+    assertThat(centeredView.right).isEqualTo(200 / 2 + 5)
+    assertThat(centeredView.bottom).isEqualTo(50 / 2 + 5)
+    assertThat(centeredView.width).isEqualTo(10)
+    assertThat(centeredView.height).isEqualTo(10)
   }
 
   @Test
