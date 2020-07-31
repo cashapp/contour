@@ -49,8 +49,6 @@ import com.squareup.contour.utils.unwrapYIntToYIntLambda
 import com.squareup.contour.wrappers.HasDimensions
 import com.squareup.contour.wrappers.ParentGeometry
 import com.squareup.contour.wrappers.ViewDimensions
-import java.lang.UnsupportedOperationException
-import kotlin.DeprecationLevel.ERROR
 import kotlin.math.max
 import kotlin.math.min
 
