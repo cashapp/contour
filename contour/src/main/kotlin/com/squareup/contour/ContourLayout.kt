@@ -361,7 +361,7 @@ open class ContourLayout(
    * Usage:
    *
    * ```
-   * private val starDate = TextView(context).layout {
+   * private val starDate = TextView(context).layoutBy {
    *   text = "Hello World"
    *   textSize = 16f
    *   LayoutSpec(
