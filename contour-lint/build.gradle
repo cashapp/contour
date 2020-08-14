@@ -6,6 +6,7 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
   def lintVersion = "27.0.0"
+  compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
   compileOnly "com.android.tools.lint:lint-api:$lintVersion"
   compileOnly "com.android.tools.lint:lint-checks:$lintVersion"
   testImplementation "com.android.tools.lint:lint:$lintVersion"
