@@ -155,8 +155,12 @@ private const val WRAP = ViewGroup.LayoutParams.WRAP_CONTENT
  */
 open class ContourLayout(
   context: Context,
-  attrs: AttributeSet? = null
+  attrs: AttributeSet?
 ) : ViewGroup(context, attrs) {
+
+  // Using a secondary constructor instead of @JvmOverloads ensures that
+  // it shows up in autocomplete suggestions when extending ContourLayout.
+  constructor(context: Context): this(context, null)
 
   /**
    * Whether Contour should respect padding set on this layout as part of laying out its subviews.
