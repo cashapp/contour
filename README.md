@@ -37,27 +37,30 @@ Let's create a simple note-taking view that displays a username aligned to the l
 ```kotlin
 class NoteView(context: Context) : ContourLayout(context) {
   private val name: TextView =
-    TextView(context).layoutBy {
+    TextView(context).apply {
       text = "Ben Sisko"
       setTextColor(White)
       setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-      LayoutSpec(
-        x = leftTo { parent.left() + 15.dip },
-        y = topTo { parent.top() + 15.dip }
-      )
     }
 
   private val note =
-    TextView(context).layoutBy {
+    TextView(context).apply {
       text = siskoWisdom
       setTextColor(White)
       setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
-      LayoutSpec(
-        x = leftTo { name.right() + 15.dip }
-          .rightTo { parent.right() - 15.dip },
-        y = topTo { parent.top() + 15.dip }
-      )
     }
+
+  init {
+    name.layoutBy(
+      x = leftTo { parent.left() + 15.dip },
+      y = topTo { parent.top() + 15.dip }
+    )
+    note.layoutBy(
+      x = leftTo { name.right() + 15.dip }
+        .rightTo { parent.right() - 15.dip },
+      y = topTo { parent.top() + 15.dip }
+    )
+  }
 }
 ```
 
@@ -73,28 +76,34 @@ Let's also introduce an avatar, and have its width and height match the width of
 
 ```kotlin
   private val avatar =
-    AvatarImageView(context).layoutBy {
+    AvatarImageView(context).apply {
       scaleType = ImageView.ScaleType.CENTER_CROP
       Picasso.get()
         .load("https://upload.wikimedia.org/wikipedia/en/9/92/BenSisko.jpg")
         .into(this)
-      LayoutSpec(
-        x = leftTo { name.left() }
-          .widthOf { name.width() },
-        y = topTo { name.bottom() }
-          .heightOf { name.width().toY() }
-      )
     }
+
+  init {
+    avatar.layoutBy(
+      x = leftTo { name.left() }
+        .widthOf { name.width() },
+      y = topTo { name.bottom() }
+        .heightOf { name.width().toY() }
+    )
+  }
 ```
 
 Finally, let's insert a created date between the note content and the bottom of the view. If there is not enough content in the `note: TextView`, let's align the created date vertically with the name & icon.
 
 ```kotlin
-  private val starDate = TextView(context).layoutBy {
+  private val starDate = TextView(context).apply {
     text = "Stardate: 23634.1"
     setTextColor(White)
     setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-    LayoutSpec(
+  }
+
+  init {
+    starDate.layoutBy(
       x = rightTo { parent.right() - 15.dip },
       y = maxOf(
         topTo { note.bottom() + 5.dip },

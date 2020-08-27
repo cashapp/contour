@@ -20,47 +20,48 @@ class SampleView2(context: SampleActivity) : ContourLayout(context) {
   )
 
   private val avatar =
-    AvatarImageView(context).layoutBy {
+    AvatarImageView(context).apply {
       scaleType = ImageView.ScaleType.CENTER_CROP
       Picasso.get()
           .load("https://upload.wikimedia.org/wikipedia/en/9/92/BenSisko.jpg")
           .into(this)
       paint.strokeWidth = 3f.dip
-      LayoutSpec(
-          x = leftTo { parent.left() + 15.dip }.widthOf { 50.xdip },
-          y = topTo { parent.top() + 15.dip }.heightOf { 50.ydip }
-      )
     }
 
   private val name: TextView =
-    TextView(context).layoutBy {
+    TextView(context).apply {
       text = "Ben Sisko"
       setSingleLine()
       ellipsize = TruncateAt.END
       setTextColor(White)
       setTextSize(TypedValue.COMPLEX_UNIT_DIP, 24f)
-      LayoutSpec(
-          x = leftTo { avatar.right() + 15.dip }
-              .rightTo(AtMost) { parent.width() - checkmark.width() - 30.dip },
-          y = centerVerticallyTo { parent.centerY() }
-      )
     }
 
   private val checkmark =
-    ImageView(context).layoutBy {
+    ImageView(context).apply {
       setImageResource(R.drawable.check_mark)
-      LayoutSpec(
-          x = minOf(
-              leftTo { name.right() + 15.dip },
-              rightTo { parent.width() - 15.dip }
-          ),
-          y = centerVerticallyTo { name.centerY() }
-      )
     }
 
   init {
     setBackgroundColor(Blue)
     contourHeightOf { avatar.height() + 30.dip }
+
+    avatar.layoutBy(
+        x = leftTo { parent.left() + 15.dip }.widthOf { 50.xdip },
+        y = topTo { parent.top() + 15.dip }.heightOf { 50.ydip }
+    )
+    name.layoutBy(
+        x = leftTo { avatar.right() + 15.dip }
+            .rightTo(AtMost) { parent.width() - checkmark.width() - 30.dip },
+        y = centerVerticallyTo { parent.centerY() }
+    )
+    checkmark.layoutBy(
+        x = minOf(
+            leftTo { name.right() + 15.dip },
+            rightTo { parent.width() - 15.dip }
+        ),
+        y = centerVerticallyTo { name.centerY() }
+    )
 
     var animated = false
     setOnClickListener {

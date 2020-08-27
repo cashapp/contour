@@ -359,42 +359,6 @@ open class ContourLayout(
   }
 
   /**
-   * Describes a View's position and dimensions according to the [LayoutSpec] returned
-   * by [spec]. If needed, the layout spec can later be modified using [updateLayoutBy].
-   *
-   * Usage:
-   *
-   * ```
-   * private val starDate = TextView(context).layoutBy {
-   *   text = "Hello World"
-   *   textSize = 16f
-   *   LayoutSpec(
-   *     x = leftTo { parent.left() },
-   *     y = topTo { parent.top() }
-   *   )
-   * }
-   * ```
-   *
-   * @param addToViewGroup if true, this View will be add to the [ContourLayout] if it
-   * is not already added.
-   */
-  fun <T : View> T.layoutBy(
-    addToViewGroup: Boolean = true,
-    spec: T.() -> LayoutSpec
-  ): T {
-    val viewGroup = this@ContourLayout
-    layoutParams = spec().also {
-      it.dimen = ViewDimensions(this)
-      it.parent = viewGroup.geometry
-      it.view = this
-    }
-    if (addToViewGroup && parent == null) {
-      viewGroup.addViewInternal(this)
-    }
-    return this
-  }
-
-  /**
    * Describes a View's position and dimensions according to the [x] and [y] layout specs.
    * If needed, the layout spec can later be modified using [updateLayoutBy].
    *
@@ -417,12 +381,20 @@ open class ContourLayout(
     y: YAxisSolver,
     addToViewGroup: Boolean = true
   ) {
-    layoutBy(addToViewGroup) { LayoutSpec(x, y) }
+    val viewGroup = this@ContourLayout
+    layoutParams = LayoutSpec(x, y).also {
+      it.dimen = ViewDimensions(this)
+      it.parent = viewGroup.geometry
+      it.view = this
+    }
+    if (addToViewGroup && parent == null) {
+      viewGroup.addViewInternal(this)
+    }
   }
 
   @Deprecated(
       message = "Views should be configured using layoutBy() instead.",
-      replaceWith = ReplaceWith("layoutBy(\nx, \ny, addToViewGroup)")
+      replaceWith = ReplaceWith("layoutBy(x, y, addToViewGroup)")
   )
   fun View.applyLayout(
     x: XAxisSolver,
