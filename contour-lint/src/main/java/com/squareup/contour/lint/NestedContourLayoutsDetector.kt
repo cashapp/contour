@@ -22,13 +22,11 @@ import com.android.tools.lint.detector.api.Detector
 import com.android.tools.lint.detector.api.Implementation
 import com.android.tools.lint.detector.api.Issue
 import com.android.tools.lint.detector.api.JavaContext
-import com.android.tools.lint.detector.api.LintFix
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity.ERROR
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiClassType
 import com.intellij.psi.PsiType
-import org.jetbrains.kotlin.psi.psiUtil.getStartOffsetIn
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.ULambdaExpression
@@ -87,10 +85,10 @@ class NestedContourLayoutsDetector : Detector(), Detector.UastScanner {
       return
     }
 
-    val layoutReceiverView = (node.getUCallExpression()?.receiverType as? PsiClassType)?.resolve()
+    val methodReceiver = (node.getUCallExpression()?.receiverType as? PsiClassType)?.resolve()
     val containingView = node.getContainingUClass()!!
 
-    if (!containingView.isEquivalentTo(layoutReceiverView)) {
+    if (!containingView.isEquivalentTo(methodReceiver)) {
       // Code example:
       // class BarView : ContourLayout
       // class FooView : ContourLayout {
@@ -98,16 +96,16 @@ class NestedContourLayoutsDetector : Detector(), Detector.UastScanner {
       //     layout(x, y) <- ERROR! The receiver of this layout() call isn't FooView.
       //   }
       // }
-      val nestedContourView = layoutReceiverView?.name
-      val quickFix = maybeGenerateFix(context, node)
+      val nestedContourView = methodReceiver?.name
       context.report(
           issue = ISSUE,
           scope = node,
           location = context.getNameLocation(node),
-          quickfixData = quickFix,
-          message = "Calling `${node.methodName}(x,y)` on a nested contour view " +
-              "(`$nestedContourView`) here is an error.\n Prefer using " +
-              "`$nestedContourView.layoutBy { LayoutSpec(x,y) }` instead."
+          message = "Calling `${node.methodName}()` on the wrong scope: `$nestedContourView` " +
+              "instead of `${containingView.name}`. This will result in an infinite loop. " +
+              "Consider using a lambda that offers `$nestedContourView` as an argument " +
+              "(e.g., `also`, `let`) instead of a receiver (e.g., `with`, `apply`, `run`) or" +
+              " moving this layout logic to `${containingView.name}`'s `init` block."
       )
     }
   }
@@ -116,77 +114,13 @@ class NestedContourLayoutsDetector : Detector(), Detector.UastScanner {
     return context.evaluator.extendsClass(type, "com.squareup.contour.ContourLayout", true)
   }
 
-  private fun maybeGenerateFix(context: JavaContext, layoutCall: UCallExpression): LintFix? {
-    val lambdaCall = layoutCall.getParentOfType<UCallExpression>()
-    if (layoutCall.sourcePsi == null || lambdaCall?.sourcePsi == null) return null
-
-    val lambdaCallName = lambdaCall.methodName    // e.g., "apply", "run"
-    val layoutCallName = layoutCall.methodName    // e.g., "layout", "applyLayout"
-
-    val lambdaText = lambdaCall.sourcePsi!!.text
-    if (lambdaText.indexOf("$layoutCallName(") != lambdaText.lastIndexOf("$layoutCallName(")) {
-      // Multiple calls to layout(); possibly too complex to auto-fix.
-      return null
-    }
-
-    val lambdaLines = lambdaText.splitLines()
-    if (lambdaLines.last().trim() != "}") {
-      // Unformatted code?
-      return null
-    }
-    if (lambdaLines[0].trim().let { it != "$lambdaCallName {" && it != "$lambdaCallName{" }) {
-      // Function call or the lambda has parameters e.g., with(FooView()).
-      return null
-    }
-
-    val layoutOffsets = layoutCall.textOffsetsIn(lambdaCall)
-    val layoutLineNums = IntRange(
-        lineNumForOffset(lambdaLines, layoutOffsets.first),
-        lineNumForOffset(lambdaLines, layoutOffsets.last)
-    )
-
-    // Reorder lines to handle cases where layout() isn't present on the last line.
-    val fixed = lambdaLines
-        .mapAt(0) { it.replace(lambdaCall.methodName!!, "layoutBy") }
-        .mapAt(layoutLineNums.first) { it.replace("$layoutCallName(", "LayoutSpec(") }
-        .reorder(layoutLineNums, to = lambdaLines.size - 1)
-        .joinToString(separator = "")
-
-    return LintFix.create()
-        .replace()
-        .text(lambdaText)
-        .with(fixed)
-        .name("Use layoutBy { LayoutSpec(x, y) } instead")
-        .range(context.getLocation(lambdaCall))
-        .independent(true)
-        .reformat(true)
-        .build()
-  }
-
-  private fun lineNumForOffset(lines: List<String>, index: Int): Int {
-    var lengthSeen = 0
-    for ((num, line) in lines.withIndex()) {
-      lengthSeen += line.length
-      if (index <= lengthSeen) {
-        return num
-      }
-    }
-    error("Offset $index not in $lines")
-  }
-
-  private fun UCallExpression.textOffsetsIn(ancestor: UElement): IntRange {
-    val start = sourcePsi!!.getStartOffsetIn(ancestor.sourcePsi!!)
-    val end = start + sourcePsi!!.textLength
-    return start..end
-  }
-
   companion object {
     val ISSUE = Issue.create(
         id = "NestedContourLayouts",
         briefDescription = "Incorrectly nested ContourLayouts",
         explanation = """
           When a nested contour view is initialized and laid out using a lambda that offers \
-          `this` as an argument (e.g., Kotlin's `apply{}` and `run{}`), it's easy to accidentally \
+          `this` as a receiver (e.g., Kotlin's `apply{}` and `run{}`), it's easy to accidentally \
           call `layoutBy()`/`applyLayout()` on the wrong scope. This lint flags these kinds of \
           errors. Here's an example:
           

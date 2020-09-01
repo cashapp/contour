@@ -1,6 +1,6 @@
 # Change Log
 
-## Unreleased: Version 0.1.8
+## Unreleased
 
 _2020-06-11_
 
