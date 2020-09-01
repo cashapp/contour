@@ -37,31 +37,6 @@ class NestedContourLayoutsDetectorTest {
     )
   }
 
-  @Test fun `nested contour views with layoutBy{} are okay`() {
-    val source = """
-      |package sample
-      |
-      |import android.content.Context
-      |import com.squareup.contour.ContourLayout
-      |
-      |class FooView(context: Context) : ContourLayout(context) {
-      |  private val view1 = BarView(context).layoutBy {
-      |    LayoutSpec(
-      |        x = matchParentX(),
-      |        y = matchParentY()
-      |    )
-      |  } 
-      |}
-      |
-      |class BarView(context: Context) : ContourLayout(context)              
-      """.trimMargin()
-
-    lint(kotlin(source))
-        .issues(NestedContourLayoutsDetector.ISSUE)
-        .run()
-        .expectClean()
-  }
-
   @Test fun `nested contour views with 'this' as the receiver`() {
     val source = """
       |package sample
@@ -98,16 +73,13 @@ class NestedContourLayoutsDetectorTest {
         .run()
         .expect(
             """
-            |src/sample/FooView.kt:8: Error: Calling layoutBy(x,y) on a nested contour view (BarView) here is an error.
-            | Prefer using BarView.layoutBy { LayoutSpec(x,y) } instead. [NestedContourLayouts]
+            |src/sample/FooView.kt:8: Error: Calling layoutBy() on the wrong scope: BarView instead of FooView. This will result in an infinite loop. Consider using a lambda that offers BarView as an argument (e.g., also, let) instead of a receiver (e.g., with, apply, run) or moving this layout logic to FooView's init block. [NestedContourLayouts]
             |    layoutBy(
             |    ~~~~~~~~
-            |src/sample/FooView.kt:14: Error: Calling layoutBy(x,y) on a nested contour view (BarView) here is an error.
-            | Prefer using BarView.layoutBy { LayoutSpec(x,y) } instead. [NestedContourLayouts]
+            |src/sample/FooView.kt:14: Error: Calling layoutBy() on the wrong scope: BarView instead of FooView. This will result in an infinite loop. Consider using a lambda that offers BarView as an argument (e.g., also, let) instead of a receiver (e.g., with, apply, run) or moving this layout logic to FooView's init block. [NestedContourLayouts]
             |    layoutBy(
             |    ~~~~~~~~
-            |src/sample/FooView.kt:20: Error: Calling applyLayout(x,y) on a nested contour view (BarView) here is an error.
-            | Prefer using BarView.layoutBy { LayoutSpec(x,y) } instead. [NestedContourLayouts]
+            |src/sample/FooView.kt:20: Error: Calling applyLayout() on the wrong scope: BarView instead of FooView. This will result in an infinite loop. Consider using a lambda that offers BarView as an argument (e.g., also, let) instead of a receiver (e.g., with, apply, run) or moving this layout logic to FooView's init block. [NestedContourLayouts]
             |    applyLayout(
             |    ~~~~~~~~~~~
             |3 errors, 0 warnings
@@ -230,92 +202,6 @@ class NestedContourLayoutsDetectorTest {
         .issues(NestedContourLayoutsDetector.ISSUE)
         .run()
         .expectErrorCount(1)
-  }
-
-  @Test fun `generate fix for simple cases`() {
-    val source = """
-      |package sample
-      |
-      |import android.content.Context
-      |import com.squareup.contour.ContourLayout
-      |
-      |class FooView(context: Context) : ContourLayout(context) {
-      |  private val view1 = BarView(context).apply {
-      |    textSize = 1f
-      |    textColor = "#FFFFFF"
-      |    layoutBy(
-      |        x = matchParentX(),
-      |        y = matchParentY()
-      |    )
-      |    setBackgroundColor("#000000")
-      |  }
-      |}
-      |
-      |class BarView(context: Context) : ContourLayout(context)
-      """.trimMargin()
-
-    lint(kotlin(source))
-        .issues(NestedContourLayoutsDetector.ISSUE)
-        .run()
-        .checkFix(
-            fix = null,
-            after = kotlin(
-                """
-                |package sample
-                |
-                |import android.content.Context
-                |import com.squareup.contour.ContourLayout
-                |
-                |class FooView(context: Context) : ContourLayout(context) {
-                |  private val view1 = BarView(context).layoutBy {
-                |    textSize = 1f
-                |    textColor = "#FFFFFF"
-                |    setBackgroundColor("#000000")
-                |    LayoutSpec(
-                |        x = matchParentX(),
-                |        y = matchParentY()
-                |    )
-                |  }
-                |}
-                |
-                |class BarView(context: Context) : ContourLayout(context)
-                """.trimMargin()
-            )
-        )
-  }
-
-  @Test fun `avoid generation of fix for complex cases`() {
-    val source = """
-      |package sample
-      |
-      |import android.content.Context
-      |import com.squareup.contour.ContourLayout
-      |
-      |class FooView(context: Context) : ContourLayout(context) {
-      |  private val view1 = BarView(context).apply { param ->
-      |    layoutBy(
-      |        x = matchParentX(),
-      |        y = matchParentY()
-      |    )
-      |  }
-      |  private val view2 = with(BarView(context)) {
-      |    layoutBy(
-      |        x = matchParentX(),
-      |        y = matchParentY()
-      |    )
-      |  }
-      |}
-      |
-      |class BarView(context: Context) : ContourLayout(context)
-      """.trimMargin()
-
-    lint(kotlin(source))
-        .issues(NestedContourLayoutsDetector.ISSUE)
-        .run()
-        .checkFix(
-            fix = null,
-            after = kotlin(source)
-        )
   }
 
   companion object {
