@@ -49,6 +49,7 @@ inline class YFloat(val value: Float) {
   inline operator fun compareTo(other: XFloat) = value.compareTo(other.value)
 
   inline fun toX() = XFloat(value)
+  inline fun toInt() = YInt(value.toInt())
 
   companion object {
     val ZERO = YFloat(0f)
