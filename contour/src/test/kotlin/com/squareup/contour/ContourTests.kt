@@ -294,6 +294,19 @@ class ContourTests {
   }
 
   @Test
+  fun `conversion of XFloat to XInt and YFloat to YInt`() {
+    val view = View(activity)
+    contourLayout(activity, width = 260, height = 260) {
+      view.layoutBy(
+          leftTo { parent.left() }.widthOf { (parent.width() * 0.42f).toInt() },
+          topTo { parent.top() }.heightOf { (parent.height() * 0.99f).toInt() }
+      )
+    }
+    assertThat(view.width).isEqualTo(109)   // 260 * 0.42 = 109.2 ~= 109 floored
+    assertThat(view.height).isEqualTo(257)  // 260 * 0.99 = 257.4 ~= 257 floored
+  }
+
+  @Test
   fun `view set to GONE does not get laid out and is considered to have position and size 0`() {
     val view = View(activity)
     view.visibility = View.GONE
