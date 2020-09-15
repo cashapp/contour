@@ -1,22 +1,13 @@
 # Contour
-Contour is a typesafe, Kotlin-first API for complex layouts on Android.
 
-## What Contour Is Not
-There is a lot of buzz and interest around writing views in code right now with the development of [Jetpack Compose](https://developer.android.com/jetpack/compose) & [Anko](https://github.com/Kotlin/anko).
+Contour is a typesafe, Kotlin-first API for complex layouts on Android that aims to be the thinnest possible wrapper around Android’s layout APIs. It allows you to build compound views in pure Kotlin without using opaque layout rules - but instead by hooking into the layout phase yourself. The best comparison for Contour would be to ConstraintLayout - but instead of defining constraints in XML you actually provide them as executable lambdas.
 
-### Contour is *not* Compose:
-Compose is a programmatic UI toolkit that uses reactive programming to drive the views. In contrast Contour doesn’t care about the update mechanisms - whether they be FRP or plain old imperative. Contour is only concerned with the nuts and bolts of view layouts - and making them as flexible and easy as possible.
-
-### Contour is *not* Anko:
-Anko is JetBrain’s typesafe builder library for Android. It introduces none of its own layout logic, but provides convenience builders for the existing Android views and layouts. In contrast Contour provides its own layout mechanism - and actually discourages highly nested view hierarchies because it turns out they are [kinda problematic](https://developer.android.com/topic/performance/rendering/optimizing-view-hierarchies)
-
-## What Contour Is:
-Contour aims to be the thinnest possible wrapper around Android’s layout APIs. It allows you to build compound views in pure Kotlin without using opaque layout rules - but instead by hooking into the layout phase yourself. The best comparison for Contour would be to ConstraintLayout - but instead of defining constraints in XML you actually provide them as executable lambdas.
-
-Also - on the topic of XML layouts ...
+<a href="https://www.youtube.com/watch?v=PLpzbLgHCLU"><img src="screenshots/droidcon_talk_cover.png"></a>
 
 ### Deprecating XML
+
 XML had a good ride but times have changed and we should too. XML is a decent format for declaring static content - but that’s not what UIs are anymore. UIs increasingly have a ton of dynamic behavior - and trying to [jerry-rig](https://developer.android.com/topic/libraries/data-binding) XML layouts into adopting this dynamic behavior has taken things from bad to worse. What sort of dynamic behaviors do we expect from our UIs?
+
 - Change configuration based on screen size
 - Lazy loading elements of the UI.
 - A / B testing components at runtime
@@ -24,6 +15,7 @@ XML had a good ride but times have changed and we should too. XML is a decent fo
 - Add & remove components based on app state
 
 Let’s face it - XML is a static markup language and we’re trying to make it a full-fledged programming language. What’s the alternative? A full-fledged programming language! Kotlin! What sort of things do we get by abandoning the XML model?
+
 - No findViewById - view declaration exists in scope.
 - No R.id.my_view ambiguity - Kotlin has namespacing & encapsulation!
 - Static typing!
@@ -31,151 +23,93 @@ Let’s face it - XML is a static markup language and we’re trying to make it 
 - ViewHolders aren’t needed
 - Easier DI
 
-## Example
-Let's create a simple note-taking view that displays a username aligned to the left, and fills the remaining horizontal space with the note.
+## Usage
+
+Similar to `ConstraintLayout`, Contour works by creating relationships between views' position and size. The difference is, instead of providing opaque XML attributes, you provide functions which are directly called during the layout phase. Contour calls these functions "axis solvers" and they're provided using `layoutBy()`. Here's an example:
 
 ```kotlin
-class NoteView(context: Context) : ContourLayout(context) {
-  private val name: TextView =
-    TextView(context).apply {
-      text = "Ben Sisko"
-      setTextColor(White)
-      setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-    }
-
-  private val note =
-    TextView(context).apply {
-      text = siskoWisdom
-      setTextColor(White)
-      setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
-    }
-
-  init {
-    name.layoutBy(
-      x = leftTo { parent.left() + 15.dip },
-      y = topTo { parent.top() + 15.dip }
-    )
-    note.layoutBy(
-      x = leftTo { name.right() + 15.dip }
-        .rightTo { parent.right() - 15.dip },
-      y = topTo { parent.top() + 15.dip }
-    )
+class BioView(context: Context) : ContourLayout(context) {
+  private val avatar = ImageView(context).apply {
+    scaleType = CENTER_CROP
+    Picasso.get().load("https://i.imgur.com/ajdangY.jpg").into(this)
   }
-}
-```
 
-We should also set the view height to match the `note: TextView` height, plus some padding.
-
-```kotlin
-init {
-  contourHeightOf { description.bottom() + 15.dip }
-}
-```
-
-Let's also introduce an avatar, and have its width and height match the width of the `name: TextView`.
-
-```kotlin
-  private val avatar =
-    AvatarImageView(context).apply {
-      scaleType = ImageView.ScaleType.CENTER_CROP
-      Picasso.get()
-        .load("https://upload.wikimedia.org/wikipedia/en/9/92/BenSisko.jpg")
-        .into(this)
-    }
+  private val bio = TextView(context).apply {
+    textSize = 16f
+    text = "..."
+  }
 
   init {
     avatar.layoutBy(
-      x = leftTo { name.left() }
-        .widthOf { name.width() },
-      y = topTo { name.bottom() }
-        .heightOf { name.width().toY() }
+      x = leftTo { parent.left() }.widthOf { 60.xdip },
+      y = topTo { parent.top() }.heightOf { 60.ydip }
     )
+    contourHeightOf { bio.bottom() }
   }
+}
 ```
 
-Finally, let's insert a created date between the note content and the bottom of the view. If there is not enough content in the `note: TextView`, let's align the created date vertically with the name & icon.
+#### Runtime Layout Logic
+
+Because you're writing plain Kotlin, you can reference other Views and use maths in your lambdas for describing your layout. These lambdas can also be used for making runtime decisions that will be evaluated on every layout pass.
 
 ```kotlin
-  private val starDate = TextView(context).apply {
-    text = "Stardate: 23634.1"
-    setTextColor(White)
-    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
+bio.layoutBy(
+  x = ...
+  y = topTo {
+    if (isSelected) parent.top() + 16.ydip
+    else avatar.centerY() - bio.height() / 2
+  }.heightOf {
+    if (isSelected) bio.preferredHeight()
+    else 48.ydip
   }
+)
+```
 
-  init {
-    starDate.layoutBy(
-      x = rightTo { parent.right() - 15.dip },
-      y = maxOf(
-        topTo { note.bottom() + 5.dip },
-        bottomTo { name.bottom() }
-      )
-    )
-  }
+When paired with an animator, your runtime layout decisions can even act as keyframes for smoothly updating your layout.
+
+```kotlin
+setOnClickListener {
+  TransitionManager.beginDelayedTransition(this)
+  isSelected = !isSelected
+  requestLayout()
+}
 ```
 
 What does the end result of this look like?
 
-<p align="center">
-  <img width="460" src="screenshots/simple_demo.gif">
-</p>
-
-## Features
-### Functional API
-Similar to `ConstraintLayout`, Contour works by creating relationships between views' position and size. The difference is, instead of providing opaque XML attributes, you provide functions which are directly called during the layout phase.
-This offers a couple advantages:
-
-#### Runtime Layout Logic
-Since configuration is simply provided through lambdas, you can make runtime layout decisions.
-For example:
-```kotlin
-leftTo {
-  if (user.name.isEmpty) parent.left()
-  else nameView.right()
-}
-```
-Or
-```kotlin
-heightOf {
-  maxOf(note.height(), 100.dip)
-}
-```
-
-#### Operators
-You can use any of the Kotlin operators in your layouts for defining spacing, padding, etc.
-```kotlin
-rightTo { parent.right() - 15.dip }
-```
-Or
-```kotlin
-centerHorizontallyTo { parent.width() / 4 }
-```
+![contourlayout animation](screenshots/runtime_layout_logic.gif)
 
 #### Context-Aware API
 Contour tries to make it easy to do the right thing. As part of this effort, all of the layout functions return interfaces as views of the correct available actions.
 
-For example, when defining a constraint of `leftTo`, the only exposed methods to chain in this layout are `rightTo` or `widthOf`. Another `leftTo`, or `centerHorizontallyTo` don't really make sense in this context and are hidden.
-In short:
-```
+For example, when defining a constraint of `leftTo`, the only exposed methods to chain in this layout are `rightTo` or `widthOf`. Another `leftTo`, or `centerHorizontallyTo` don't really make sense in this context and are hidden. In short:
+
+```kotlin
 layoutBy(
-  x = leftTo { name.left() }
-    .leftTo { name.right() },
+  x = leftTo { name.left() }.leftTo { name.right() },
   y = topTo { name.bottom() }
 )
 ```
-Will not compile.
+will not compile.
 
 #### Axis Type Safety
-Contour makes heavy use of inline classes to provide axis type safety in layouts. What this means is
+
+Contour makes heavy use of inline classes to provide axis type safety in layouts. What this means is,
+
 ```kotlin
 toLeftOf { view.top() }
 ```
-will not compile. `toLeftOf {}` requires a `XInt`, and `top()` returns a `YInt`. In cases where this needs to be forced, casting functions are made available to `toY()` & `toX()`.
+
+will not compile either. `toLeftOf {}` requires a `XInt`, and `top()` returns a `YInt`. In cases where this needs to be forced, casting functions are made available to `toY()` & `toX()`.
 
 Inline classes are a lightweight compile-time addition that allow this feature with minimal to no performance costs.
 https://kotlinlang.org/docs/reference/inline-classes.html
 
 ### Circular Reference Debugging
+
 Circular references are pretty easy to unintentionally introduce in any layout. To accidentally declare
+
 - `name.right` aligns to `note.left`
 - and `note.left` aligns to `name.right`
 
@@ -185,12 +119,19 @@ Contour fails fast and loud when these errors are detected, and provides as much
   <img src="screenshots/crd.png">
 </p>
 
+## Comparison with Compose
+
+There is a lot of buzz and interest around writing views in code right now with the development of [Jetpack Compose](https://developer.android.com/jetpack/compose). Compose is a programmatic UI toolkit that uses reactive programming to drive the views. In contrast Contour doesn’t care about the update mechanisms - whether they be FRP or plain old imperative. Contour is only concerned with the nuts and bolts of view layouts - and making them as flexible and easy as possible.
+
+The only similarity between Contour and Compose is that they both realize writing layouts in Kotlin is maximum cool.
+
 ## Releases
+
 ```groovy
 implementation "app.cash.contour:contour:0.1.7"
 ```
 
-Snapshots of the development version are available in [Sonatype's `snapshots` repository][snap].
+Snapshots of the development version are available in [Sonatype's `snapshots` repository](https://oss.sonatype.org/content/repositories/snapshots/app/cash/contour/ ).
 
 ```groovy
 repositories {
@@ -218,7 +159,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
-
-See terms and conditions [here](./LICENSE.txt).
-
- [snap]: https://oss.sonatype.org/content/repositories/snapshots/app/cash/contour/
