@@ -18,12 +18,15 @@ package com.squareup.contour.sample
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Color.DKGRAY
 import android.graphics.Color.WHITE
 import android.graphics.drawable.PaintDrawable
+import android.os.Build.VERSION.SDK_INT
 import android.text.TextUtils.TruncateAt.END
 import android.view.ViewGroup
 import android.view.animation.OvershootInterpolator
+import android.widget.ImageView
 import android.widget.ImageView.ScaleType.CENTER_CROP
 import android.widget.TextView
 import androidx.core.view.updatePadding
@@ -34,29 +37,33 @@ import com.squareup.picasso.Picasso
 
 @SuppressLint("SetTextI18n")
 class ExpandableBioCard1(context: Context) : ContourLayout(context) {
-  private val avatar = CircularImageView(context).apply {
+  private val avatar = ImageView(context).apply {
     scaleType = CENTER_CROP
-    Picasso.get().load("https://upload.wikimedia.org/wikipedia/en/9/92/BenSisko.jpg").into(this)
+    Picasso.get().load("https://i.imgur.com/ajdangY.jpg")
+        .transform(CircleTransformation())
+        .into(this)
   }
 
   private val bio = TextView(context).apply {
     textSize = 14f
-    text = "The Bajorans who have lived with us on this station, who have worked with us for months, " +
-        "who helped us move this station to protect the wormhole, who joined us to explore the " +
-        "Gamma Quadrant, who have begun to build the future of Bajor with us. These people know " +
-        "that we are neither the enemy nor the devil. We don't always agree. We have some damn " +
-        "good fights, in fact. But we always come away from them with a little better " +
-        "understanding and appreciation of the other."
+    text = "Nicolas Kim Coppola, known professionally as Nicolas Cage, is an American actor " +
+        "and filmmaker. Cage has been nominated for numerous major cinematic awards, and " +
+        "won an Academy Award, a Golden Globe, and Screen Actors Guild Award for his performance " +
+        "in Leaving Las Vegas."
     ellipsize = END
     maxLines = 2
     setLineSpacing(0f, 1.33f)
-    setTextColor(WHITE)
+    setTextColor(Color.DKGRAY)
   }
 
   init {
-    background = PaintDrawable(DKGRAY).also { it.setCornerRadius(32f) }
+    background = PaintDrawable(Color.WHITE).also { it.setCornerRadius(32f) }
     clipToOutline = true
-    elevation = 20f.dip
+    elevation = 16f.dip
+    if (SDK_INT >= 28) {
+      outlineAmbientShadowColor = Color.parseColor("#AAAAAA")
+      outlineSpotShadowColor = Color.parseColor("#AAAAAA")
+    }
     stateListAnimator = PushOnPressAnimator(this)
     updatePadding(left = 16.dip, right = 16.dip)
 
@@ -71,7 +78,7 @@ class ExpandableBioCard1(context: Context) : ContourLayout(context) {
         y = topTo {
           when {
             isSelected -> parent.top() + 16.ydip
-            else -> avatar.centerY() - bio.preferredHeight() / 2
+            else -> avatar.centerY() - bio.height() / 2
           }
         }
     )
@@ -85,6 +92,7 @@ class ExpandableBioCard1(context: Context) : ContourLayout(context) {
 
       isSelected = !isSelected
       bio.maxLines = if (isSelected) Int.MAX_VALUE else collapsedLines
+      //requestLayout()
     }
   }
 }

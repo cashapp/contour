@@ -47,7 +47,7 @@ class SampleView(context: Context) : ContourLayout(context) {
   private val card2 = ExpandableBioCard2(context)
 
   init {
-    setBackgroundColor(Color.parseColor("#303030"))
+    setBackgroundColor(Color.parseColor("#FFFFFF"))
     contourHeightMatchParent()
 
     toolbar.layoutBy(
@@ -55,19 +55,20 @@ class SampleView(context: Context) : ContourLayout(context) {
         y = topTo { parent.top() + 4.ydip }.heightOf { 56.ydip }
     )
     card1.layoutBy(
-        x = matchParentX(marginLeft = 24.dip, marginRight = 24.dip),
-        y = topTo { toolbar.bottom() + 8.ydip }
+        x = centerHorizontallyTo { parent.centerX() }.widthOf { 400.xdip },
+//        y = topTo { toolbar.bottom() + 8.ydip }
+        y = centerVerticallyTo { parent.centerY() }
     )
 
     val xPadding = { if (card2.isSelected) 0.xdip else 24.xdip }
-    card2.layoutBy(
-        x = leftTo { parent.left() + xPadding() }.rightTo { parent.right() - xPadding() },
-        y = topTo {
-          if (card2.isSelected) parent.top() else card1.bottom() + 24.ydip
-        }.heightOf {
-          if (card2.isSelected) parent.height() else card2.preferredHeight()
-        }
-    )
+//    card2.layoutBy(
+//        x = leftTo { parent.left() + xPadding() }.rightTo { parent.right() - xPadding() },
+//        y = topTo {
+//          if (card2.isSelected) parent.top() else card1.bottom() + 24.ydip
+//        }.heightOf {
+//          if (card2.isSelected) parent.height() else card2.preferredHeight()
+//        }
+//    )
 
     card2.setOnClickListener {
       TransitionManager.beginDelayedTransition(this, ChangeBounds()
