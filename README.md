@@ -1,6 +1,6 @@
 # Contour
 
-Contour is a typesafe, Kotlin-first API for complex layouts on Android that aims to be the thinnest possible wrapper around Android’s layout APIs. It allows you to build compound views in pure Kotlin without using opaque layout rules - but instead by hooking into the layout phase yourself. The best comparison for Contour would be to ConstraintLayout - but instead of defining constraints in XML you actually provide them as executable lambdas.
+Contour is a typesafe, Kotlin-first API that aims to be the thinnest possible wrapper around Android’s layout APIs. It allows you to build compound views in pure Kotlin without using opaque layout rules - but instead by hooking into the layout phase yourself. The best comparison for Contour would be to ConstraintLayout - but instead of defining constraints in XML you actually provide them as executable lambdas.
 
 <a href="https://www.youtube.com/watch?v=PLpzbLgHCLU"><img src="screenshots/droidcon_talk_cover.png"></a>
 
