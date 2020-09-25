@@ -376,11 +376,11 @@ open class ContourLayout(
    * @param addToViewGroup if true, this View will be add to the [ContourLayout] if it
    * is not already added.
    */
-  fun View.layoutBy(
+  fun <T : View> T.layoutBy(
     x: XAxisSolver,
     y: YAxisSolver,
     addToViewGroup: Boolean = true
-  ) {
+  ): T {
     val viewGroup = this@ContourLayout
     layoutParams = LayoutSpec(x, y).also {
       it.dimen = ViewDimensions(this)
@@ -390,13 +390,14 @@ open class ContourLayout(
     if (addToViewGroup && parent == null) {
       viewGroup.addViewInternal(this)
     }
+    return this
   }
 
   @Deprecated(
       message = "Views should be configured using layoutBy() instead.",
       replaceWith = ReplaceWith("layoutBy(x, y, addToViewGroup)")
   )
-  fun View.applyLayout(
+  fun <T : View> T.applyLayout(
     x: XAxisSolver,
     y: YAxisSolver,
     addToViewGroup: Boolean = true
