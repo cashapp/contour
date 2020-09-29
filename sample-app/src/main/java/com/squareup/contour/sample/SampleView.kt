@@ -33,7 +33,7 @@ import androidx.transition.TransitionManager
 import com.squareup.contour.ContourLayout
 
 @SuppressLint("SetTextI18n")
-class SampleView(context: Context, attributeSet: AttributeSet? = null) : ContourLayout(context) {
+class SampleView(context: Context, attrs: AttributeSet? = null) : ContourLayout(context, attrs) {
   private val toolbar = TextView(context).apply {
     gravity = CENTER_VERTICAL
     letterSpacing = 0.05f

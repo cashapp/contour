@@ -18,6 +18,7 @@ package com.squareup.contour.sample
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Color.DKGRAY
 import android.graphics.Color.WHITE
 import android.graphics.drawable.PaintDrawable
@@ -34,15 +35,14 @@ import com.squareup.contour.ContourLayout
 import com.squareup.picasso.Picasso
 
 @SuppressLint("SetTextI18n")
-class ExpandableBioCard1(context: Context, attributeSet: AttributeSet? = null) : ContourLayout(context) {
+class ExpandableBioCard1(context: Context, attrs: AttributeSet? = null) : ContourLayout(context, attrs) {
   private val avatar = CircularImageView(context).apply {
     scaleType = CENTER_CROP
+    setBackgroundColor(Color.GRAY)
 
-    //image will appear on emulator and devices
-    if (!isInEditMode)
-    Picasso.get()
-            .load("https://upload.wikimedia.org/wikipedia/en/9/92/BenSisko.jpg")
-            .into(this)
+    if (!isInEditMode) {
+      Picasso.get().load("https://upload.wikimedia.org/wikipedia/en/9/92/BenSisko.jpg").into(this)
+    }
   }
 
   private val bio = TextView(context).apply {

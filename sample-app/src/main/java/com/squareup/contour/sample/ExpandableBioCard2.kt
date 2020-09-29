@@ -34,16 +34,17 @@ import com.squareup.contour.ContourLayout
 import com.squareup.picasso.Picasso
 
 @SuppressLint("SetTextI18n")
-class ExpandableBioCard2(context: Context, attributeSet: AttributeSet? = null) : ContourLayout(context) {
+class ExpandableBioCard2(context: Context, attrs: AttributeSet? = null) : ContourLayout(context, attrs) {
   private val imageView = ImageView(context).apply {
     scaleType = CENTER_CROP
+    setBackgroundColor(Color.GRAY)
 
-    //image will appear on emulator and devices
-    if (!isInEditMode)
-    Picasso.get()
-        .load("https://i.imgur.com/ajdangY.jpg")
-        .placeholder(ColorDrawable(Color.parseColor("#3d3d3d")))
-        .into(this)
+    if (!isInEditMode) {
+      Picasso.get()
+              .load("https://i.imgur.com/ajdangY.jpg")
+              .placeholder(ColorDrawable(Color.parseColor("#3d3d3d")))
+              .into(this)
+    }
   }
 
   private val title = TextView(context).apply {
