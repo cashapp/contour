@@ -24,6 +24,7 @@ import android.graphics.Color.DKGRAY
 import android.graphics.Typeface.BOLD
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.PaintDrawable
+import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.KeyEvent.KEYCODE_BACK
 import android.widget.ImageView
@@ -33,9 +34,12 @@ import com.squareup.contour.ContourLayout
 import com.squareup.picasso.Picasso
 
 @SuppressLint("SetTextI18n")
-class ExpandableBioCard2(context: Context) : ContourLayout(context) {
+class ExpandableBioCard2(context: Context, attributeSet: AttributeSet? = null) : ContourLayout(context) {
   private val imageView = ImageView(context).apply {
     scaleType = CENTER_CROP
+
+    //image will appear on emulator and devices
+    if (!isInEditMode)
     Picasso.get()
         .load("https://i.imgur.com/ajdangY.jpg")
         .placeholder(ColorDrawable(Color.parseColor("#3d3d3d")))
