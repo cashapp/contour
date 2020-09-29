@@ -23,10 +23,10 @@ import android.graphics.Color.WHITE
 import android.graphics.drawable.PaintDrawable
 import android.text.TextUtils.TruncateAt.END
 import android.view.ViewGroup
-import android.view.animation.OvershootInterpolator
 import android.widget.ImageView.ScaleType.CENTER_CROP
 import android.widget.TextView
 import androidx.core.view.updatePadding
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.squareup.contour.ContourLayout
@@ -79,8 +79,8 @@ class ExpandableBioCard1(context: Context) : ContourLayout(context) {
     val collapsedLines = bio.maxLines
     setOnClickListener {
       TransitionManager.beginDelayedTransition(parent as ViewGroup, AutoTransition()
-          .setInterpolator(OvershootInterpolator())
-          .setDuration(400)
+          .setInterpolator(FastOutSlowInInterpolator())
+          .setDuration(300)
       )
 
       isSelected = !isSelected
