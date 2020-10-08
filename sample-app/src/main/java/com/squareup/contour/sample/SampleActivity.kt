@@ -25,6 +25,6 @@ class SampleActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     window.addFlags(FLAG_TRANSLUCENT_STATUS or FLAG_TRANSLUCENT_NAVIGATION)
     super.onCreate(savedInstanceState)
-    setContentView(SampleView(this))
+    setContentView(ChainPacked(this))
   }
 }
