@@ -40,7 +40,8 @@ import kotlin.math.abs
 
 internal class SimpleAxisSolver(
   point: Point,
-  lambda: LayoutContainer.() -> Int
+  lambda: LayoutContainer.() -> Int,
+  private val xAxis: Boolean
 ) :
     XAxisSolver, HasLeft, HasRight, WidthOfOnlyContext,
   YAxisSolver, HasTop, HasBottom, HeightOfOnlyContext {
@@ -69,7 +70,7 @@ internal class SimpleAxisSolver(
   override fun min(): Int {
     if (min == Int.MIN_VALUE) {
       if (p0.point == Point.Min) {
-        min = p0.resolve()
+        min = p0.resolve(xAxis)
       } else {
         parent.measureSelf()
         resolveAxis()
@@ -81,7 +82,7 @@ internal class SimpleAxisSolver(
   override fun mid(): Int {
     if (mid == Int.MIN_VALUE) {
       if (p0.point == Point.Mid) {
-        mid = p0.resolve()
+        mid = p0.resolve(xAxis)
       } else {
         parent.measureSelf()
         resolveAxis()
@@ -93,7 +94,7 @@ internal class SimpleAxisSolver(
   override fun baseline(): Int {
     if (baseline == Int.MIN_VALUE) {
       if (p0.point == Point.Baseline) {
-        baseline = p0.resolve()
+        baseline = p0.resolve(xAxis)
       } else {
         parent.measureSelf()
         resolveAxis()
@@ -105,7 +106,7 @@ internal class SimpleAxisSolver(
   override fun max(): Int {
     if (max == Int.MIN_VALUE) {
       if (p0.point == Point.Max) {
-        max = p0.resolve()
+        max = p0.resolve(xAxis)
       } else {
         parent.measureSelf()
         resolveAxis()
@@ -128,25 +129,25 @@ internal class SimpleAxisSolver(
     val hV = range / 2
     when (p0.point) {
       Point.Min -> {
-        min = p0.resolve()
+        min = p0.resolve(xAxis)
         mid = min + hV
         baseline = min + baselineRange
         max = min + range
       }
       Point.Mid -> {
-        mid = p0.resolve()
+        mid = p0.resolve(xAxis)
         min = mid - hV
         baseline = min + baselineRange
         max = mid + hV
       }
       Point.Baseline -> {
-        baseline = p0.resolve()
+        baseline = p0.resolve(xAxis)
         min = baseline - baselineRange
         mid = min + hV
         max = min + range
       }
       Point.Max -> {
-        max = p0.resolve()
+        max = p0.resolve(xAxis)
         mid = max - hV
         min = max - range
         baseline = min + baselineRange
@@ -166,9 +167,9 @@ internal class SimpleAxisSolver(
     this.baselineRange = baselineRange
   }
 
-  override fun measureSpec(): Int {
+  override fun measureSpec(xAxis: Boolean?): Int {
     return if (p1.isSet) {
-      View.MeasureSpec.makeMeasureSpec(abs(p0.resolve() - p1.resolve()), p1.mode.mask)
+      View.MeasureSpec.makeMeasureSpec(abs(p0.resolve(xAxis) - p1.resolve(xAxis)), p1.mode.mask)
     } else if (size.isSet) {
       View.MeasureSpec.makeMeasureSpec(size.resolve(), size.mode.mask)
     } else {

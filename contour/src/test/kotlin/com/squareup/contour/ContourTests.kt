@@ -376,4 +376,8 @@ class ContourTests {
     assertThat(otherView.width).isEqualTo(10 + 1)
     assertThat(otherView.height).isEqualTo(15 + 2)
   }
+
+  @Test fun `circular reference on different axes`() {
+
+  }
 }

@@ -82,9 +82,9 @@ internal class ComparisonResolver(
     p1.onRangeResolved(range, baselineRange)
   }
 
-  override fun measureSpec(): Int {
+  override fun measureSpec(xAxis: Boolean?): Int {
     return if (size.isSet) {
-      View.MeasureSpec.makeMeasureSpec(size.resolve(), View.MeasureSpec.EXACTLY)
+      View.MeasureSpec.makeMeasureSpec(size.resolve(xAxis), View.MeasureSpec.EXACTLY)
     } else {
       0
     }

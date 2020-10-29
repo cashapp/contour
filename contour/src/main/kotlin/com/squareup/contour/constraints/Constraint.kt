@@ -23,7 +23,11 @@ import com.squareup.contour.errors.CircularReferenceDetected
 import com.squareup.contour.solvers.SimpleAxisSolver.Point
 
 internal open class Constraint {
-  private var isResolving: Boolean = false
+  private var isResolving = mutableMapOf(
+      true to false,
+      false to false
+  )
+
   private var container: LayoutContainer? = null
   private var value: Int = Int.MIN_VALUE
   var mode: SizeMode = Exact
@@ -35,19 +39,28 @@ internal open class Constraint {
     this.container = container
   }
 
-  fun resolve(): Int {
+  lateinit var throwable: Throwable
+
+  fun resolve(xAxis: Boolean? = null): Int {
     if (value == Int.MIN_VALUE) {
       val context =
         checkNotNull(container) { "Constraint called before LayoutContainer attached" }
       val lambda = checkNotNull(lambda) { "Constraint not set" }
 
       try {
-        if (isResolving) throw CircularReferenceDetected()
+        if (xAxis != null && isResolving[xAxis]!!) {
+          println("First: ")
+          throwable.printStackTrace()
 
-        isResolving = true
+          throw CircularReferenceDetected()
+        }
+
+        if (xAxis != null) isResolving[xAxis] = true
+        throwable = Throwable()
+
         value = lambda(context)
       } finally {
-        isResolving = false
+        if (xAxis != null) isResolving[xAxis] = false
       }
     }
     return value

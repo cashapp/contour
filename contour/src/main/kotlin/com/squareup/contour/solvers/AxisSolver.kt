@@ -73,7 +73,7 @@ interface AxisSolver {
   fun onAttach(parent: LayoutSpec)
   fun onRangeResolved(range: Int, baselineRange: Int)
 
-  fun measureSpec(): Int
+  fun measureSpec(xAxis: Boolean? = null): Int
   fun clear()
 }
 

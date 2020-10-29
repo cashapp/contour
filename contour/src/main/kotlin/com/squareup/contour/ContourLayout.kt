@@ -516,43 +516,50 @@ open class ContourLayout(
   fun baselineTo(provider: LayoutContainer.() -> YInt): HeightOfOnlyContext =
     SimpleAxisSolver(
         point = Baseline,
-        lambda = unwrapYIntLambda(provider)
+        lambda = unwrapYIntLambda(provider),
+        xAxis = false
     )
 
   fun topTo(provider: LayoutContainer.() -> YInt): HasTop =
     SimpleAxisSolver(
         point = Min,
-        lambda = unwrapYIntLambda(provider)
+        lambda = unwrapYIntLambda(provider),
+        xAxis = false
     )
 
   fun bottomTo(provider: LayoutContainer.() -> YInt): HasBottom =
     SimpleAxisSolver(
         point = Max,
-        lambda = unwrapYIntLambda(provider)
+        lambda = unwrapYIntLambda(provider),
+        xAxis = false
     )
 
   fun centerVerticallyTo(provider: LayoutContainer.() -> YInt): HeightOfOnlyContext =
     SimpleAxisSolver(
         point = Mid,
-        lambda = unwrapYIntLambda(provider)
+        lambda = unwrapYIntLambda(provider),
+        xAxis = false
     )
 
   fun leftTo(provider: LayoutContainer.() -> XInt): HasLeft =
     SimpleAxisSolver(
         point = Min,
-        lambda = unwrapXIntLambda(provider)
+        lambda = unwrapXIntLambda(provider),
+        xAxis = true
     )
 
   fun rightTo(provider: LayoutContainer.() -> XInt): HasRight =
     SimpleAxisSolver(
         point = Max,
-        lambda = unwrapXIntLambda(provider)
+        lambda = unwrapXIntLambda(provider),
+        xAxis = true
     )
 
   fun centerHorizontallyTo(provider: LayoutContainer.() -> XInt): WidthOfOnlyContext =
     SimpleAxisSolver(
         point = Mid,
-        lambda = unwrapXIntLambda(provider)
+        lambda = unwrapXIntLambda(provider),
+        xAxis = true
     )
 
   /**
@@ -755,9 +762,17 @@ open class ContourLayout(
         x.onRangeResolved(0, 0)
         y.onRangeResolved(0, 0)
       } else {
-        dimen.measure(x.measureSpec(), y.measureSpec())
-        x.onRangeResolved(dimen.width, 0)
+        dimen.measure(x.measureSpec(xAxis = true), MeasureSpec.makeMeasureSpec(0, MeasureSpec.EXACTLY))
+        val width = dimen.width
+        x.onRangeResolved(width, 0)
+
+        dimen.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.EXACTLY), y.measureSpec(xAxis = false))
         y.onRangeResolved(dimen.height, dimen.baseline)
+
+        dimen.measure(
+            MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+            MeasureSpec.makeMeasureSpec(dimen.height, MeasureSpec.EXACTLY)
+        )
       }
     }
 

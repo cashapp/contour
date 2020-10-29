@@ -17,6 +17,7 @@
 package com.squareup.contour.wrappers
 
 import android.view.View
+import android.widget.TextView
 
 internal interface HasDimensions {
   fun measure(
