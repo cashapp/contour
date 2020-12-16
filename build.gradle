@@ -66,3 +66,7 @@ subprojects { project ->
     }
   }
 }
+
+tasks.wrapper {
+  distributionType = Wrapper.DistributionType.ALL
+}
