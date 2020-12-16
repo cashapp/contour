@@ -44,6 +44,7 @@ buildscript {
 
   repositories {
     google()
+    mavenCentral()
     jcenter()
   }
 }
@@ -51,6 +52,7 @@ buildscript {
 subprojects {
   repositories {
     google()
+    mavenCentral()
     jcenter()
   }
 
