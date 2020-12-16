@@ -48,10 +48,21 @@ buildscript {
   }
 }
 
-allprojects {
+subprojects {
   repositories {
     google()
     jcenter()
+  }
+
+  tasks.withType(JavaCompile).configureEach { task ->
+    task.sourceCompatibility = JavaVersion.VERSION_1_8
+    task.targetCompatibility = JavaVersion.VERSION_1_8
+  }
+
+  tasks.withType(org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompile).configureEach { task ->
+    task.kotlinOptions {
+      jvmTarget = "1.8"
+    }
   }
 }
 
