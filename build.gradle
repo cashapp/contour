@@ -1,7 +1,6 @@
 buildscript {
   ext.versions = [
     'minSdk': 21,
-    'compileSdk': 30,
     'targetSdk': 30,
     'agp': '4.1.1',
     'lint': '27.1.1',  // = 23.0.0 + agp

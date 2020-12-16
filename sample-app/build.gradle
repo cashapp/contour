@@ -2,7 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
-  compileSdkVersion versions.compileSdk
+  compileSdkVersion versions.targetSdk
+
   defaultConfig {
     applicationId "com.squareup.contour.sample"
     minSdkVersion versions.minSdk
