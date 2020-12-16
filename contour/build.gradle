@@ -6,7 +6,7 @@ repositories {
 }
 
 android {
-  compileSdkVersion 28
+  compileSdkVersion 30
 
   defaultConfig {
     minSdkVersion 21
