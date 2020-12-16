@@ -6,10 +6,10 @@ repositories {
 }
 
 android {
-  compileSdkVersion 30
+  compileSdkVersion versions.compileSdk
 
   defaultConfig {
-    minSdkVersion 21
+    minSdkVersion versions.minSdk
   }
 
   sourceSets {
@@ -19,9 +19,9 @@ android {
 }
 
 dependencies {
-  implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-  testImplementation "com.google.truth:truth:1.0.1"
-  testImplementation 'org.robolectric:robolectric:4.3.1'
+  implementation deps.kotlin.stdlib.jdk8
+  testImplementation deps.truth
+  testImplementation deps.robolectric
 
   lintPublish project(':contour-lint')
 }
