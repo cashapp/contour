@@ -10,7 +10,6 @@ buildscript {
   ext.deps = [
     'kotlin': [
       'stdlib': [
-          'jdk7': "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}",
           'jdk8': "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions.kotlin}",
       ],
     ],
