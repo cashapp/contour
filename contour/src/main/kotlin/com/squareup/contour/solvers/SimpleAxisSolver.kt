@@ -71,7 +71,12 @@ internal class SimpleAxisSolver(
       if (p0.point == Point.Min) {
         min = p0.resolve()
       } else {
-        parent.measureSelf()
+        if (p0.point == Point.Baseline && baselineRange == Int.MIN_VALUE) {
+          parent.measureSelf()
+        }
+        else {
+          resolveRange()
+        }
         resolveAxis()
       }
     }
@@ -83,7 +88,12 @@ internal class SimpleAxisSolver(
       if (p0.point == Point.Mid) {
         mid = p0.resolve()
       } else {
-        parent.measureSelf()
+        if (p0.point == Point.Baseline && baselineRange == Int.MIN_VALUE) {
+          parent.measureSelf()
+        }
+        else {
+          resolveRange()
+        }
         resolveAxis()
       }
     }
@@ -95,7 +105,12 @@ internal class SimpleAxisSolver(
       if (p0.point == Point.Baseline) {
         baseline = p0.resolve()
       } else {
-        parent.measureSelf()
+        if (baselineRange == Int.MIN_VALUE) {
+          parent.measureSelf()
+        }
+        else {
+          resolveRange()
+        }
         resolveAxis()
       }
     }
@@ -107,7 +122,12 @@ internal class SimpleAxisSolver(
       if (p0.point == Point.Max) {
         max = p0.resolve()
       } else {
-        parent.measureSelf()
+        if (p0.point == Point.Baseline && baselineRange == Int.MIN_VALUE) {
+          parent.measureSelf()
+        }
+        else {
+          resolveRange()
+        }
         resolveAxis()
       }
     }
@@ -116,30 +136,42 @@ internal class SimpleAxisSolver(
 
   override fun range(): Int {
     if (range == Int.MIN_VALUE) {
-      parent.measureSelf()
+      resolveRange()
     }
     return range
   }
 
+  private fun resolveRange() {
+    if (parent.isEmpty()) {
+      onRangeResolved(0, 0)
+    } else {
+      if (p1.isSet && p1.mode == SizeMode.Exact) {
+        range = abs(p0.resolve() - p1.resolve())
+      } else if (size.isSet && size.mode == SizeMode.Exact) {
+        range = size.resolve()
+      } else {
+        parent.measureSelf()
+      }
+    }
+  }
+
   private fun resolveAxis() {
     check(range != Int.MIN_VALUE)
-    check(baselineRange != Int.MIN_VALUE)
 
     val hV = range / 2
     when (p0.point) {
       Point.Min -> {
         min = p0.resolve()
         mid = min + hV
-        baseline = min + baselineRange
         max = min + range
       }
       Point.Mid -> {
         mid = p0.resolve()
         min = mid - hV
-        baseline = min + baselineRange
         max = mid + hV
       }
       Point.Baseline -> {
+        check(baselineRange != Int.MIN_VALUE)
         baseline = p0.resolve()
         min = baseline - baselineRange
         mid = min + hV
@@ -149,7 +181,6 @@ internal class SimpleAxisSolver(
         max = p0.resolve()
         mid = max - hV
         min = max - range
-        baseline = min + baselineRange
       }
     }
   }
@@ -195,6 +226,7 @@ internal class SimpleAxisSolver(
     p1.point = Point.Min
     p1.mode = mode
     p1.lambda = unwrapXIntLambda(provider)
+    baselineRange = 0
     return this
   }
 
@@ -205,6 +237,7 @@ internal class SimpleAxisSolver(
     p1.point = Point.Min
     p1.mode = mode
     p1.lambda = unwrapXFloatLambda(provider)
+    baselineRange = 0
     return this
   }
 
@@ -232,6 +265,7 @@ internal class SimpleAxisSolver(
     p1.point = Point.Max
     p1.mode = mode
     p1.lambda = unwrapXIntLambda(provider)
+    baselineRange = 0
     return this
   }
 
@@ -242,6 +276,7 @@ internal class SimpleAxisSolver(
     p1.point = Point.Max
     p1.mode = mode
     p1.lambda = unwrapXFloatLambda(provider)
+    baselineRange = 0
     return this
   }
 
@@ -268,6 +303,7 @@ internal class SimpleAxisSolver(
   override fun widthOf(mode: SizeMode, provider: LayoutContainer.() -> XInt): XAxisSolver {
     size.mode = mode
     size.lambda = unwrapXIntLambda(provider)
+    baselineRange = 0
     return this
   }
 
@@ -277,6 +313,7 @@ internal class SimpleAxisSolver(
   ): XAxisSolver {
     size.mode = mode
     size.lambda = unwrapXFloatLambda(provider)
+    baselineRange = 0
     return this
   }
 
