@@ -376,4 +376,42 @@ class ContourTests {
     assertThat(otherView.width).isEqualTo(10 + 1)
     assertThat(otherView.height).isEqualTo(15 + 2)
   }
+
+  @Test
+  fun `using other axis width constraint`() {
+    val view = View(activity)
+
+    contourLayout(context = activity, width = 200, height = 200) {
+      view.layoutBy(
+              leftTo { parent.left() }.rightTo { parent.right() - 50.dip },
+              topTo { parent.top() }.heightOf { view.width().toY() }
+      )
+    }
+
+    assertThat(view.left).isEqualTo(0)
+    assertThat(view.top).isEqualTo(0)
+    assertThat(view.right).isEqualTo(150)
+    assertThat(view.bottom).isEqualTo(150)
+    assertThat(view.width).isEqualTo(150)
+    assertThat(view.height).isEqualTo(150)
+  }
+
+  @Test
+  fun `using other axis height constraint`() {
+    val view = View(activity)
+
+    contourLayout(context = activity, width = 200, height = 200) {
+      view.layoutBy(
+              leftTo { parent.left() }.rightTo { view.height().toX() },
+              topTo { parent.top() }.bottomTo { 125.ydip }
+      )
+    }
+
+    assertThat(view.left).isEqualTo(0)
+    assertThat(view.top).isEqualTo(0)
+    assertThat(view.right).isEqualTo(125)
+    assertThat(view.bottom).isEqualTo(125)
+    assertThat(view.width).isEqualTo(125)
+    assertThat(view.height).isEqualTo(125)
+  }
 }
