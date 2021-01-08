@@ -73,8 +73,7 @@ internal class SimpleAxisSolver(
       } else {
         if (p0.point == Point.Baseline && baselineRange == Int.MIN_VALUE) {
           parent.measureSelf()
-        }
-        else {
+        } else {
           resolveRange()
         }
         resolveAxis()
@@ -90,8 +89,7 @@ internal class SimpleAxisSolver(
       } else {
         if (p0.point == Point.Baseline && baselineRange == Int.MIN_VALUE) {
           parent.measureSelf()
-        }
-        else {
+        } else {
           resolveRange()
         }
         resolveAxis()
@@ -107,8 +105,7 @@ internal class SimpleAxisSolver(
       } else {
         if (baselineRange == Int.MIN_VALUE) {
           parent.measureSelf()
-        }
-        else {
+        } else {
           resolveRange()
         }
         resolveAxis()
@@ -124,8 +121,7 @@ internal class SimpleAxisSolver(
       } else {
         if (p0.point == Point.Baseline && baselineRange == Int.MIN_VALUE) {
           parent.measureSelf()
-        }
-        else {
+        } else {
           resolveRange()
         }
         resolveAxis()
