@@ -732,10 +732,8 @@ open class ContourLayout(
     internal fun width(): XInt = x.range().toXInt()
     internal fun height(): YInt = y.range().toYInt()
 
-    internal fun isEmpty() = view.visibility == View.GONE
-
     internal fun preferredWidth(): XInt {
-      return if (isEmpty()) {
+      return if (view.visibility == GONE) {
         XInt.ZERO
       } else {
         dimen.measure(0, y.measureSpec())
@@ -744,7 +742,7 @@ open class ContourLayout(
     }
 
     internal fun preferredHeight(): YInt {
-      return if (isEmpty()) {
+      return if (view.visibility == GONE) {
         YInt.ZERO
       } else {
         dimen.measure(x.measureSpec(), 0)
@@ -753,7 +751,7 @@ open class ContourLayout(
     }
 
     internal fun measureSelf() {
-      if (isEmpty()) {
+      if (view.visibility == GONE) {
         x.onRangeResolved(0, 0)
         y.onRangeResolved(0, 0)
       } else {

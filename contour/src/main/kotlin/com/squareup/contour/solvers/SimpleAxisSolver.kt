@@ -138,7 +138,7 @@ internal class SimpleAxisSolver(
   }
 
   private fun resolveRange() {
-    if (parent.isEmpty()) {
+    if (parent.view.visibility == View.GONE) {
       onRangeResolved(0, 0)
     } else {
       if (p1.isSet && p1.mode == SizeMode.Exact) {
