@@ -109,6 +109,7 @@ internal class SimpleAxisSolver(
           resolveRange()
         }
         resolveAxis()
+        baseline = min + baselineRange
       }
     }
     return baseline
