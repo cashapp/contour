@@ -12,8 +12,8 @@ class FakeTextView(
     val availableWidth = MeasureSpec.getSize(widthMeasureSpec)
     val widthMode = MeasureSpec.getMode(widthMeasureSpec)
 
-    val availableHeight = MeasureSpec.getSize(widthMeasureSpec)
-    val heightMode = MeasureSpec.getMode(widthMeasureSpec)
+    val availableHeight = MeasureSpec.getSize(heightMeasureSpec)
+    val heightMode = MeasureSpec.getMode(heightMeasureSpec)
 
     setMeasuredDimension(
         if (widthMode == MeasureSpec.EXACTLY) availableWidth
