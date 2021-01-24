@@ -383,8 +383,8 @@ class ContourTests {
 
     contourLayout(context = activity, width = 200, height = 200) {
       view.layoutBy(
-              leftTo { parent.left() }.rightTo { parent.right() - 50.dip },
-              topTo { parent.top() }.heightOf { view.width().toY() }
+          leftTo { parent.left() }.rightTo { parent.right() - 50.dip },
+          topTo { parent.top() }.heightOf { view.width().toY() }
       )
     }
 
@@ -402,8 +402,8 @@ class ContourTests {
 
     contourLayout(context = activity, width = 200, height = 200) {
       view.layoutBy(
-              leftTo { parent.left() }.rightTo { view.height().toX() },
-              topTo { parent.top() }.bottomTo { 125.ydip }
+          leftTo { parent.left() }.rightTo { view.height().toX() },
+          topTo { parent.top() }.bottomTo { 125.ydip }
       )
     }
 
@@ -421,8 +421,8 @@ class ContourTests {
 
     contourLayout(activity) {
       fakeTextView.layoutBy(
-              leftTo { parent.left() },
-              baselineTo { 20.ydip }
+          leftTo { parent.left() },
+          baselineTo { 20.ydip }
       )
     }
 
@@ -438,12 +438,12 @@ class ContourTests {
 
     contourLayout(activity) {
       fakeTextView1.layoutBy(
-              leftTo { parent.left() },
-              topTo { parent.top() }
+          leftTo { parent.left() },
+          topTo { parent.top() }
       )
       fakeTextView2.layoutBy(
-              rightTo { parent.right() },
-              baselineTo { fakeTextView1.baseline() }
+          rightTo { parent.right() },
+          baselineTo { fakeTextView1.baseline() }
       )
     }
 
