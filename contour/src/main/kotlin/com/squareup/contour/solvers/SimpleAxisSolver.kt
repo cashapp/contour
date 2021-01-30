@@ -71,11 +71,7 @@ internal class SimpleAxisSolver(
       if (p0.point == Point.Min) {
         min = p0.resolve()
       } else {
-        if (p0.point == Point.Baseline && baselineRange == Int.MIN_VALUE) {
-          parent.measureSelf()
-        } else {
-          resolveRange()
-        }
+        resolveRange()
         resolveAxis()
       }
     }
@@ -87,11 +83,7 @@ internal class SimpleAxisSolver(
       if (p0.point == Point.Mid) {
         mid = p0.resolve()
       } else {
-        if (p0.point == Point.Baseline && baselineRange == Int.MIN_VALUE) {
-          parent.measureSelf()
-        } else {
-          resolveRange()
-        }
+        resolveRange()
         resolveAxis()
       }
     }
@@ -103,13 +95,8 @@ internal class SimpleAxisSolver(
       if (p0.point == Point.Baseline) {
         baseline = p0.resolve()
       } else {
-        if (baselineRange == Int.MIN_VALUE) {
-          parent.measureSelf()
-        } else {
-          resolveRange()
-        }
+        resolveRange()
         resolveAxis()
-        baseline = min + baselineRange
       }
     }
     return baseline
@@ -120,11 +107,7 @@ internal class SimpleAxisSolver(
       if (p0.point == Point.Max) {
         max = p0.resolve()
       } else {
-        if (p0.point == Point.Baseline && baselineRange == Int.MIN_VALUE) {
-          parent.measureSelf()
-        } else {
-          resolveRange()
-        }
+        resolveRange()
         resolveAxis()
       }
     }
@@ -142,7 +125,9 @@ internal class SimpleAxisSolver(
     if (parent.view.visibility == View.GONE) {
       onRangeResolved(0, 0)
     } else {
-      if (p1.isSet && p1.mode == SizeMode.Exact) {
+      if (p0.point == Point.Baseline && baselineRange == Int.MIN_VALUE) {
+        parent.measureSelf()
+      } else if (p1.isSet && p1.mode == SizeMode.Exact) {
         range = abs(p0.resolve() - p1.resolve())
       } else if (size.isSet && size.mode == SizeMode.Exact) {
         range = size.resolve()
@@ -179,6 +164,9 @@ internal class SimpleAxisSolver(
         mid = max - hV
         min = max - range
       }
+    }
+    if (p0.point != Point.Baseline && baselineRange != Int.MIN_VALUE) {
+      baseline = min + baselineRange
     }
   }
 
