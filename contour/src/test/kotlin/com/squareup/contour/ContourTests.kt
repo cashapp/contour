@@ -451,4 +451,23 @@ class ContourTests {
     assertThat(fakeTextView2.bottom).isEqualTo(17)
     assertThat(fakeTextView2.height).isEqualTo(12)
   }
+
+  @Test
+  fun `calling baseline() on an unmeasured view should correctly resolve its baseline`() {
+    val view = View(activity)
+    val text = FakeTextView(activity, "Test", 10, 8)
+
+    contourLayout(activity) {
+      view.layoutBy(
+          leftTo { 0.xdip },
+          topTo { text.baseline() }
+      )
+      text.layoutBy(
+          leftTo { 0.xdip },
+          topTo { 0.ydip }.bottomTo { 10.ydip }
+      )
+    }
+
+    assertThat(view.top).isEqualTo(8)
+  }
 }
