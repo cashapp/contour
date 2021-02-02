@@ -22,6 +22,7 @@ import android.graphics.Color
 import android.graphics.Color.WHITE
 import android.graphics.Typeface
 import android.graphics.Typeface.NORMAL
+import android.util.AttributeSet
 import android.view.Gravity.CENTER_VERTICAL
 import android.view.WindowInsets
 import android.view.animation.OvershootInterpolator
@@ -32,7 +33,7 @@ import androidx.transition.TransitionManager
 import com.squareup.contour.ContourLayout
 
 @SuppressLint("SetTextI18n")
-class SampleView(context: Context) : ContourLayout(context) {
+class SampleView(context: Context, attrs: AttributeSet? = null) : ContourLayout(context, attrs) {
   private val toolbar = TextView(context).apply {
     gravity = CENTER_VERTICAL
     letterSpacing = 0.05f

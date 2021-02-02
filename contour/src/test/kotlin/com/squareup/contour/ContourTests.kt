@@ -190,6 +190,28 @@ class ContourTests {
   }
 
   @Test
+  fun `specified exact size should be the final size`() {
+    val view = View(activity)
+    val fakeTextView = FakeTextView(activity, "Test", 10, 0)
+
+    contourLayout(activity) {
+      view.layoutBy(
+          leftTo { parent.left() }.widthOf { 30.xdip },
+          topTo { parent.top() }.heightOf { 15.ydip }
+      )
+      fakeTextView.layoutBy(
+          leftTo { parent.left() }.widthOf { 50.xdip },
+          topTo { parent.top() }.heightOf { 20.ydip }
+      )
+    }
+
+    assertThat(view.width).isEqualTo(30)
+    assertThat(view.height).isEqualTo(15)
+    assertThat(fakeTextView.width).isEqualTo(50)
+    assertThat(fakeTextView.height).isEqualTo(20)
+  }
+
+  @Test
   fun `minOf maxOf on x axis`() {
     val view0 = View(activity)
     val view1 = View(activity)
