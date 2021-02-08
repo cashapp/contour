@@ -6,7 +6,8 @@ import android.view.View
 class FakeTextView(
   context: Context,
   private val text: String,
-  private val textSize: Int
+  private val textSize: Int,
+  private val baseline: Int
 ) : View(context) {
   override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
     val availableWidth = MeasureSpec.getSize(widthMeasureSpec)
@@ -22,4 +23,6 @@ class FakeTextView(
         else textSize
     )
   }
+
+  override fun getBaseline(): Int = baseline
 }

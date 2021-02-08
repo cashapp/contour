@@ -176,7 +176,7 @@ class ContourTests {
 
   @Test
   fun `unspecified size will fallback to views preferred size`() {
-    val fakeTextView = FakeTextView(activity, "Test", 10)
+    val fakeTextView = FakeTextView(activity, "Test", 10, 0)
 
     contourLayout(activity) {
       fakeTextView.layoutBy(
@@ -192,7 +192,7 @@ class ContourTests {
   @Test
   fun `specified exact size should be the final size`() {
     val view = View(activity)
-    val fakeTextView = FakeTextView(activity, "Test", 10)
+    val fakeTextView = FakeTextView(activity, "Test", 10, 0)
 
     contourLayout(activity) {
       view.layoutBy(
@@ -397,5 +397,99 @@ class ContourTests {
     assertThat(otherView.bottom).isEqualTo(10 + 15 + 2)
     assertThat(otherView.width).isEqualTo(10 + 1)
     assertThat(otherView.height).isEqualTo(15 + 2)
+  }
+
+  @Test
+  fun `using other axis width constraint`() {
+    val view = View(activity)
+
+    contourLayout(context = activity, width = 200, height = 200) {
+      view.layoutBy(
+          leftTo { parent.left() }.rightTo { parent.right() - 50.dip },
+          topTo { parent.top() }.heightOf { view.width().toY() }
+      )
+    }
+
+    assertThat(view.left).isEqualTo(0)
+    assertThat(view.top).isEqualTo(0)
+    assertThat(view.right).isEqualTo(150)
+    assertThat(view.bottom).isEqualTo(150)
+    assertThat(view.width).isEqualTo(150)
+    assertThat(view.height).isEqualTo(150)
+  }
+
+  @Test
+  fun `using other axis height constraint`() {
+    val view = View(activity)
+
+    contourLayout(context = activity, width = 200, height = 200) {
+      view.layoutBy(
+          leftTo { parent.left() }.rightTo { view.height().toX() },
+          topTo { parent.top() }.bottomTo { 125.ydip }
+      )
+    }
+
+    assertThat(view.left).isEqualTo(0)
+    assertThat(view.top).isEqualTo(0)
+    assertThat(view.right).isEqualTo(125)
+    assertThat(view.bottom).isEqualTo(125)
+    assertThat(view.width).isEqualTo(125)
+    assertThat(view.height).isEqualTo(125)
+  }
+
+  @Test
+  fun `simple baseline`() {
+    val fakeTextView = FakeTextView(activity, "Test", 10, 8)
+
+    contourLayout(activity) {
+      fakeTextView.layoutBy(
+          leftTo { parent.left() },
+          baselineTo { 20.ydip }
+      )
+    }
+
+    assertThat(fakeTextView.top).isEqualTo(12)
+    assertThat(fakeTextView.bottom).isEqualTo(22)
+    assertThat(fakeTextView.height).isEqualTo(10)
+  }
+
+  @Test
+  fun `baseline to baseline`() {
+    val fakeTextView1 = FakeTextView(activity, "Hello", 18, 15)
+    val fakeTextView2 = FakeTextView(activity, "World", 12, 10)
+
+    contourLayout(activity) {
+      fakeTextView1.layoutBy(
+          leftTo { parent.left() },
+          topTo { parent.top() }
+      )
+      fakeTextView2.layoutBy(
+          rightTo { parent.right() },
+          baselineTo { fakeTextView1.baseline() }
+      )
+    }
+
+    assertThat(fakeTextView2.top).isEqualTo(5)
+    assertThat(fakeTextView2.bottom).isEqualTo(17)
+    assertThat(fakeTextView2.height).isEqualTo(12)
+  }
+
+  @Test
+  fun `calling baseline() on an unmeasured view should correctly resolve its baseline`() {
+    val view = View(activity)
+    val text = FakeTextView(activity, "Test", 10, 8)
+
+    contourLayout(activity) {
+      view.layoutBy(
+          leftTo { 0.xdip },
+          topTo { text.baseline() }
+      )
+      text.layoutBy(
+          leftTo { 0.xdip },
+          topTo { 0.ydip }.bottomTo { 10.ydip }
+      )
+    }
+
+    assertThat(view.top).isEqualTo(8)
   }
 }
