@@ -4,7 +4,7 @@ buildscript {
     'targetSdk': 30,
     'agp': '4.1.1',
     'lint': '27.1.1',  // = 23.0.0 + agp
-    'kotlin': '1.4.21',
+    'kotlin': '1.4.30',
   ]
 
   ext.deps = [
