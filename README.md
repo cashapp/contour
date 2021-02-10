@@ -44,6 +44,10 @@ class BioView(context: Context) : ContourLayout(context) {
       x = leftTo { parent.left() }.widthOf { 60.xdip },
       y = topTo { parent.top() }.heightOf { 60.ydip }
     )
+    bio.layoutBy(
+      x = leftTo { avatar.right() + 16.xdip }.rightTo { parent.right() },
+      y = topTo { parent.top() }
+    )
     contourHeightOf { bio.bottom() }
   }
 }
