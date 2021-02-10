@@ -38,9 +38,10 @@ import com.squareup.picasso.Picasso
 class ExpandableBioCard1(context: Context, attrs: AttributeSet? = null) : ContourLayout(context, attrs) {
   private val avatar = CircularImageView(context).apply {
     scaleType = CENTER_CROP
-    setBackgroundColor(Color.GRAY)
 
-    if (!isInEditMode) {
+    if (isInEditMode) {
+      setBackgroundColor(Color.GRAY)
+    } else {
       Picasso.get().load("https://upload.wikimedia.org/wikipedia/en/9/92/BenSisko.jpg").into(this)
     }
   }
