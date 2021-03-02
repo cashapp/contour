@@ -132,7 +132,7 @@ The only similarity between Contour and Compose is that they both realize writin
 ## Releases
 
 ```groovy
-implementation "app.cash.contour:contour:1.0.0"
+implementation "app.cash.contour:contour:1.1.0"
 ```
 
 Snapshots of the development version are available in [Sonatype's `snapshots` repository](https://oss.sonatype.org/content/repositories/snapshots/app/cash/contour/ ).
