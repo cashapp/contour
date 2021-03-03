@@ -1,10 +1,12 @@
+apply plugin: 'com.github.ben-manes.versions'
+
 buildscript {
   ext.versions = [
     'minSdk': 21,
     'targetSdk': 30,
-    'agp': '4.1.1',
-    'lint': '27.1.1',  // = 23.0.0 + agp
-    'kotlin': '1.4.30',
+    'agp': '4.1.2',
+    'lint': '27.1.2',  // = 23.0.0 + agp
+    'kotlin': '1.4.31',
   ]
 
   ext.deps = [
@@ -14,9 +16,9 @@ buildscript {
       ],
     ],
     'androidx': [
-      'appCompat': 'androidx.appcompat:appcompat:1.1.0',
-      'ktx': 'androidx.core:core-ktx:1.3.1',
-      'transition': 'androidx.transition:transition:1.4.0-beta01',
+      'appCompat': 'androidx.appcompat:appcompat:1.2.0',
+      'ktx': 'androidx.core:core-ktx:1.3.2',
+      'transition': 'androidx.transition:transition:1.4.0',
     ],
     'picasso': 'com.squareup.picasso:picasso:2.71828',
     'tools': [
@@ -27,8 +29,8 @@ buildscript {
         'tests': "com.android.tools.lint:lint-tests:${versions.lint}",
       ]
     ],
-    'robolectric': 'org.robolectric:robolectric:4.3.1',
-    'truth': 'com.google.truth:truth:1.0.1',
+    'robolectric': 'org.robolectric:robolectric:4.5.1',
+    'truth': 'com.google.truth:truth:1.1.2',
     'plugins': [
       'agp': "com.android.tools.build:gradle:${versions.agp}",
       'kotlin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
@@ -38,6 +40,7 @@ buildscript {
   dependencies {
     classpath deps.plugins.agp
     classpath deps.plugins.kotlin
+    classpath 'com.github.ben-manes:gradle-versions-plugin:0.36.0'
   }
 
   repositories {
