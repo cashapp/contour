@@ -35,7 +35,7 @@ internal object SizeConfigSmartLambdas {
               HORIZONTAL -> max(it.right().value, paddingLeft) + paddingRight
             }
           }
-          .max() ?: totalPadding(axis)
+          .maxOrNull() ?: totalPadding(axis)
     }
   }
 
