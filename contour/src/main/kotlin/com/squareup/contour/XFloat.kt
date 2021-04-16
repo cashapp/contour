@@ -21,7 +21,8 @@ package com.squareup.contour
 /**
  * Represents an [Float] on the x axis.
  */
-inline class XFloat(val value: Float) {
+@JvmInline
+value class XFloat(val value: Float) {
 
   inline operator fun plus(other: Int) = XFloat(value + other)
   inline operator fun plus(other: XInt) = XFloat(value + other.value)

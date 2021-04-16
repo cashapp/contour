@@ -21,7 +21,8 @@ package com.squareup.contour
 /**
  * Represents an [Int] on the y axis.
  */
-inline class YInt(val value: Int) {
+@JvmInline
+value class YInt(val value: Int) {
 
   inline operator fun plus(other: Int) = YInt(value + other)
   inline operator fun plus(other: YInt) = YInt(value + other.value)
