@@ -50,6 +50,7 @@ value class XInt(val value: Int) {
   inline operator fun compareTo(other: XFloat) = value.compareTo(other.value)
 
   inline fun toY() = YInt(value)
+  inline fun toFloat() = XFloat(value.toFloat())
 
   companion object {
     val ZERO = XInt(0)

@@ -5,8 +5,8 @@ buildscript {
     'minSdk': 21,
     'targetSdk': 30,
     'agp': '4.1.2',
-    'lint': '27.1.2',  // = 23.0.0 + agp
-    'kotlin': '1.5.0-RC',
+    'lint': '27.2.1',  // = 23.0.0 + agp
+    'kotlin': '1.5.10',
   ]
 
   ext.deps = [
@@ -40,13 +40,12 @@ buildscript {
   dependencies {
     classpath deps.plugins.agp
     classpath deps.plugins.kotlin
-    classpath 'com.github.ben-manes:gradle-versions-plugin:0.36.0'
+    classpath 'com.github.ben-manes:gradle-versions-plugin:0.38.0'
   }
 
   repositories {
     google()
     mavenCentral()
-    jcenter()
   }
 }
 
@@ -54,7 +53,6 @@ subprojects {
   repositories {
     google()
     mavenCentral()
-    jcenter()
   }
 
   tasks.withType(JavaCompile).configureEach { task ->
