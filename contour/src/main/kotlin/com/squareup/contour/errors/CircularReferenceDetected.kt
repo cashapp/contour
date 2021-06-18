@@ -32,17 +32,17 @@ class CircularReferenceDetected : Exception() {
     list += trace
   }
 
-  override val message: String?
+  override val message: String
     get() = buildString {
       val count = list.size
-      appendln()
-      appendln()
-      appendln("Circular reference detected through the following calls:")
+      appendLine()
+      appendLine()
+      appendLine("Circular reference detected through the following calls:")
       list.forEachIndexed { i, t ->
         val bullet = "${count - i}) "
         val indent = " ".repeat(bullet.length)
-        append(bullet).appendln("Calling ${t.seenAt?.methodName}() on ${t.view} from:")
-        append(indent).appendln(t.referencedFrom.toString())
+        append(bullet).appendLine("Calling ${t.seenAt?.methodName}() on ${t.view} from:")
+        append(indent).appendLine(t.referencedFrom.toString())
       }
     }
 }
