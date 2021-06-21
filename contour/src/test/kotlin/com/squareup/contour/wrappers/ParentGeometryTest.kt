@@ -25,37 +25,38 @@ import org.junit.Test
 
 class ParentGeometryTest {
 
-  private val lambda: (Int) -> Int = { it }
   private val paddingConfig = {
     Rect().apply {
       top = 10
-      right = 10
-      left = 10
-      bottom = 10
+      right = 20
+      bottom = 30
+      left = 40
     }
   }
-  private val mockWidthConfig = SizeConfig(available = 40, lambda = lambda)
-  private val mockHeightConfig = SizeConfig(available = 40, lambda = lambda)
-  private val parentGeometry = ParentGeometry(mockWidthConfig, mockHeightConfig, paddingConfig)
+  private val parentGeometry = ParentGeometry(
+    SizeConfig(available = 120, lambda = { it }),
+    SizeConfig(available = 60, lambda = { it }),
+    paddingConfig
+  )
 
   @Test
   fun `left method`() {
-    assertThat(parentGeometry.left()).isEqualTo(XInt(10))
+    assertThat(parentGeometry.left()).isEqualTo(XInt(40))
   }
 
   @Test
   fun `right method`() {
-    assertThat(parentGeometry.right()).isEqualTo(XInt(30))
+    assertThat(parentGeometry.right()).isEqualTo(XInt(100))
   }
 
   @Test
   fun `width method`() {
-    assertThat(parentGeometry.width()).isEqualTo(XInt(40))
+    assertThat(parentGeometry.width()).isEqualTo(XInt(120))
   }
 
   @Test
   fun `centerX method`() {
-    assertThat(parentGeometry.centerX()).isEqualTo(XInt(20))
+    assertThat(parentGeometry.centerX()).isEqualTo(XInt(60))
   }
 
   @Test
@@ -70,19 +71,19 @@ class ParentGeometryTest {
 
   @Test
   fun `height method`() {
-    assertThat(parentGeometry.height()).isEqualTo(YInt(40))
+    assertThat(parentGeometry.height()).isEqualTo(YInt(60))
   }
 
   @Test
   fun `centerY method`() {
-    assertThat(parentGeometry.centerY()).isEqualTo(YInt(20))
+    assertThat(parentGeometry.centerY()).isEqualTo(YInt(30))
   }
 
   @Test
   fun `padding method`() {
     assertThat(parentGeometry.padding().top).isEqualTo(10)
-    assertThat(parentGeometry.padding().right).isEqualTo(10)
-    assertThat(parentGeometry.padding().bottom).isEqualTo(10)
-    assertThat(parentGeometry.padding().left).isEqualTo(10)
+    assertThat(parentGeometry.padding().right).isEqualTo(20)
+    assertThat(parentGeometry.padding().bottom).isEqualTo(30)
+    assertThat(parentGeometry.padding().left).isEqualTo(40)
   }
 }
