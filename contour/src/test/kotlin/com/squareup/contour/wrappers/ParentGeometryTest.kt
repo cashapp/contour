@@ -34,9 +34,9 @@ class ParentGeometryTest {
     }
   }
   private val parentGeometry = ParentGeometry(
-    SizeConfig(available = 120, lambda = { it }),
-    SizeConfig(available = 60, lambda = { it }),
-    paddingConfig
+    widthConfig = SizeConfig(available = 120, lambda = { it }),
+    heightConfig = SizeConfig(available = 60, lambda = { it }),
+    paddingConfig = paddingConfig
   )
 
   @Test
