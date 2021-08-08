@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'com.vanniktech.maven.publish'
 
 android {
   compileSdkVersion versions.targetSdk
@@ -20,5 +21,3 @@ dependencies {
 
   lintPublish project(':contour-lint')
 }
-
-apply from: "$rootDir/gradle/gradle-mvn-push.gradle"
