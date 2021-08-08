@@ -16,13 +16,10 @@ buildscript {
       'transition': 'androidx.transition:transition:1.4.0',
     ],
     'picasso': 'com.squareup.picasso:picasso:2.8',
-    'tools': [
-      'lint': [
-        'api': "com.android.tools.lint:lint-api:${versions.lint}",
-        'checks': "com.android.tools.lint:lint-checks:${versions.lint}",
-        'lint': "com.android.tools.lint:lint:${versions.lint}",
-        'tests': "com.android.tools.lint:lint-tests:${versions.lint}",
-      ]
+    'lint': [
+      'api': "com.android.tools.lint:lint-api:${versions.lint}",
+      'lint': "com.android.tools.lint:lint:${versions.lint}",
+      'tests': "com.android.tools.lint:lint-tests:${versions.lint}",
     ],
     'robolectric': 'org.robolectric:robolectric:4.5.1',
     'truth': 'com.google.truth:truth:1.1.3',

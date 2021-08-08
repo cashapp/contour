@@ -5,10 +5,9 @@ targetCompatibility = JavaVersion.VERSION_1_8
 sourceCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
-  compileOnly deps.tools.lint.api
-  compileOnly deps.tools.lint.checks
-  testImplementation deps.tools.lint.lint
-  testImplementation deps.tools.lint.tests
+  compileOnly deps.lint.api
+  testImplementation deps.lint.lint
+  testImplementation deps.lint.tests
 }
 
 jar {
