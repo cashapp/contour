@@ -16,6 +16,7 @@ android {
 }
 
 dependencies {
+  testImplementation deps.junit
   testImplementation deps.truth
   testImplementation deps.robolectric
 
