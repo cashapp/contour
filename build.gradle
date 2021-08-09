@@ -7,6 +7,7 @@ buildscript {
     'agp': '7.0.0',
     'lint': '30.0.0',  // = 23.0.0 + agp
     'kotlin': '1.5.10',
+    'autoService': '1.0-rc7',
   ]
 
   ext.deps = [
@@ -20,6 +21,10 @@ buildscript {
       'api': "com.android.tools.lint:lint-api:${versions.lint}",
       'lint': "com.android.tools.lint:lint:${versions.lint}",
       'tests': "com.android.tools.lint:lint-tests:${versions.lint}",
+    ],
+    'auto': [
+      'service': "com.google.auto.service:auto-service:${versions.autoService}",
+      'serviceAnnotations': "com.google.auto.service:auto-service-annotations:${versions.autoService}",
     ],
     'junit': 'junit:junit:4.13.2',
     'robolectric': 'org.robolectric:robolectric:4.5.1',

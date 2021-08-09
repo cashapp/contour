@@ -1,5 +1,6 @@
 apply plugin: 'java-library'
 apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'org.jetbrains.kotlin.kapt'
 apply plugin: 'com.android.lint'
 
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -7,13 +8,9 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
   compileOnly deps.lint.api
+  compileOnly deps.auto.serviceAnnotations
+  kapt deps.auto.service
   testImplementation deps.junit
   testImplementation deps.lint.lint
   testImplementation deps.lint.tests
-}
-
-jar {
-  manifest {
-    attributes('Lint-Registry-v2': 'com.squareup.contour.lint.ContourIssueRegistry')
-  }
 }
