@@ -5,7 +5,6 @@ targetCompatibility = JavaVersion.VERSION_1_8
 sourceCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
-  compileOnly deps.kotlin.stdlib.jdk8
   compileOnly deps.tools.lint.api
   compileOnly deps.tools.lint.checks
   testImplementation deps.tools.lint.lint
