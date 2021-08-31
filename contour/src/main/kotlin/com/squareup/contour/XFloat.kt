@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Square Inc.
+ * Copyright 2020 Square Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,46 +14,16 @@
  * limitations under the License.
  */
 
-@file:Suppress("EXPERIMENTAL_FEATURE_WARNING", "NOTHING_TO_INLINE", "unused")
-
 package com.squareup.contour
 
 /**
- * Represents an [Float] on the x axis.
+ * Represents a [Float] on the x axis.
  */
-@JvmInline
-value class XFloat(val value: Float) {
-
-  inline operator fun plus(other: Int) = XFloat(value + other)
-  inline operator fun plus(other: XInt) = XFloat(value + other.value)
-  inline operator fun plus(other: Float) = XFloat(value + other)
-  inline operator fun plus(other: XFloat) = XFloat(value + other.value)
-
-  inline operator fun minus(other: Int) = XFloat(value - other)
-  inline operator fun minus(other: XInt) = XFloat(value - other.value)
-  inline operator fun minus(other: Float) = XFloat(value - other)
-  inline operator fun minus(other: XFloat) = XFloat(value - other.value)
-
-  inline operator fun times(other: Int) = XFloat(value * other)
-  inline operator fun times(other: XInt) = XFloat(value * other.value)
-  inline operator fun times(other: Float) = XFloat(value * other)
-  inline operator fun times(other: XFloat) = XFloat(value * other.value)
-
-  inline operator fun div(other: Int) = XFloat(value / other)
-  inline operator fun div(other: XInt) = XFloat(value / other.value)
-  inline operator fun div(other: Float) = XFloat(value / other)
-  inline operator fun div(other: XFloat) = XFloat(value / other.value)
-
-  inline operator fun compareTo(other: Int) = value.compareTo(other)
-  inline operator fun compareTo(other: XInt) = value.compareTo(other.value)
-  inline operator fun compareTo(other: Float) = value.compareTo(other)
-  inline operator fun compareTo(other: XFloat) = value.compareTo(other.value)
-
-  inline fun toY() = YFloat(value)
-  inline fun toInt() = XInt(value.toInt())
+interface XFloat {
+  val value: Float
 
   companion object {
-    val ZERO = XFloat(0f)
-    val MIN_VALUE = XFloat(Float.MIN_VALUE)
+    val ZERO = ScalarXFloat(0f)
+    val MIN_VALUE = ScalarXFloat(Float.MIN_VALUE)
   }
 }

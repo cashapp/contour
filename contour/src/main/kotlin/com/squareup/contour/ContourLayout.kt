@@ -23,6 +23,8 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import com.squareup.contour.StartEndXInt.LtrInt
+import com.squareup.contour.StartEndXInt.RtlInt
 import com.squareup.contour.constraints.SizeConfig
 import com.squareup.contour.constraints.SizeConfigSmartLambdas.CoordinateAxis.HORIZONTAL
 import com.squareup.contour.constraints.SizeConfigSmartLambdas.CoordinateAxis.VERTICAL
@@ -34,6 +36,7 @@ import com.squareup.contour.solvers.ComparisonResolver
 import com.squareup.contour.solvers.ComparisonResolver.CompareBy.MaxOf
 import com.squareup.contour.solvers.ComparisonResolver.CompareBy.MinOf
 import com.squareup.contour.solvers.SimpleAxisSolver
+import com.squareup.contour.solvers.SimpleAxisSolver.Point
 import com.squareup.contour.solvers.SimpleAxisSolver.Point.Baseline
 import com.squareup.contour.solvers.SimpleAxisSolver.Point.Max
 import com.squareup.contour.solvers.SimpleAxisSolver.Point.Mid
@@ -187,7 +190,8 @@ open class ContourLayout(
         } else {
           Rect(0, 0, 0, 0)
         }
-      }
+      },
+      isLayoutRtl = { isLayoutRtl() }
   )
   private var constructed: Boolean = true
   private var lastWidthSpec: Int = 0
@@ -271,14 +275,14 @@ open class ContourLayout(
   // API
 
   val Int.dip: Int get() = (density * this).toInt()
-  val Int.xdip: XInt get() = XInt((density * this).toInt())
+  val Int.xdip: ScalarXInt get() = ScalarXInt((density * this).toInt())
   val Int.ydip: YInt get() = YInt((density * this).toInt())
 
   val Float.dip: Float get() = density * this
-  val Float.xdip: XFloat get() = XFloat(density * this)
+  val Float.xdip: ScalarXFloat get() = ScalarXFloat(density * this)
   val Float.ydip: YFloat get() = YFloat(density * this)
 
-  inline fun Int.toXInt(): XInt = XInt(this)
+  inline fun Int.toXInt(): ScalarXInt = ScalarXInt(this)
   inline fun Int.toYInt(): YInt = YInt(this)
 
   @Deprecated(
@@ -382,7 +386,7 @@ open class ContourLayout(
     addToViewGroup: Boolean = true
   ): T {
     val viewGroup = this@ContourLayout
-    layoutParams = LayoutSpec(x, y).also {
+    layoutParams = LayoutSpec(x, y) { isLayoutRtl() }.also {
       it.dimen = ViewDimensions(this)
       it.parent = viewGroup.geometry
       it.view = this
@@ -421,7 +425,7 @@ open class ContourLayout(
     y: YAxisSolver = spec().y
   ) {
     val viewGroup = this@ContourLayout
-    val spec = LayoutSpec(x, y)
+    val spec = LayoutSpec(x, y) { isLayoutRtl() }
     spec.dimen = ViewDimensions(this)
     spec.parent = viewGroup.geometry
     spec.view = this
@@ -448,7 +452,13 @@ open class ContourLayout(
    * The left position of the receiver [View]. Guaranteed to return the resolved value or throw.
    * @return the laid-out left position of the [View]
    */
-  fun View.left(): XInt = handleCrd { spec().left() }
+  fun View.left(): LeftRightXInt = handleCrd { spec().left() }
+
+  /**
+   * The start position of the receiver [View]. Guaranteed to return the resolved value or throw.
+   * @return the laid-out start position of the [View]
+   */
+  fun View.start(): StartEndXInt = handleCrd { spec().start() }
 
   /**
    * The top position of the receiver [View]. Guaranteed to return the resolved value or throw.
@@ -460,7 +470,13 @@ open class ContourLayout(
    * The right position of the receiver [View]. Guaranteed to return the resolved value or throw.
    * @return the laid-out right position of the [View]
    */
-  fun View.right(): XInt = handleCrd { spec().right() }
+  fun View.right(): LeftRightXInt = handleCrd { spec().right() }
+
+  /**
+   * The end position of the receiver [View]. Guaranteed to return the resolved value or throw.
+   * @return the laid-out end position of the [View]
+   */
+  fun View.end(): StartEndXInt = handleCrd { spec().end() }
 
   /**
    * The bottom position of the receiver [View]. Guaranteed to return the resolved value or throw.
@@ -472,7 +488,7 @@ open class ContourLayout(
    * The center-x position of the receiver [View]. Guaranteed to return the resolved value or throw.
    * @return the laid-out left center-x of the [View]
    */
-  fun View.centerX(): XInt = handleCrd { spec().centerX() }
+  fun View.centerX(): ScalarXInt = handleCrd { spec().centerX() }
 
   /**
    * The center-y position of the receiver [View]. Guaranteed to return the resolved value or throw.
@@ -493,7 +509,7 @@ open class ContourLayout(
    * The width of the receiver [View]. Guaranteed to return the resolved value or throw.
    * @return the laid-out width of the [View]
    */
-  fun View.width(): XInt = handleCrd { spec().width() }
+  fun View.width(): ScalarXInt = handleCrd { spec().width() }
 
   /**
    * The height of the receiver [View]. Guaranteed to return the resolved value or throw.
@@ -505,7 +521,7 @@ open class ContourLayout(
    * The preferred width of the receiver [View] when no constraints are applied to the view.
    * @return the preferred width of the [View]
    */
-  fun View.preferredWidth(): XInt = handleCrd { spec().preferredWidth() }
+  fun View.preferredWidth(): ScalarXInt = handleCrd { spec().preferredWidth() }
 
   /**
    * The preferred height of the receiver [View] when no constraints are applied to the view.
@@ -516,44 +532,67 @@ open class ContourLayout(
   fun baselineTo(provider: LayoutContainer.() -> YInt): HeightOfOnlyContext =
     SimpleAxisSolver(
         point = Baseline,
+        isLayoutRtl = { isLayoutRtl() },
         lambda = unwrapYIntLambda(provider)
     )
 
   fun topTo(provider: LayoutContainer.() -> YInt): HasTop =
     SimpleAxisSolver(
         point = Min,
+        isLayoutRtl = { isLayoutRtl() },
         lambda = unwrapYIntLambda(provider)
     )
 
   fun bottomTo(provider: LayoutContainer.() -> YInt): HasBottom =
     SimpleAxisSolver(
         point = Max,
+        isLayoutRtl = { isLayoutRtl() },
         lambda = unwrapYIntLambda(provider)
     )
 
   fun centerVerticallyTo(provider: LayoutContainer.() -> YInt): HeightOfOnlyContext =
     SimpleAxisSolver(
         point = Mid,
+        isLayoutRtl = { isLayoutRtl() },
         lambda = unwrapYIntLambda(provider)
     )
 
-  fun leftTo(provider: LayoutContainer.() -> XInt): HasLeft =
+  fun leftTo(provider: LayoutContainer.() -> LeftRightCompatibleXInt): HasLeft =
     SimpleAxisSolver(
         point = Min,
+        isLayoutRtl = { isLayoutRtl() },
         lambda = unwrapXIntLambda(provider)
     )
 
-  fun rightTo(provider: LayoutContainer.() -> XInt): HasRight =
+  fun rightTo(provider: LayoutContainer.() -> LeftRightCompatibleXInt): HasRight =
     SimpleAxisSolver(
         point = Max,
+        isLayoutRtl = { isLayoutRtl() },
+        lambda = unwrapXIntLambda(provider)
+    )
+
+  fun startTo(provider: LayoutContainer.() -> StartEndCompatibleXInt): HasStart =
+    SimpleAxisSolver(
+        point = Point.Start,
+        isLayoutRtl = { isLayoutRtl() },
+        lambda = unwrapXIntLambda(provider)
+    )
+
+  fun endTo(provider: LayoutContainer.() -> StartEndCompatibleXInt): HasEnd =
+    SimpleAxisSolver(
+        point = Point.End,
+        isLayoutRtl = { isLayoutRtl() },
         lambda = unwrapXIntLambda(provider)
     )
 
   fun centerHorizontallyTo(provider: LayoutContainer.() -> XInt): WidthOfOnlyContext =
     SimpleAxisSolver(
         point = Mid,
+        isLayoutRtl = { isLayoutRtl() },
         lambda = unwrapXIntLambda(provider)
     )
+
+  private fun isLayoutRtl(): Boolean = layoutDirection == View.LAYOUT_DIRECTION_RTL
 
   /**
    * Matches the position and width to those of [View] on the x-axis.
@@ -564,10 +603,10 @@ open class ContourLayout(
    */
   fun matchXTo(
     view: View,
-    marginLeft: Int = 0,
-    marginRight: Int = 0
+    marginStart: Int = 0,
+    marginEnd: Int = 0
   ): XAxisSolver {
-    return leftTo { view.left() + marginLeft }.rightTo { view.right() - marginRight }
+    return startTo { view.start() + marginStart }.endTo { view.end() - marginEnd }
   }
 
   /**
@@ -577,10 +616,10 @@ open class ContourLayout(
    * @return the configured position on the x-axis
    */
   fun matchParentX(
-    marginLeft: Int = 0,
-    marginRight: Int = 0
+    marginStart: Int = 0,
+    marginEnd: Int = 0
   ): XAxisSolver {
-    return leftTo { parent.left() + marginLeft }.rightTo { parent.right() - marginRight }
+    return startTo { parent.start() + marginStart }.endTo { parent.end() - marginEnd }
   }
 
   /**
@@ -621,26 +660,60 @@ open class ContourLayout(
    */
   fun emptyY() = topTo { parent.top() }.heightOf { 0.toYInt() }
 
-  fun minOf(
-    a: XInt,
-    b: XInt
-  ): XInt = min(a.value, b.value).toXInt()
+  fun <T : LeftRightCompatibleXInt> minOf(a: T, b: T): T = if (a.value <= b.value) a else b
+
+  fun minOf(a: ScalarXInt, b: LeftRightXInt): LeftRightCompatibleXInt =
+    minOf(a as LeftRightCompatibleXInt, b as LeftRightCompatibleXInt)
+
+  fun minOf(a: LeftRightXInt, b: ScalarXInt): LeftRightCompatibleXInt =
+    minOf(a as LeftRightCompatibleXInt, b as LeftRightCompatibleXInt)
 
   fun minOf(
     a: YInt,
     b: YInt
   ): YInt = min(a.value, b.value).toYInt()
 
-  fun maxOf(
-    a: XInt,
-    b: XInt
-  ): XInt = max(a.value, b.value).toXInt()
+  fun <T : LeftRightCompatibleXInt> maxOf(a: T, b: T): T = if (a.value >= b.value) a else b
+
+  fun maxOf(a: ScalarXInt, b: LeftRightXInt): LeftRightCompatibleXInt =
+    maxOf(a as LeftRightCompatibleXInt, b as LeftRightCompatibleXInt)
+
+  fun maxOf(a: LeftRightXInt, b: ScalarXInt): LeftRightCompatibleXInt =
+    maxOf(a as LeftRightCompatibleXInt, b as LeftRightCompatibleXInt)
 
   fun maxOf(
     a: YInt,
     b: YInt
   ): YInt = max(a.value, b.value).toYInt()
 
+  fun <T : StartEndCompatibleXInt> startOf(a: T, b: T): T {
+    return if (isLayoutRtl()) {
+      if (a.value <= b.value) b else a
+    } else {
+      if (a.value <= b.value) a else b
+    }
+  }
+
+  fun startOf(a: ScalarXInt, b: StartEndXInt): StartEndCompatibleXInt =
+    startOf(a as StartEndCompatibleXInt, b as StartEndCompatibleXInt)
+
+  fun startOf(a: StartEndXInt, b: ScalarXInt): StartEndCompatibleXInt =
+    startOf(a as StartEndCompatibleXInt, b as StartEndCompatibleXInt)
+
+  fun <T : StartEndCompatibleXInt> endOf(a: T, b: T): T {
+    return if (isLayoutRtl()) {
+      if (a.value >= b.value) b else a
+    } else {
+      if (a.value >= b.value) a else b
+    }
+  }
+
+  fun endOf(a: ScalarXInt, b: StartEndXInt): StartEndCompatibleXInt =
+    endOf(a as StartEndCompatibleXInt, b as StartEndCompatibleXInt)
+
+  fun endOf(a: StartEndXInt, b: ScalarXInt): StartEndCompatibleXInt =
+    endOf(a as StartEndCompatibleXInt, b as StartEndCompatibleXInt)
+
   fun minOf(
     p0: HasYPositionWithoutHeight,
     p1: HasYPositionWithoutHeight
@@ -660,8 +733,8 @@ open class ContourLayout(
   }
 
   fun minOf(
-    p0: HasXPositionWithoutWidth,
-    p1: HasXPositionWithoutWidth
+    p0: HasAbsoluteXPositionWithoutWidth,
+    p1: HasAbsoluteXPositionWithoutWidth
   ): XAxisSolver {
     p0 as AxisSolver
     p1 as AxisSolver
@@ -669,12 +742,30 @@ open class ContourLayout(
   }
 
   fun maxOf(
-    p0: HasXPositionWithoutWidth,
-    p1: HasXPositionWithoutWidth
+    p0: HasAbsoluteXPositionWithoutWidth,
+    p1: HasAbsoluteXPositionWithoutWidth
   ): XAxisSolver {
     p0 as AxisSolver
     p1 as AxisSolver
     return ComparisonResolver(p0, p1, MaxOf)
+  }
+
+  fun startOf(
+    p0: HasRelativeXPositionWithoutWidth,
+    p1: HasRelativeXPositionWithoutWidth
+  ): XAxisSolver {
+    p0 as AxisSolver
+    p1 as AxisSolver
+    return ComparisonResolver(p0, p1, if (isLayoutRtl()) MaxOf else MinOf)
+  }
+
+  fun endOf(
+    p0: HasRelativeXPositionWithoutWidth,
+    p1: HasRelativeXPositionWithoutWidth
+  ): XAxisSolver {
+    p0 as AxisSolver
+    p1 as AxisSolver
+    return ComparisonResolver(p0, p1, if (isLayoutRtl()) MinOf else MaxOf)
   }
 
   private fun addViewInternal(child: View?) = super.addView(child)
@@ -710,7 +801,8 @@ open class ContourLayout(
 
   class LayoutSpec(
     internal val x: XAxisSolver,
-    internal val y: YAxisSolver
+    internal val y: YAxisSolver,
+    internal val isLayoutRtl: () -> Boolean
   ) : ViewGroup.LayoutParams(WRAP, WRAP), LayoutContainer {
 
     override lateinit var parent: Geometry
@@ -722,17 +814,21 @@ open class ContourLayout(
       y.onAttach(this)
     }
 
-    internal fun left(): XInt = x.min().toXInt()
-    internal fun right(): XInt = x.max().toXInt()
-    internal fun centerX(): XInt = x.mid().toXInt()
+    internal fun left(): LeftRightXInt = LeftRightXInt(x.min())
+    internal fun right(): LeftRightXInt = LeftRightXInt(x.max())
+    internal fun start(): StartEndXInt =
+      if (isLayoutRtl()) RtlInt(right().value) else LtrInt(left().value)
+    internal fun end(): StartEndXInt =
+      if (isLayoutRtl()) RtlInt(left().value) else LtrInt(right().value)
+    internal fun centerX(): ScalarXInt = ScalarXInt(x.mid())
     internal fun top(): YInt = y.min().toYInt()
     internal fun bottom(): YInt = y.max().toYInt()
     internal fun centerY(): YInt = y.mid().toYInt()
     internal fun baseline(): YInt = y.baseline().toYInt()
-    internal fun width(): XInt = x.range().toXInt()
+    internal fun width(): ScalarXInt = ScalarXInt(x.range())
     internal fun height(): YInt = y.range().toYInt()
 
-    internal fun preferredWidth(): XInt {
+    internal fun preferredWidth(): ScalarXInt {
       return if (view.visibility == GONE) {
         XInt.ZERO
       } else {

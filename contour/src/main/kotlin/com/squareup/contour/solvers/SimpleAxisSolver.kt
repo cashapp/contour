@@ -17,13 +17,19 @@
 package com.squareup.contour.solvers
 
 import android.view.View
+import com.squareup.contour.LeftRightCompatibleXFloat
+import com.squareup.contour.LeftRightCompatibleXInt
 import com.squareup.contour.ContourLayout.LayoutSpec
 import com.squareup.contour.HasBottom
+import com.squareup.contour.HasEnd
 import com.squareup.contour.HasLeft
 import com.squareup.contour.HasRight
+import com.squareup.contour.HasStart
 import com.squareup.contour.HasTop
 import com.squareup.contour.HeightOfOnlyContext
 import com.squareup.contour.LayoutContainer
+import com.squareup.contour.StartEndCompatibleXFloat
+import com.squareup.contour.StartEndCompatibleXInt
 import com.squareup.contour.SizeMode
 import com.squareup.contour.WidthOfOnlyContext
 import com.squareup.contour.XFloat
@@ -40,22 +46,25 @@ import kotlin.math.abs
 
 internal class SimpleAxisSolver(
   point: Point,
+  isLayoutRtl: () -> Boolean,
   lambda: LayoutContainer.() -> Int
 ) :
-    XAxisSolver, HasLeft, HasRight, WidthOfOnlyContext,
+    XAxisSolver, HasLeft, HasRight, HasStart, HasEnd, WidthOfOnlyContext,
   YAxisSolver, HasTop, HasBottom, HeightOfOnlyContext {
 
   internal enum class Point {
     Min,
     Mid,
     Baseline,
-    Max
+    Max,
+    Start,
+    End
   }
 
   private lateinit var parent: LayoutSpec
 
-  private val p0 = PositionConstraint(point, lambda)
-  private val p1 = PositionConstraint()
+  private val p0 = PositionConstraint(point, isLayoutRtl, lambda)
+  private val p1 = PositionConstraint(isLayoutRtl = isLayoutRtl)
   private val size = Constraint()
 
   private var min = Int.MIN_VALUE
@@ -68,7 +77,7 @@ internal class SimpleAxisSolver(
 
   override fun min(): Int {
     if (min == Int.MIN_VALUE) {
-      if (p0.point == Point.Min) {
+      if (p0.isRelativeMin()) {
         min = p0.resolve()
       } else {
         resolveRange()
@@ -108,7 +117,7 @@ internal class SimpleAxisSolver(
 
   override fun max(): Int {
     if (max == Int.MIN_VALUE) {
-      if (p0.point == Point.Max) {
+      if (p0.isRelativeMax()) {
         max = p0.resolve()
       } else {
         resolveRange()
@@ -145,25 +154,25 @@ internal class SimpleAxisSolver(
     check(range != Int.MIN_VALUE)
 
     val hV = range / 2
-    when (p0.point) {
-      Point.Min -> {
+    when {
+      p0.isRelativeMin() -> {
         min = p0.resolve()
         mid = min + hV
         max = min + range
       }
-      Point.Mid -> {
+      p0.point == Point.Mid -> {
         mid = p0.resolve()
         min = mid - hV
         max = mid + hV
       }
-      Point.Baseline -> {
+      p0.point == Point.Baseline -> {
         check(baselineRange != Int.MIN_VALUE)
         baseline = p0.resolve()
         min = baseline - baselineRange
         mid = min + hV
         max = min + range
       }
-      Point.Max -> {
+      p0.isRelativeMax() -> {
         max = p0.resolve()
         mid = max - hV
         min = max - range
@@ -210,7 +219,7 @@ internal class SimpleAxisSolver(
 
   override fun leftTo(
     mode: SizeMode,
-    provider: LayoutContainer.() -> XInt
+    provider: LayoutContainer.() -> LeftRightCompatibleXInt
   ): XAxisSolver {
     p1.point = Point.Min
     p1.mode = mode
@@ -221,9 +230,31 @@ internal class SimpleAxisSolver(
 
   override fun leftToFloat(
     mode: SizeMode,
-    provider: LayoutContainer.() -> XFloat
+    provider: LayoutContainer.() -> LeftRightCompatibleXFloat
   ): XAxisSolver {
     p1.point = Point.Min
+    p1.mode = mode
+    p1.lambda = unwrapXFloatLambda(provider)
+    baselineRange = 0
+    return this
+  }
+
+  override fun startTo(
+    mode: SizeMode,
+    provider: LayoutContainer.() -> StartEndCompatibleXInt
+  ): XAxisSolver {
+    p1.point = Point.Start
+    p1.mode = mode
+    p1.lambda = unwrapXIntLambda(provider)
+    baselineRange = 0
+    return this
+  }
+
+  override fun startToFloat(
+    mode: SizeMode,
+    provider: LayoutContainer.() -> StartEndCompatibleXFloat
+  ): XAxisSolver {
+    p1.point = Point.Start
     p1.mode = mode
     p1.lambda = unwrapXFloatLambda(provider)
     baselineRange = 0
@@ -250,7 +281,10 @@ internal class SimpleAxisSolver(
     return this
   }
 
-  override fun rightTo(mode: SizeMode, provider: LayoutContainer.() -> XInt): XAxisSolver {
+  override fun rightTo(
+    mode: SizeMode,
+    provider: LayoutContainer.() -> LeftRightCompatibleXInt
+  ): XAxisSolver {
     p1.point = Point.Max
     p1.mode = mode
     p1.lambda = unwrapXIntLambda(provider)
@@ -260,9 +294,31 @@ internal class SimpleAxisSolver(
 
   override fun rightToFloat(
     mode: SizeMode,
-    provider: LayoutContainer.() -> XFloat
+    provider: LayoutContainer.() -> LeftRightCompatibleXFloat
   ): XAxisSolver {
     p1.point = Point.Max
+    p1.mode = mode
+    p1.lambda = unwrapXFloatLambda(provider)
+    baselineRange = 0
+    return this
+  }
+
+  override fun endTo(
+    mode: SizeMode,
+    provider: LayoutContainer.() -> StartEndCompatibleXInt
+  ): XAxisSolver {
+    p1.point = Point.End
+    p1.mode = mode
+    p1.lambda = unwrapXIntLambda(provider)
+    baselineRange = 0
+    return this
+  }
+
+  override fun endToFloat(
+    mode: SizeMode,
+    provider: LayoutContainer.() -> StartEndCompatibleXFloat
+  ): XAxisSolver {
+    p1.point = Point.End
     p1.mode = mode
     p1.lambda = unwrapXFloatLambda(provider)
     baselineRange = 0

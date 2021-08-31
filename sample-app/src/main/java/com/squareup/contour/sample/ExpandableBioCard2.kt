@@ -76,11 +76,11 @@ class ExpandableBioCard2(context: Context, attrs: AttributeSet? = null) : Contou
     }
 
     bio.layoutBy(
-        x = matchParentX(marginLeft = 20.dip, marginRight = 20.dip),
+        x = matchParentX(marginStart = 20.dip, marginEnd = 20.dip),
         y = topTo { title.bottom() + 20.ydip }
     )
     title.layoutBy(
-        x = matchParentX(marginLeft = 20.dip, marginRight = 20.dip),
+        x = matchParentX(marginStart = 20.dip, marginEnd = 20.dip),
         y = topTo { imageView.bottom() + 20.ydip }
     )
     imageView.layoutBy(

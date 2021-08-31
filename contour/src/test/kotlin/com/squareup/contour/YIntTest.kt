@@ -74,6 +74,6 @@ class YIntTest {
 
   @Test
   fun `toX method`() {
-    assertThat(YInt(10).toX()).isEqualTo(XInt(10))
+    assertThat(YInt(10).toX()).isEqualTo(ScalarXInt(10))
   }
 }

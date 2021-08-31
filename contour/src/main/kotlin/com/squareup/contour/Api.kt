@@ -41,6 +41,10 @@ interface HasXPositionWithoutWidth {
   ): XAxisSolver
 }
 
+interface HasAbsoluteXPositionWithoutWidth : HasXPositionWithoutWidth
+
+interface HasRelativeXPositionWithoutWidth : HasXPositionWithoutWidth
+
 interface HasYPositionWithoutHeight {
   fun heightOf(
     mode: SizeMode = Exact,
@@ -53,27 +57,51 @@ interface HasYPositionWithoutHeight {
   ): YAxisSolver
 }
 
-interface HasLeft : XAxisSolver, HasXPositionWithoutWidth {
+interface HasLeft : XAxisSolver, HasAbsoluteXPositionWithoutWidth {
   fun rightTo(
     mode: SizeMode = Exact,
-    provider: LayoutContainer.() -> XInt
+    provider: LayoutContainer.() -> LeftRightCompatibleXInt
   ): XAxisSolver
 
   fun rightToFloat(
     mode: SizeMode = Exact,
-    provider: LayoutContainer.() -> XFloat
+    provider: LayoutContainer.() -> LeftRightCompatibleXFloat
   ): XAxisSolver
 }
 
-interface HasRight : XAxisSolver, HasXPositionWithoutWidth {
+interface HasStart : XAxisSolver, HasRelativeXPositionWithoutWidth {
+  fun endTo(
+    mode: SizeMode = Exact,
+    provider: LayoutContainer.() -> StartEndCompatibleXInt
+  ): XAxisSolver
+
+  fun endToFloat(
+    mode: SizeMode = Exact,
+    provider: LayoutContainer.() -> StartEndCompatibleXFloat
+  ): XAxisSolver
+}
+
+interface HasRight : XAxisSolver, HasAbsoluteXPositionWithoutWidth {
   fun leftTo(
     mode: SizeMode = Exact,
-    provider: LayoutContainer.() -> XInt
+    provider: LayoutContainer.() -> LeftRightCompatibleXInt
   ): XAxisSolver
 
   fun leftToFloat(
     mode: SizeMode = Exact,
-    provider: LayoutContainer.() -> XFloat
+    provider: LayoutContainer.() -> LeftRightCompatibleXFloat
+  ): XAxisSolver
+}
+
+interface HasEnd : XAxisSolver, HasRelativeXPositionWithoutWidth {
+  fun startTo(
+    mode: SizeMode = Exact,
+    provider: LayoutContainer.() -> StartEndCompatibleXInt
+  ): XAxisSolver
+
+  fun startToFloat(
+    mode: SizeMode = Exact,
+    provider: LayoutContainer.() -> StartEndCompatibleXFloat
   ): XAxisSolver
 }
 

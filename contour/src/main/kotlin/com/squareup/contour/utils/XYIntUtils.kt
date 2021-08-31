@@ -19,8 +19,9 @@
 package com.squareup.contour.utils
 
 import com.squareup.contour.LayoutContainer
-import com.squareup.contour.XFloat
+import com.squareup.contour.ScalarXInt
 import com.squareup.contour.XInt
+import com.squareup.contour.XFloat
 import com.squareup.contour.YFloat
 import com.squareup.contour.YInt
 import com.squareup.contour.constraints.SizeConfigLambda
@@ -55,5 +56,5 @@ internal inline fun unwrapYFloatLambda(
 ): LayoutContainer.() -> Int =
   { lambda().value.toInt() }
 
-internal inline fun Int.toXInt() = XInt(this)
+internal inline fun Int.toXInt() = ScalarXInt(this)
 internal inline fun Int.toYInt() = YInt(this)

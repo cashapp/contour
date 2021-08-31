@@ -18,7 +18,9 @@ package com.squareup.contour.wrappers
 
 import android.graphics.Rect
 import com.google.common.truth.Truth.assertThat
-import com.squareup.contour.XInt
+import com.squareup.contour.LeftRightXInt
+import com.squareup.contour.ScalarXInt
+import com.squareup.contour.StartEndXInt.LtrInt
 import com.squareup.contour.YInt
 import com.squareup.contour.constraints.SizeConfig
 import org.junit.Test
@@ -36,27 +38,38 @@ class ParentGeometryTest {
   private val parentGeometry = ParentGeometry(
     widthConfig = SizeConfig(available = 120, lambda = { it }),
     heightConfig = SizeConfig(available = 60, lambda = { it }),
-    paddingConfig = paddingConfig
+    paddingConfig = paddingConfig,
+    isLayoutRtl = { false }
   )
 
   @Test
   fun `left method`() {
-    assertThat(parentGeometry.left()).isEqualTo(XInt(40))
+    assertThat(parentGeometry.left()).isEqualTo(LeftRightXInt(40))
   }
 
   @Test
   fun `right method`() {
-    assertThat(parentGeometry.right()).isEqualTo(XInt(100))
+    assertThat(parentGeometry.right()).isEqualTo(LeftRightXInt(100))
+  }
+
+  @Test
+  fun `start method`() {
+    assertThat(parentGeometry.start()).isEqualTo(LtrInt(40))
+  }
+
+  @Test
+  fun `end method`() {
+    assertThat(parentGeometry.end()).isEqualTo(LtrInt(100))
   }
 
   @Test
   fun `width method`() {
-    assertThat(parentGeometry.width()).isEqualTo(XInt(120))
+    assertThat(parentGeometry.width()).isEqualTo(ScalarXInt(120))
   }
 
   @Test
   fun `centerX method`() {
-    assertThat(parentGeometry.centerX()).isEqualTo(XInt(60))
+    assertThat(parentGeometry.centerX()).isEqualTo(ScalarXInt(60))
   }
 
   @Test

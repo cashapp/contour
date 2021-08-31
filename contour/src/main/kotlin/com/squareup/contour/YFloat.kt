@@ -49,7 +49,7 @@ value class YFloat(val value: Float) {
   inline operator fun compareTo(other: Float) = value.compareTo(other)
   inline operator fun compareTo(other: YFloat) = value.compareTo(other.value)
 
-  inline fun toX() = XFloat(value)
+  inline fun toX() = ScalarXFloat(value)
   inline fun toInt() = YInt(value.toInt())
 
   companion object {

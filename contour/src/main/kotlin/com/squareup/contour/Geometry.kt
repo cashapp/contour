@@ -27,10 +27,12 @@ import android.graphics.Rect
  * is configured incorrectly.
  */
 interface Geometry {
-  fun left(): XInt
-  fun right(): XInt
-  fun width(): XInt
-  fun centerX(): XInt
+  fun left(): LeftRightXInt
+  fun right(): LeftRightXInt
+  fun start(): StartEndXInt
+  fun end(): StartEndXInt
+  fun width(): ScalarXInt
+  fun centerX(): ScalarXInt
 
   fun top(): YInt
   fun bottom(): YInt
