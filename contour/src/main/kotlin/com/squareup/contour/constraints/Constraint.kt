@@ -21,6 +21,10 @@ import com.squareup.contour.SizeMode
 import com.squareup.contour.SizeMode.Exact
 import com.squareup.contour.errors.CircularReferenceDetected
 import com.squareup.contour.solvers.SimpleAxisSolver.Point
+import com.squareup.contour.solvers.SimpleAxisSolver.Point.End
+import com.squareup.contour.solvers.SimpleAxisSolver.Point.Max
+import com.squareup.contour.solvers.SimpleAxisSolver.Point.Min
+import com.squareup.contour.solvers.SimpleAxisSolver.Point.Start
 
 internal open class Constraint {
   private var isResolving: Boolean = false
@@ -59,10 +63,27 @@ internal open class Constraint {
 }
 
 internal class PositionConstraint(
-  var point: Point = Point.Min,
+  var point: Point = Min,
+  private val isLayoutRtl: () -> Boolean,
   lambda: (LayoutContainer.() -> Int)? = null
 ) : Constraint() {
   init {
     this.lambda = lambda
   }
+
+  fun isRelativeMin(): Boolean =
+    when (point) {
+      Min -> true
+      Start -> !isLayoutRtl()
+      End -> isLayoutRtl()
+      else -> false
+    }
+
+  fun isRelativeMax(): Boolean =
+    when (point) {
+      Max -> true
+      Start -> isLayoutRtl()
+      End -> !isLayoutRtl()
+      else -> false
+    }
 }

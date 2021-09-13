@@ -52,17 +52,17 @@ class SampleView(context: Context, attrs: AttributeSet? = null) : ContourLayout(
     contourHeightMatchParent()
 
     toolbar.layoutBy(
-        x = leftTo { parent.left() },
+        x = startTo { parent.start() },
         y = topTo { parent.top() + 4.ydip }.heightOf { 56.ydip }
     )
     card1.layoutBy(
-        x = matchParentX(marginLeft = 24.dip, marginRight = 24.dip),
+        x = matchParentX(marginStart = 24.dip, marginEnd = 24.dip),
         y = topTo { toolbar.bottom() + 8.ydip }
     )
 
     val xPadding = { if (card2.isSelected) 0.xdip else 24.xdip }
     card2.layoutBy(
-        x = leftTo { parent.left() + xPadding() }.rightTo { parent.right() - xPadding() },
+        x = startTo { parent.start() + xPadding() }.endTo { parent.end() - xPadding() },
         y = topTo {
           if (card2.isSelected) parent.top() else card1.bottom() + 24.ydip
         }.heightOf {

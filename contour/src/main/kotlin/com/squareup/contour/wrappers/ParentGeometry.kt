@@ -17,22 +17,30 @@
 package com.squareup.contour.wrappers
 
 import android.graphics.Rect
+import com.squareup.contour.LeftRightXInt
 import com.squareup.contour.Geometry
-import com.squareup.contour.XInt
+import com.squareup.contour.ScalarXInt
+import com.squareup.contour.StartEndXInt
+import com.squareup.contour.StartEndXInt.LtrInt
+import com.squareup.contour.StartEndXInt.RtlInt
 import com.squareup.contour.YInt
 import com.squareup.contour.constraints.SizeConfig
-import com.squareup.contour.utils.toXInt
 import com.squareup.contour.utils.toYInt
 
 internal class ParentGeometry(
   private val widthConfig: SizeConfig,
   private val heightConfig: SizeConfig,
-  private val paddingConfig: () -> Rect
+  private val paddingConfig: () -> Rect,
+  private val isLayoutRtl: () -> Boolean
 ) : Geometry {
-  override fun left(): XInt = XInt.ZERO + padding().left
-  override fun right(): XInt = widthConfig.resolve().toXInt() - padding().right
-  override fun width(): XInt = widthConfig.resolve().toXInt()
-  override fun centerX(): XInt = widthConfig.resolve().toXInt() / 2
+  override fun left(): LeftRightXInt = LeftRightXInt(padding().left)
+  override fun right(): LeftRightXInt = LeftRightXInt(widthConfig.resolve() - padding().right)
+  override fun start(): StartEndXInt =
+    if (isLayoutRtl()) RtlInt(right().value) else LtrInt(left().value)
+  override fun end(): StartEndXInt =
+    if (isLayoutRtl()) RtlInt(left().value) else LtrInt(right().value)
+  override fun width(): ScalarXInt = ScalarXInt(widthConfig.resolve())
+  override fun centerX(): ScalarXInt = ScalarXInt(widthConfig.resolve() / 2)
 
   override fun top(): YInt = YInt.ZERO + padding().top
   override fun bottom(): YInt = heightConfig.resolve().toYInt() - padding().bottom

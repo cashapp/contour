@@ -70,11 +70,11 @@ class ExpandableBioCard1(context: Context, attrs: AttributeSet? = null) : Contou
     contourHeightOf { maxOf(avatar.bottom() + 24.ydip, bio.bottom() + 16.ydip) }
 
     avatar.layoutBy(
-        x = leftTo { parent.left() }.widthOf { 60.xdip },
+        x = startTo { parent.start() }.widthOf { 60.xdip },
         y = topTo { parent.top() + 24.ydip }.heightOf { 60.ydip }
     )
     bio.layoutBy(
-        x = leftTo { avatar.right() + 16.xdip }.rightTo { parent.right() },
+        x = startTo { avatar.start() + 16.xdip }.endTo { parent.end() },
         y = topTo {
           when {
             isSelected -> parent.top() + 16.ydip

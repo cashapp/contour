@@ -74,7 +74,7 @@ class YFloatTest {
 
   @Test
   fun `toY method`() {
-    assertThat(YFloat(10f).toX()).isEqualTo(XFloat(10f))
+    assertThat(YFloat(10f).toX()).isEqualTo(ScalarXFloat(10f))
   }
 
   @Test
