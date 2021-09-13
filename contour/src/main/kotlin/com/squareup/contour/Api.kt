@@ -41,9 +41,9 @@ interface HasXPositionWithoutWidth {
   ): XAxisSolver
 }
 
-interface HasAbsoluteXPositionWithoutWidth : HasXPositionWithoutWidth
+interface HasLeftRightXPositionWithoutWidth : HasXPositionWithoutWidth
 
-interface HasRelativeXPositionWithoutWidth : HasXPositionWithoutWidth
+interface HasStartEndXPositionWithoutWidth : HasXPositionWithoutWidth
 
 interface HasYPositionWithoutHeight {
   fun heightOf(
@@ -57,7 +57,7 @@ interface HasYPositionWithoutHeight {
   ): YAxisSolver
 }
 
-interface HasLeft : XAxisSolver, HasAbsoluteXPositionWithoutWidth {
+interface HasLeft : XAxisSolver, HasLeftRightXPositionWithoutWidth {
   fun rightTo(
     mode: SizeMode = Exact,
     provider: LayoutContainer.() -> LeftRightCompatibleXInt
@@ -69,7 +69,7 @@ interface HasLeft : XAxisSolver, HasAbsoluteXPositionWithoutWidth {
   ): XAxisSolver
 }
 
-interface HasStart : XAxisSolver, HasRelativeXPositionWithoutWidth {
+interface HasStart : XAxisSolver, HasStartEndXPositionWithoutWidth {
   fun endTo(
     mode: SizeMode = Exact,
     provider: LayoutContainer.() -> StartEndCompatibleXInt
@@ -81,7 +81,7 @@ interface HasStart : XAxisSolver, HasRelativeXPositionWithoutWidth {
   ): XAxisSolver
 }
 
-interface HasRight : XAxisSolver, HasAbsoluteXPositionWithoutWidth {
+interface HasRight : XAxisSolver, HasLeftRightXPositionWithoutWidth {
   fun leftTo(
     mode: SizeMode = Exact,
     provider: LayoutContainer.() -> LeftRightCompatibleXInt
@@ -93,7 +93,7 @@ interface HasRight : XAxisSolver, HasAbsoluteXPositionWithoutWidth {
   ): XAxisSolver
 }
 
-interface HasEnd : XAxisSolver, HasRelativeXPositionWithoutWidth {
+interface HasEnd : XAxisSolver, HasStartEndXPositionWithoutWidth {
   fun startTo(
     mode: SizeMode = Exact,
     provider: LayoutContainer.() -> StartEndCompatibleXInt

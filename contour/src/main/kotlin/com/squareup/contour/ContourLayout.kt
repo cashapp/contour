@@ -733,8 +733,8 @@ open class ContourLayout(
   }
 
   fun minOf(
-    p0: HasAbsoluteXPositionWithoutWidth,
-    p1: HasAbsoluteXPositionWithoutWidth
+    p0: HasLeftRightXPositionWithoutWidth,
+    p1: HasLeftRightXPositionWithoutWidth
   ): XAxisSolver {
     p0 as AxisSolver
     p1 as AxisSolver
@@ -742,8 +742,8 @@ open class ContourLayout(
   }
 
   fun maxOf(
-    p0: HasAbsoluteXPositionWithoutWidth,
-    p1: HasAbsoluteXPositionWithoutWidth
+    p0: HasLeftRightXPositionWithoutWidth,
+    p1: HasLeftRightXPositionWithoutWidth
   ): XAxisSolver {
     p0 as AxisSolver
     p1 as AxisSolver
@@ -751,8 +751,8 @@ open class ContourLayout(
   }
 
   fun startOf(
-    p0: HasRelativeXPositionWithoutWidth,
-    p1: HasRelativeXPositionWithoutWidth
+    p0: HasStartEndXPositionWithoutWidth,
+    p1: HasStartEndXPositionWithoutWidth
   ): XAxisSolver {
     p0 as AxisSolver
     p1 as AxisSolver
@@ -760,8 +760,8 @@ open class ContourLayout(
   }
 
   fun endOf(
-    p0: HasRelativeXPositionWithoutWidth,
-    p1: HasRelativeXPositionWithoutWidth
+    p0: HasStartEndXPositionWithoutWidth,
+    p1: HasStartEndXPositionWithoutWidth
   ): XAxisSolver {
     p0 as AxisSolver
     p1 as AxisSolver
