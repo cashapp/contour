@@ -1,4 +1,7 @@
-# Contour
+# Contour [DEPRECATED]
+
+Contour is deprecated. It has been amazing. It is stable and probably still running in the wild.
+But it's development has ceased. We encourage developers to favor [Jetpack Compose](https://developer.android.com/jetpack/compose). 
 
 Contour is a typesafe, Kotlin-first API that aims to be the thinnest possible wrapper around Android’s layout APIs. It allows you to build compound views in pure Kotlin without using opaque layout rules - but instead by hooking into the layout phase yourself. The best comparison for Contour would be to ConstraintLayout - but instead of defining constraints in XML you actually provide them as executable lambdas.
 
